@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import numpy as np
 from nolitsa import utils
 from numpy.testing import assert_, assert_allclose, run_module_suite
@@ -12,7 +14,6 @@ def test_rescale():
 
 def test_gprange():
     # Test utils.gprange()
-
     num = 10
     pi = np.pi
 
