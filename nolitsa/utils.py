@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import division
 import numpy as np
 
 def gprange(start, end, num=100):
@@ -22,9 +23,9 @@ def gprange(start, end, num=100):
         Required geometric progression.
     """
     if end / start > 0:
-        ratio = (1.0 * end / start) ** (1.0 / (num - 1))
+        ratio = (end / start) ** (1.0 / (num - 1))
     elif end / start < 0 and num % 2 == 0:
-        ratio = -abs(1.0 * end / start) ** (1.0 / (num - 1))
+        ratio = -abs(end / start) ** (1.0 / (num - 1))
     else:
         raise ValueError('If start and end have different signs, '
                          'a real ratio is possible iff num is even.')
