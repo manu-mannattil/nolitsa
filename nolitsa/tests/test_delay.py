@@ -11,7 +11,7 @@ def test_acorr():
     # Autocorrelation function of a /finite/ sine wave over n
     # cycles is:
     #
-    #   r(tau) = [cos(tau)(2*n*pi - tau) + sin(tau)] / 2*n*pi
+    #   r(tau) = [(2*n*pi - tau)*cos(tau) + sin(tau)] / 2*n*pi
     #
     # As n -> infty, r(tau) = cos(tau) as expected.
     n = 2 ** 5
