@@ -3,6 +3,7 @@
 import itertools
 import numpy as np
 
+from time import sleep
 from nolitsa import utils
 from numpy.testing import assert_, assert_allclose, run_module_suite, raises
 
@@ -140,6 +141,24 @@ def test_reconstruct():
     desired = np.cos(t[:-tau])
 
     assert_allclose(x2, desired, atol=1e-3)
+
+
+def _func_shm(t, ampl, omega=(0.1 * np.pi), phase=0):
+    # Utility function to test utils.parallel_map()
+    sleep(0.5 * np.random.random())
+    return ampl * np.sin(omega * t + phase)
+
+
+def test_parallel_map():
+    # Test utils.parallel_map()
+    tt = np.arange(5)
+    ampl, omega, phase = np.random.random(3)
+
+    desired = [_func_shm(t, ampl, omega=omega, phase=phase) for t in tt]
+    kwargs = {'omega': omega, 'phase': phase}
+    xx = utils.parallel_map(_func_shm, tt, args=(ampl,), kwargs=kwargs)
+
+    assert_allclose(xx, desired)
 
 
 if __name__ == '__main__':

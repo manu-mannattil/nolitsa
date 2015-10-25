@@ -108,6 +108,43 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
     return np.squeeze(indices), np.squeeze(dists)
 
 
+def parallel_map(func, values, args=tuple(), kwargs=dict()):
+    """Use `Pool.apply_async` to get a parallel map().
+
+    Uses `Pool.apply_async` to provide a parallel version of map().
+    Unlike Pool's map() which does not let you accept arguments and/or
+    keyword arguments, this one does.
+
+    Parameters
+    ----------
+    func : function
+        This function will be applied on every element in `values` in
+        parallel.
+    values : array
+        Input array.
+    args : tuple, optional (default: ())
+        Additional arguments for `func`.
+    kwargs : dictionary, optional (default: {})
+        Additional keyword arguments for `func`.
+
+    Returns
+    -------
+    results : array
+        Output after applying `func` on each element in `values`.
+    """
+    from multiprocessing import Pool
+
+    # This will choose all processors by default.
+    pool = Pool()
+    results = [pool.apply_async(func, (value,) + args, kwargs)
+               for value in values]
+
+    pool.close()
+    pool.join()
+
+    return np.asarray([result.get() for result in results])
+
+
 def reconstruct(x, dim=1, tau=1):
     """Construct time delayed vectors from a time series.
 
