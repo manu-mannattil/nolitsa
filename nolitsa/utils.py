@@ -108,6 +108,33 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
     return np.squeeze(indices), np.squeeze(dists)
 
 
+def reconstruct(x, dim=1, tau=1):
+    """Construct time delayed vectors from a time series.
+
+    Constructs n-dimensional time delayed vectors from a scalar time
+    series.
+
+    Parameters
+    ----------
+    x : array
+        1D scalar time series.
+    dim : int, optional (default = 1)
+        Embedding dimension (n).
+    tau : int, optional (default = 1)
+        Time delay
+
+    Returns
+    -------
+    ps : ndarray
+        The reconstructed n-dimensional phase space.
+    """
+    m = len(x) - (dim - 1) * tau
+    if m <= 0:
+        raise ValueError('Length of the time series is <= (dim - 1) * tau.')
+
+    return np.asarray([x[i:i + (dim - 1) * tau + 1:tau] for i in range(m)])
+
+
 def rescale(x, interval=(0, 1)):
     """Rescale the given scalar time series into a desired interval.
 

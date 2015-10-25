@@ -101,7 +101,8 @@ class TestNeighbors:
         np.random.shuffle(y)
 
         index, dists = utils.neighbors(y, metric='euclidean')
-        assert_allclose(np.sort(dists), np.sqrt(d) * np.sort(desired).repeat(2))
+        assert_allclose(np.sort(dists),
+                        np.sqrt(d) * np.sort(desired).repeat(2))
 
         index, dists = utils.neighbors(y, metric='manhattan')
         assert_allclose(np.sort(dists), d * np.sort(desired).repeat(2))
@@ -125,6 +126,20 @@ class TestNeighbors:
 
         # Should work now.
         utils.neighbors(x, maxnum=15)
+
+
+def test_reconstruct():
+    # Tests utils.reconstruct()
+    # We're reconstructing a circle.
+    t = np.linspace(0, 10 * 2 * np.pi, 10000)
+    x = np.sin(t)
+    dim = 2
+    tau = 250
+
+    x1, x2 = utils.reconstruct(x, dim, tau).T
+    desired = np.cos(t[:-tau])
+
+    assert_allclose(x2, desired, atol=1e-3)
 
 
 if __name__ == '__main__':
