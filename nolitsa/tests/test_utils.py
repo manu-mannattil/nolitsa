@@ -101,8 +101,7 @@ class TestNeighbors:
         np.random.shuffle(y)
 
         index, dists = utils.neighbors(y, metric='euclidean')
-        assert_allclose(np.sort(dists),
-                        np.sqrt(d) * np.sort(desired).repeat(2))
+        assert_allclose(np.sort(dists), np.sqrt(d) * np.sort(desired).repeat(2))
 
         index, dists = utils.neighbors(y, metric='manhattan')
         assert_allclose(np.sort(dists), d * np.sort(desired).repeat(2))

@@ -99,7 +99,6 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
             if np.count_nonzero(valid) == num:
                 indices.append(index[valid])
                 dists.append(dist[valid])
-
                 break
             if k == maxnum:
                 raise Exception('Could not find any near neighbor with a '
