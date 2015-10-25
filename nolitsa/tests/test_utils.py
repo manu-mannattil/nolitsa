@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import itertools
 import numpy as np
+
 from nolitsa import utils
 from numpy.testing import assert_, assert_allclose, run_module_suite, raises
 
 
 def test_rescale():
     # Test utils.rescale()
-    x = np.random.random(100)
+    x = 1.0 + np.random.random(100)
     y = utils.rescale(x, interval=(-np.pi, np.pi))
     assert_(abs(np.min(y)) == np.max(y) == np.pi)
 
@@ -36,10 +38,10 @@ class TestNeighbors:
         # acceleration moving in a d-dimensional space.
         d = 5
         t_max = 1000
-        t = np.arange(t_max).reshape(t_max, 1).repeat(d, 1)
-        a = np.random.random(d)
-        v0 = np.random.random(d)
-        x0 = np.random.random(d)
+        t = np.arange(t_max)[:, np.newaxis].repeat(d, 1)
+        a = 1.0 + np.random.random(d)
+        v0 = 1.0 + np.random.random(d)
+        x0 = 1.0 + np.random.random(d)
         x = x0 + v0 * t + 0.5 * a * t ** 2
 
         # Since it's uniformly accelerated motion, the closest point at
@@ -58,19 +60,72 @@ class TestNeighbors:
         # We want to make sure that the right exceptions are raised if a
         # neighbor with a nonzero distance is not found satisfying the
         # window/maxnum conditions.
-        x = np.repeat(np.arange(10) ** 2, 2 * 15 + 1).reshape(310, 1)
+        x = np.repeat(np.arange(10) ** 2, 2 * 15 + 1)[:, np.newaxis]
 
         # It should fail when window < 15.
-        for window in range(14 + 1):
+        for window in range(15):
             try:
-                index, dists = utils.neighbors(x, window=window)
-                assert False
+                utils.neighbors(x, window=window)
             except:
                 assert True
+            else:
+                assert False
 
         # Now it should run without any problem.
         window = 15
-        index, dists = utils.neighbors(x, window=window)
+        utils.neighbors(x, window=window)
+
+    def test_grid(self):
+        # A very simple test to find near neighbors in a 3x3x3 grid.
+        dx, dy, dz = 1.0 + np.random.random(3)
+
+        # There are probably more elegant ways to do a Cartesian
+        # product, but this will have to do for now.
+        grid = np.array([(dx * x, dy * y, dz * z) for x, y, z in
+                         itertools.product(np.arange(10), repeat=3)])
+        np.random.shuffle(grid)
+
+        index, dists = utils.neighbors(grid)
+        desired = min(dx, dy, dz)
+        assert_allclose(dists, desired)
+
+    def test_random(self):
+        # We are creating a random data set whose near neighbor
+        # distances are already known for all three metrics.
+        d = 5
+        n = 500
+        x = np.arange(d * n).reshape(n, d) + 100 * np.random.random((n, d))
+        desired = np.random.random(n)
+
+        y = np.vstack((x, x + desired[:, np.newaxis]))
+        np.random.shuffle(y)
+
+        index, dists = utils.neighbors(y, metric='euclidean')
+        assert_allclose(np.sort(dists),
+                        np.sqrt(d) * np.sort(desired).repeat(2))
+
+        index, dists = utils.neighbors(y, metric='manhattan')
+        assert_allclose(np.sort(dists), d * np.sort(desired).repeat(2))
+
+        index, dists = utils.neighbors(y, metric='chebyshev')
+        assert_allclose(np.sort(dists), np.sort(desired).repeat(2))
+
+    def test_maxnum(self):
+        # Make sure that appropriate exceptions are raised if no nonzero
+        # neighbor is found with the given maxnum.
+        x = np.arange(10).repeat(15 - 1)[:, np.newaxis]
+
+        # Should raise exceptions.
+        for maxnum in range(15):
+            try:
+                utils.neighbors(x, maxnum=maxnum)
+            except:
+                assert True
+            else:
+                assert False
+
+        # Should work now.
+        utils.neighbors(x, maxnum=15)
 
 
 if __name__ == '__main__':
