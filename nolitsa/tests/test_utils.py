@@ -105,7 +105,7 @@ class TestNeighbors:
         assert_allclose(np.sort(dists),
                         np.sqrt(d) * np.sort(desired).repeat(2))
 
-        index, dists = utils.neighbors(y, metric='manhattan')
+        index, dists = utils.neighbors(y, metric='cityblock')
         assert_allclose(np.sort(dists), d * np.sort(desired).repeat(2))
 
         index, dists = utils.neighbors(y, metric='chebyshev')
@@ -130,7 +130,7 @@ class TestNeighbors:
 
 
 def test_reconstruct():
-    # Tests utils.reconstruct()
+    # Test utils.reconstruct()
     # We're reconstructing a circle.
     t = np.linspace(0, 10 * 2 * np.pi, 10000)
     x = np.sin(t)
@@ -160,6 +160,20 @@ def test_parallel_map():
 
     assert_allclose(xx, desired)
 
+
+def test_dist():
+    # Test utils.parallel_map()
+    x = np.random.random((100, 5))
+    y = np.random.random((100, 5))
+
+    desired = np.sqrt(np.sum((x - y) ** 2, axis=1))
+    assert_allclose(utils.dist(x, y), desired)
+
+    desired = np.sum(np.abs(x - y), axis=1)
+    assert_allclose(utils.dist(x, y, metric='cityblock'), desired)
+
+    desired = np.max(np.abs(x - y), axis=1)
+    assert_allclose(utils.dist(x, y, metric='chebyshev'), desired)
 
 if __name__ == '__main__':
     run_module_suite()

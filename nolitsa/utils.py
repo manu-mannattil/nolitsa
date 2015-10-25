@@ -1,8 +1,33 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import division
-from scipy.spatial import cKDTree as KDTree
+
 import numpy as np
+
+from scipy.spatial import cKDTree as KDTree
+from scipy.spatial import distance
+
+
+def dist(x, y, metric='euclidean'):
+    """Compute the distance between all sequential pairs of points.
+
+    Computes the distance between all sequential pairs of points from
+    two arrays using scipy.spatial.distance.
+
+    Paramters
+    ---------
+    x : ndarray
+        Input array.
+    y : ndarray
+        Input array.
+
+    Returns
+    -------
+    d : ndarray
+        Array containing distances.
+    """
+    func = getattr(distance, metric)
+    return np.asarray([func(i, j) for i, j in zip(x, y)])
 
 
 def gprange(start, end, num=100):
@@ -47,7 +72,8 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
         N-dimensional array containing time delayed vectors.
     metric : string, optional (default = 'euclidean')
         Metric to use for distance computation.  Must be one of
-        "manhattan", "euclidean", or "chebyshev".
+        "cityblock" (aka the Manhattan metric), "euclidean", or
+        "chebyshev".
     num : int, optional (default = 1)
         Number of near neighbors that should be found for each point.
     window : int, optional (default = 10)
@@ -67,14 +93,14 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
     dist : array
         1D array containing near neighbor distances.
     """
-    if metric == 'manhattan':
+    if metric == 'cityblock':
         p = 1
     elif metric == 'euclidean':
         p = 2
     elif metric == 'chebyshev':
         p = np.inf
     else:
-        raise ValueError('Unknown metric.  Should be one of "manhattan", '
+        raise ValueError('Unknown metric.  Should be one of "cityblock", '
                          '"euclidean", or "chebyshev".')
 
     tree = KDTree(y)
