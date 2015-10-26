@@ -134,7 +134,8 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
     return np.squeeze(indices), np.squeeze(dists)
 
 
-def parallel_map(func, values, args=tuple(), kwargs=dict()):
+def parallel_map(func, values, args=tuple(), kwargs=dict(),
+                 processes=None):
     """Use `Pool.apply_async` to get a parallel map().
 
     Uses `Pool.apply_async` to provide a parallel version of map().
@@ -152,6 +153,9 @@ def parallel_map(func, values, args=tuple(), kwargs=dict()):
         Additional arguments for `func`.
     kwargs : dictionary, optional (default: {})
         Additional keyword arguments for `func`.
+    processes : int, optional (default: None)
+        Number of processes to run in parallel.  By default, the output
+        of `cpu_count()` is used.
 
     Returns
     -------
@@ -160,8 +164,7 @@ def parallel_map(func, values, args=tuple(), kwargs=dict()):
     """
     from multiprocessing import Pool
 
-    # This will choose all processors by default.
-    pool = Pool()
+    pool = Pool(processes=processes)
     results = [pool.apply_async(func, (value,) + args, kwargs)
                for value in values]
 

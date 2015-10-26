@@ -156,13 +156,17 @@ def test_parallel_map():
 
     desired = [_func_shm(t, ampl, omega=omega, phase=phase) for t in tt]
     kwargs = {'omega': omega, 'phase': phase}
-    xx = utils.parallel_map(_func_shm, tt, args=(ampl,), kwargs=kwargs)
 
+    xx = utils.parallel_map(_func_shm, tt, args=(ampl,), kwargs=kwargs)
+    assert_allclose(xx, desired)
+
+    xx = utils.parallel_map(_func_shm, tt, args=(ampl,), kwargs=kwargs,
+                            processes=1)
     assert_allclose(xx, desired)
 
 
 def test_dist():
-    # Test utils.parallel_map()
+    # Test utils.dist()
     x = np.random.random((100, 5))
     y = np.random.random((100, 5))
 
