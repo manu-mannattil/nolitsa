@@ -5,7 +5,7 @@ import numpy as np
 
 from time import sleep
 from nolitsa import utils
-from numpy.testing import assert_, assert_allclose, run_module_suite, raises
+from numpy.testing import assert_, assert_allclose, run_module_suite
 
 
 def test_rescale():

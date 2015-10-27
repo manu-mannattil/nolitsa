@@ -72,11 +72,11 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
         N-dimensional array containing time delayed vectors.
     metric : string, optional (default = 'euclidean')
         Metric to use for distance computation.  Must be one of
-        "cityblock" (aka the Manhattan metric), "euclidean", or
-        "chebyshev".
+        "cityblock" (aka the Manhattan metric), "chebyshev" (aka the
+        maximum norm metric), or "euclidean".
     num : int, optional (default = 1)
         Number of near neighbors that should be found for each point.
-    window : int, optional (default = 10)
+    window : int, optional (default = 0)
         Minimum temporal separation (Theiler window) that should exist
         between near neighbors.  This is crucial while computing
         Lyapunov exponents.
@@ -126,6 +126,7 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
                 indices.append(index[valid])
                 dists.append(dist[valid])
                 break
+
             if k == maxnum:
                 raise Exception('Could not find any near neighbor with a '
                                 'nonzero distance.  Try increasing the '
