@@ -49,6 +49,49 @@ def henon(length=10000, x0=None, a=1.4, b=0.3, discard=500):
     return np.asarray(x[discard:])
 
 
+def ikeda(length=10000, x0=None, alpha=6.0, beta=0.4, gamma=1.0, mu=0.9,
+          discard=500):
+    """Generate time series from the Ikeda map.
+
+    Generates time series from the Ikeda map.
+
+    Parameters
+    ----------
+    length : int, optional (default = 10000)
+        Length of the time series to be generated.
+    x0 : array, optional (default = random)
+        Initial condition for the map.
+    alpha : float, optional (default = 6.0)
+        Constant alpha in the Ikeda map.
+    beta : float, optional (default = 0.4)
+        Constant beta in the Ikeda map.
+    gamma : float, optional (default = 1.0)
+        Constant gamma in the Ikeda map.
+    mu : float, optional (default = 0.9)
+        Constant mu in the Ikeda map.
+    discard : int, optional (default = 500)
+        Number of steps to discard in order to eliminate transients.
+
+    Returns
+    -------
+    x : ndarray, shape (length, 2)
+        Array containing points in phase space.
+    """
+    if not x0:
+        x = [0.1 * (-1 + 2 * np.random.random(2))]
+    else:
+        x = [x0]
+
+    for i in range(length + discard - 1):
+        phi = beta - alpha / (1 + x[-1][0] ** 2 + x[-1][1] ** 2)
+        x.append([
+            gamma + mu * (x[-1][0] * np.cos(phi) - x[-1][1] * np.sin(phi)),
+            mu * (x[-1][0] * np.sin(phi) + x[-1][1] * np.cos(phi))
+        ])
+
+    return np.asarray(x[discard:])
+
+
 def lorenz(length=10000, x0=None, sigma=10.0, beta=8.0/3.0, rho=28.0,
            step=0.001, sample=30, discard=1000):
     """Generate time series for the Lorenz system.
