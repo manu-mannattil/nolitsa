@@ -2,8 +2,7 @@
 
 """Functions to generate time series of some popular chaotic systems.
 
-The parameters, initial conditions, etc. have been taken from Appendix A
-of Sprott (2003).
+Parameters and initial conditions have been taken from Sprott (2003).
 """
 
 
@@ -13,6 +12,64 @@ import numpy as np
 
 from numpy import fft
 from scipy.integrate import odeint
+
+
+def mackey_glass(length=10000, x0=None, a=0.2, b=0.1, c=10.0, tau=23.0,
+                 n=1000, sample=0.46, discard=250):
+    """Generate time series using the Mackey-Glass system.
+
+    Generates time series using the discrete approximation of the
+    Mackey-Glass delay differential equation described in Grassberger &
+    Procaccia (1983).
+
+    Parameters
+    ----------
+    length : int, optional (default = 10000)
+        Length of the time series to be generated.
+    x0 : array, optional (default = random)
+        Initial condition for the discrete map.  Should be of length `n`.
+    a : float, optional (default = 0.2)
+        Constant ``a`` in the Mackey-Glass equation.
+    b : float, optional (default = 0.1)
+        Constant ``b`` in the Mackey-Glass equation.
+    c : float, optional (default = 10.0)
+        Constant ``c`` in the Mackey-Glass equation.
+    tau : float, optional (default = 23.0)
+        Time delay in the Mackey-Glass equation.
+    n : int, optional (default = 1000)
+        The number of discrete steps into which the interval between
+        ``t`` and ``t + tau`` should be divided.  This results in a time
+        step of ``tau/n``.
+    sample : float, optional (default = 0.46)
+        Sampling time of the map.  It is useful to pick something
+        between ``tau/100`` and ``tau/10``, with ``tau/sample`` being a
+        factor of `n`.  This will make sure that there are only whole
+        number indices.
+    discard : int, optional (default = 250)
+        Number of n-steps to discard in order to eliminate transients.
+        A total of ``n*discard`` steps will be discarded.
+
+    Returns
+    -------
+    x : array
+        Array containing the time series.
+    """
+    if not x0:
+        x0 = 0.5 + 0.05 * (-1 + 2 * np.random.random(n))
+
+    sample = int(n * sample / tau)
+    grids = n * discard + sample * length
+
+    x = np.empty(grids)
+    x[:n] = x0
+
+    A = (2 * n - b * tau) / (2 * n + b * tau)
+    B = a * tau / (2 * n + b * tau)
+
+    for i in range(n - 1, grids - 1):
+        x[i + 1] = A * x[i] + B * (x[i - n] / (1 + x[i - n] ** c) +
+                                   x[i - n + 1] / (1 + x[i - n + 1] ** c))
+    return x[n * discard::sample]
 
 
 def henon(length=10000, x0=None, a=1.4, b=0.3, discard=500):
