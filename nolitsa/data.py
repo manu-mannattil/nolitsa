@@ -95,10 +95,10 @@ def ikeda(length=10000, x0=None, alpha=6.0, beta=0.4, gamma=1.0, mu=0.9,
 
 
 def lorenz(length=10000, x0=None, sigma=10.0, beta=8.0/3.0, rho=28.0,
-           step=0.001, sample=30, discard=1000):
-    """Generate time series for the Lorenz system.
+           step=0.001, sample=0.01, discard=1000):
+    """Generate time series using the Lorenz system.
 
-    Generates time series for the Lorenz system.
+    Generates time series using the Lorenz system.
 
     Parameters
     ----------
@@ -107,15 +107,15 @@ def lorenz(length=10000, x0=None, sigma=10.0, beta=8.0/3.0, rho=28.0,
     x0 : array, optional (default = random)
         Initial condition for the flow.
     sigma : float, optional (default = 10.0)
-        Constant sigma in the Lorenz system.
+        Constant ``sigma`` of the Lorenz system.
     beta : float, optional (default = 8.0/3.0)
-        Constant beta in the Lorenz system.
+        Constant ``beta`` of the Lorenz system.
     rho : float, optional (default = 28.0)
-        Constant rho in the Lorenz system.
+        Constant ``rho`` of the Lorenz system.
     step : float, optional (default = 0.001)
         Approximate step size of integration.
-    sample : int, optional (default = 100)
-        Sampling rate of the time series.
+    sample : int, optional (default = 0.03)
+        Sampling step of the time series.
     discard : int, optional (default = 1000)
         Number of samples to discard in order to eliminate transients.
 
@@ -123,7 +123,7 @@ def lorenz(length=10000, x0=None, sigma=10.0, beta=8.0/3.0, rho=28.0,
     -------
     t : array
         The time values at which the points have been sampled.
-    x : ndarray, shape (length, 3)
+    x : ndarray, shape ``(length, 3)``
         Array containing points in phase space.
     """
     def _lorenz(x, t):
@@ -133,6 +133,7 @@ def lorenz(length=10000, x0=None, sigma=10.0, beta=8.0/3.0, rho=28.0,
     if not x0:
         x0 = (0.0, -0.01, 9.0) + 0.25 * (-1 + 2 * np.random.random(3))
 
+    sample = int(sample / step)
     t = np.linspace(0, (sample * (length + discard)) * step,
                     sample * (length + discard))
 
@@ -165,9 +166,9 @@ def mackey_glass(length=10000, x0=None, a=0.2, b=0.1, c=10.0, tau=23.0,
     n : int, optional (default = 1000)
         The number of discrete steps into which the interval between
         ``t`` and ``t + tau`` should be divided.  This results in a time
-        step of ``tau/n``.
+        step of ``tau/n`` and an ``n + 1`` dimensional map.
     sample : float, optional (default = 0.46)
-        Sampling time of the map.  It is useful to pick something
+        Sampling step of the time series.  It is useful to pick something
         between ``tau/100`` and ``tau/10``, with ``tau/sample`` being a
         factor of `n`.  This will make sure that there are only whole
         number indices.
@@ -199,7 +200,7 @@ def mackey_glass(length=10000, x0=None, a=0.2, b=0.1, c=10.0, tau=23.0,
 
 
 def roessler(length=10000, x0=None, a=0.15, b=0.20, c=10.0, step=0.001,
-             sample=100, discard=1000):
+             sample=0.1, discard=1000):
     """Generate time series for the Rössler system.
 
     Generates time series for the Rössler system.
@@ -211,15 +212,15 @@ def roessler(length=10000, x0=None, a=0.15, b=0.20, c=10.0, step=0.001,
     x0 : array, optional (default = random)
         Initial condition for the flow.
     a : float, optional (default = 0.15)
-        Constant a in the Röessler system.
+        Constant ``a`` in the Röessler system.
     b : float, optional (default = 0.20)
-        Constant b in the Röessler system.
+        Constant ``b`` in the Röessler system.
     c : float, optional (default = 10.0)
-        Constant c in the Röessler system.
+        Constant ``c`` in the Röessler system.
     step : float, optional (default = 0.001)
         Approximate step size of integration.
-    sample : int, optional (default = 100)
-        Sampling rate of the time series
+    sample : int, optional (default = 0.1)
+        Sampling step of the time series.
     discard : int, optional (default = 1000)
         Number of samples to discard in order to eliminate transients.
 
@@ -227,12 +228,13 @@ def roessler(length=10000, x0=None, a=0.15, b=0.20, c=10.0, step=0.001,
     -------
     t : array
         The time values at which the points have been sampled.
-    x : ndarray, shape (length, 3)
+    x : ndarray, shape ``(length, 3)``
         Array containing points in phase space.
     """
     def _roessler(x, t):
         return [-(x[1] + x[2]), x[0] + a * x[1], b + x[2] * (x[0] - c)]
 
+    sample = int(sample / step)
     t = np.linspace(0, (sample * (length + discard)) * step,
                     sample * (length + discard))
 
