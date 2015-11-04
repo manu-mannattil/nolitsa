@@ -95,7 +95,7 @@ def ikeda(length=10000, x0=None, alpha=6.0, beta=0.4, gamma=1.0, mu=0.9,
 
 
 def lorenz(length=10000, x0=None, sigma=10.0, beta=8.0/3.0, rho=28.0,
-           step=0.001, sample=0.01, discard=1000):
+           step=0.001, sample=0.1, discard=1000):
     """Generate time series using the Lorenz system.
 
     Generates time series using the Lorenz system.
@@ -114,7 +114,7 @@ def lorenz(length=10000, x0=None, sigma=10.0, beta=8.0/3.0, rho=28.0,
         Constant ``rho`` of the Lorenz system.
     step : float, optional (default = 0.001)
         Approximate step size of integration.
-    sample : int, optional (default = 0.03)
+    sample : int, optional (default = 0.1)
         Sampling step of the time series.
     discard : int, optional (default = 1000)
         Number of samples to discard in order to eliminate transients.
