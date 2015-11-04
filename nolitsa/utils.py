@@ -89,9 +89,9 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
     Returns
     -------
     index : array
-        1D array containing indices of near neighbors.
+        Array containing indices of near neighbors.
     dist : array
-        1D array containing near neighbor distances.
+        Array containing near neighbor distances.
     """
     if metric == 'cityblock':
         p = 1
@@ -104,18 +104,16 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
                          '"euclidean", or "chebyshev".')
 
     tree = KDTree(y)
-
-    dists = list()
-    indices = list()
+    n = len(y)
 
     # In most cases a nonzero neighbor will be found when maxnum = 10.
     maxnum = max(10, maxnum, num + 2 * window + 2)
 
-    if maxnum >= len(y):
+    if maxnum >= n:
         raise ValueError('maxnum is bigger than array length.')
 
-    dists = list()
-    indices = list()
+    dists = np.empty(n)
+    indices = np.empty(n, dtype=int)
 
     for i, x in enumerate(y):
         for k in xrange(num + 1, maxnum + 1):
@@ -123,8 +121,8 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
             valid = (np.abs(index - i) > window) & (dist > 0)
 
             if np.count_nonzero(valid) == num:
-                indices.append(index[valid])
-                dists.append(dist[valid])
+                dists[i] = dist[valid]
+                indices[i] = index[valid]
                 break
 
             if k == maxnum:

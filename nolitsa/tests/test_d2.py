@@ -31,7 +31,7 @@ def test_d2():
         minr = (window + 1) * modb
         maxr = (n - 1) * modb
 
-        # We need to offset the r values a bit so that the the half-open
+        # We need to offset the r values a bit so that the half-open
         # bins used in np.histogram get closed.
         r = np.arange(window + 1, n) * modb + 1e-10
 
