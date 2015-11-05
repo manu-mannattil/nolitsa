@@ -8,22 +8,22 @@ from scipy.spatial import distance
 from nolitsa import utils
 
 
-def d2(y, r=100, metric='euclidean', window=10):
-    """Calculate the correlation sum for the given distances.
+def c2(y, r=100, metric='chebyshev', window=10):
+    """Compute the correlation sum for the given distances.
 
-    Calculates the correlation sum C(r) for the given time series at the
-    specified distances r (Grassberger & Procaccia, 1983).
+    Computes the correlation sum for the given time series at the
+    specified distances (Grassberger & Procaccia, 1983).
 
     Parameters
     ----------
     y : ndarray
         Time series containing points in the phase space.
     r : int or array (default = 100)
-        r values at which C(r) should be computed.  If `r` is an int,
-        the r's are taken to be a geometric progression between a
-        minimum and maximum length scale (estimated according to the
-        metric and the input series).
-    metric : string, optional (default = 'euclidean')
+        Distances for which correlation should be calculated.  If `r` is
+        an int, then the distances are taken to be a geometric
+        progression between a minimum and maximum length scale
+        (estimated according to the metric and the input series).
+    metric : string, optional (default = 'chebyshev')
         Metric to use for distance computation.  Must be one of
         "chebyshev" (aka the maximum norm metric), "cityblock" (aka the
         Manhattan metric), or "euclidean".
@@ -36,7 +36,7 @@ def d2(y, r=100, metric='euclidean', window=10):
     r : array
         Distances for which correlation sums have been calculated.
     c : array
-        Correlation sums for the given r's.
+        Correlation sums for the given distances.
     """
     if isinstance(r, int):
         if metric == 'chebyshev':
@@ -64,4 +64,60 @@ def d2(y, r=100, metric='euclidean', window=10):
         c += np.histogram(dists, bins=bins)[0]
 
     pairs = 0.5 * (len(y) - window - 1) * (len(y) - window)
-    return r, np.cumsum(c) / pairs
+    c = np.cumsum(c) / pairs
+
+    return r[c > 0], c[c > 0]
+
+
+def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
+             parallel=True):
+    """Compute the correlation sum using time delayed vectors.
+
+    Computes the correlation sum using time delayed vectors constructed
+    from the time series.
+
+    Parameters
+    ----------
+    x : array
+        1D scalar time series.
+    dim : int, array (default = [1])
+        Embedding dimensions for which the correlation sum should be
+        computed.
+    tau : int, optional (default = 1)
+        Time delay.
+    r : int or array (default = 100)
+        Distances for which correlation should be calculated.  If `r` is
+        an int, then the distances are taken to be a geometric
+        progression between a minimum and maximum length scale
+        (estimated according to the metric and the input series).
+    metric : string, optional (default = 'euclidean')
+        Metric to use for distance computation.  Must be one of
+        "chebyshev" (aka the maximum norm metric), "cityblock" (aka the
+        Manhattan metric), or "euclidean".
+    window : int, optional (default = 10)
+        Minimum temporal separation (Theiler window) that should exist
+        between near neighbors.
+    parallel : bool, optional (default = True)
+        Calculate the correlation sum in parallel.
+
+    Returns
+    -------
+    rr : ndarray
+        Distances for which correlation sums have been calculated (for
+        each embedding dimension).
+    cc : ndarray
+        Correlation sums for the given distances (for each embedding
+        dimension).
+    """
+    if parallel:
+        processes = None
+    else:
+        processes = 1
+
+    yy = [utils.reconstruct(x, dim=d, tau=tau) for d in dim]
+
+    return utils.parallel_map(c2, yy, kwargs={
+                              'r': r,
+                              'metric': metric,
+                              'window': window,
+                              }, processes=processes).T

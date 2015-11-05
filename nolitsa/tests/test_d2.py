@@ -5,12 +5,12 @@ from __future__ import division
 import itertools
 import numpy as np
 
-from nolitsa import d2
+from nolitsa import d2, data
 from numpy.testing import assert_, assert_allclose, run_module_suite
 
 
-def test_d2():
-    # Test d2.d2()
+def test_c2():
+    # Test d2.c2()
     # Particle moving uniformly in 5d: y(t) = a + b*t
     a = np.random.random(5)
     b = np.random.random(5)
@@ -35,7 +35,7 @@ def test_d2():
         # bins used in np.histogram get closed.
         r = np.arange(window + 1, n) * modb + 1e-10
 
-        _, c = d2.d2(y, r=r, window=window, metric=metric)
+        c = d2.c2(y, r=r, window=window, metric=metric)[1]
         desired = (np.cumsum(np.arange(n - window - 1, 0, -1)) /
                    (0.5 * (n - window - 1) * (n - window)))
         assert_allclose(c, desired)
