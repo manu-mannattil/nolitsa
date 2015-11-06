@@ -7,7 +7,7 @@ import numpy as np
 from nolitsa import utils
 
 
-def _afn_parallel(d, x, tau=1, metric='euclidean', window=10, maxnum=-1):
+def _afn(d, x, tau=1, metric='euclidean', window=10, maxnum=-1):
     """Return E(d) and E*(d) for a single d.
 
     Returns E(d) and E*(d) for the AFN method for a single d.  This
@@ -44,7 +44,7 @@ def afn(x, dim=[1], tau=1, metric='euclidean', window=10, maxnum=-1,
     ----------
     x : array
         1D scalar time series.
-    dim : int, array (default = [1])
+    dim : int array (default = [1])
         Embedding dimensions for which E(d) and E*(d) should be
         computed.
     tau : int, optional (default = 1)
@@ -76,7 +76,7 @@ def afn(x, dim=[1], tau=1, metric='euclidean', window=10, maxnum=-1,
     else:
         processes = 1
 
-    return utils.parallel_map(_afn_parallel, dim, (x,), {
+    return utils.parallel_map(_afn, dim, (x,), {
                               'tau': tau,
                               'metric': metric,
                               'window': window,
