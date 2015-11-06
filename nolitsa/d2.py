@@ -38,7 +38,9 @@ def c2(y, r=100, metric='chebyshev', window=10):
     Returns
     -------
     r : array
-        Distances for which correlation sums have been calculated.
+        Distances for which correlation sums have been calculated.  Note that
+        this might be different from the supplied `r` as only the ones with a
+        nonzero ``C(r)`` is included.
     c : array
         Correlation sums for the given distances.
     """

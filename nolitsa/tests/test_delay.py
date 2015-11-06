@@ -40,5 +40,17 @@ class TestAcorr:
                    (2 * n * np.pi))
         assert_allclose(delay.acorr(x), desired, atol=1E-5)
 
+
+def test_mi():
+    # Test delay.mi()
+    # Silly tests will have to do for now.
+    x = np.random.normal(loc=5.0, size=100)
+    y = np.random.normal(loc=-5.0, size=100)
+    assert_allclose(delay.mi(x, y), delay.mi(y, x))
+
+    bins = 128
+    x = np.arange(50 * bins)
+    assert_allclose(delay.mi(x, x, bins=bins), np.log2(bins))
+
 if __name__ == '__main__':
     run_module_suite()
