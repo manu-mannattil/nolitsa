@@ -11,16 +11,20 @@ from nolitsa import utils
 def c2(y, r=100, metric='chebyshev', window=10):
     """Compute the correlation sum for the given distances.
 
-    Computes the correlation sum for the given time series at the
+    Computes the correlation sum of the given time series for the
     specified distances (Grassberger & Procaccia, 1983).
+
+    We could've used scipy.spatial.KDTree.count_neighbors() for this.
+    But then one cannot specify a minimum temporal separation which is
+    crucial for overcoming the autocorrelation error.
 
     Parameters
     ----------
     y : ndarray
         Time series containing points in the phase space.
     r : int or array (default = 100)
-        Distances for which correlation should be calculated.  If `r` is
-        an int, then the distances are taken to be a geometric
+        Distances for which the correlation sum should be calculated.
+        If `r` is an int, then the distances are taken to be a geometric
         progression between a minimum and maximum length scale
         (estimated according to the metric and the input series).
     metric : string, optional (default = 'chebyshev')
@@ -38,6 +42,7 @@ def c2(y, r=100, metric='chebyshev', window=10):
     c : array
         Correlation sums for the given distances.
     """
+    # Estimate the extent of the reconstructed phase space.
     if isinstance(r, int):
         if metric == 'chebyshev':
             extent = np.max(np.max(y, axis=0) - np.min(y, axis=0))
@@ -63,7 +68,7 @@ def c2(y, r=100, metric='chebyshev', window=10):
         dists = distance.cdist([y[i]], y[i + window + 1:], metric=metric)[0]
         c += np.histogram(dists, bins=bins)[0]
 
-    pairs = 0.5 * (len(y) - window - 1) * (len(y) - window)
+    pairs = 0.5 * (n - window - 1) * (n - window)
     c = np.cumsum(c) / pairs
 
     return r[c > 0], c[c > 0]
@@ -80,14 +85,14 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
     ----------
     x : array
         1D scalar time series.
-    dim : int, array (default = [1])
+    dim : int array (default = [1])
         Embedding dimensions for which the correlation sum should be
         computed.
     tau : int, optional (default = 1)
         Time delay.
     r : int or array (default = 100)
-        Distances for which correlation should be calculated.  If `r` is
-        an int, then the distances are taken to be a geometric
+        Distances for which the correlation sum should be calculated.
+        If `r` is an int, then the distances are taken to be a geometric
         progression between a minimum and maximum length scale
         (estimated according to the metric and the input series).
     metric : string, optional (default = 'euclidean')
@@ -96,18 +101,16 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
         Manhattan metric), or "euclidean".
     window : int, optional (default = 10)
         Minimum temporal separation (Theiler window) that should exist
-        between near neighbors.
+        between pairs.
     parallel : bool, optional (default = True)
-        Calculate the correlation sum in parallel.
+        Calculate the correlation sum for each embedding dimension in
+        parallel.
 
     Returns
     -------
-    rr : ndarray
-        Distances for which correlation sums have been calculated (for
-        each embedding dimension).
-    cc : ndarray
-        Correlation sums for the given distances (for each embedding
-        dimension).
+    rc : ndarray
+        The output is an array with shape ``(len(dim), 2, len(r))`` of
+        ``(r, C(r))`` pairs for each dimension.
     """
     if parallel:
         processes = None
@@ -120,4 +123,4 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
                               'r': r,
                               'metric': metric,
                               'window': window,
-                              }, processes=processes).T
+                              }, processes=processes)

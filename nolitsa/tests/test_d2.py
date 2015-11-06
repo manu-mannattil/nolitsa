@@ -40,5 +40,18 @@ def test_c2():
                    (0.5 * (n - window - 1) * (n - window)))
         assert_allclose(c, desired)
 
+
+def test_c2_embed():
+    # Test d2.c2_embed()
+    t = np.linspace(0, 10 * 2 * np.pi, 5000)
+    y = np.array([np.sin(t), np.cos(t)]).T
+    desired = d2.c2(y)[1]
+
+    dim = [2]
+    tau = 125
+    x = y[:, 0]
+
+    assert_allclose(desired, d2.c2_embed(x, dim=dim, tau=tau)[0][1], atol=1e-3)
+
 if __name__ == '__main__':
     run_module_suite()
