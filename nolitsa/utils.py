@@ -120,9 +120,9 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
             dist, index = tree.query(x, k=k, p=p)
             valid = (np.abs(index - i) > window) & (dist > 0)
 
-            if np.count_nonzero(valid) == num:
-                dists[i] = dist[valid]
-                indices[i] = index[valid]
+            if np.count_nonzero(valid) >= num:
+                dists[i] = dist[valid][:num]
+                indices[i] = index[valid][:num]
                 break
 
             if k == maxnum:
