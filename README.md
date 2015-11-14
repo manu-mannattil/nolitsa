@@ -19,6 +19,12 @@ Bibliography
 - Theiler, J., Eubank, S., Longtin, A., Galdrikian, B. & Farmer, J.D. (1992). Testing for nonlinearity in time series. [_Physica D_, __58__, 77](https://dx.doi.org/10.1016/0167-2789(92)90102-S).
 
 
+See also
+--------
+
+- [TISEAN: Nonlinear Time Series Analysis](http://www.mpipks-dresden.mpg.de/~tisean/)
+- [MATS: Measures of Analysis of Time Series toolkit](https://www.mathworks.com/matlabcentral/fileexchange/27561-measures-of-analysis-of-time-series-toolkit--mats-)
+
 
 License
 -------
