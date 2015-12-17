@@ -88,11 +88,11 @@ def mi(x, y, bins=64):
     return h_xy - h_x - h_y
 
 
-def milag(x, maxlag=1024, bins=64):
-    """Return the mutual information between ``x_i`` and ``x_{i + t}``.
+def dmi(x, maxlag=1024, bins=64):
+    """Return the time delayed mutual information of ``x_i``.
 
     Returns the mutual information between ``x_i`` and ``x_{i + t}``
-    upto a `t` equal to `maxlag`.
+    upto a `t` equal to `maxlag` (i.e., the delayed mutual information).
 
     Parameters
     ----------
@@ -101,7 +101,7 @@ def milag(x, maxlag=1024, bins=64):
     maxlag : int, optional (default = min(N, 1000))
         Return the mutual information only upto this lag.  Since the
         mutual information calculation is computationally expensive,
-        it's always advisable to use a small number.
+        it is always advisable to use a small number.
     bins : int
         Number of bins to use while calculating the histogram.
 
