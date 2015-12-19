@@ -98,7 +98,7 @@ def dmi(x, maxlag=1024, bins=64):
     ----------
     x : array
         1D scalar time series.
-    maxlag : int, optional (default = min(N, 1000))
+    maxlag : int, optional (default = min(N, 1024))
         Return the mutual information only upto this lag.  Since the
         mutual information calculation is computationally expensive,
         it is always advisable to use a small number.
