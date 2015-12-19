@@ -8,6 +8,30 @@ from scipy.spatial import cKDTree as KDTree
 from scipy.spatial import distance
 
 
+def corrupt(x, y, snr=100):
+    """Corrupt time series with noise.
+
+    Corrupts input time series with supplied noise to obtain a series
+    with the specified signal to noise ratio.
+
+    Parameters
+    ----------
+    x : array
+        1D array with scalar time series (the 'signal').
+    y : ndarray
+        1D array with noise (the 'noise').
+
+    Returns
+    -------
+    x : array
+        1D array with corrupted series.
+    """
+    if len(x) == len(y):
+        return x + y * np.sqrt(np.sum(x ** 2) / (np.sum(y ** 2) * snr))
+    else:
+        raise ValueError('Signal and noise arrays should be of equal length.)')
+
+
 def dist(x, y, metric='euclidean'):
     """Compute the distance between all sequential pairs of points.
 

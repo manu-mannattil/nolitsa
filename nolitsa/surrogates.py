@@ -39,8 +39,8 @@ def aaft(x):
 
     Returns phase randomized, amplitude adjusted surrogates with crudely
     the same power spectrum and distribution as the original data
-    (Theiler et al. 1992).  AAFT surrogates is used in testing the null
-    hypothesis that the input series is correlated Gaussian noise
+    (Theiler et al., 1992).  AAFT surrogates are used in testing the
+    null hypothesis that the input series is correlated Gaussian noise
     transformed by a monotonic time-independent measuring function.
 
     Parameters

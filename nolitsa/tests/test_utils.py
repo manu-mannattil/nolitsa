@@ -8,11 +8,25 @@ from nolitsa import utils
 from numpy.testing import assert_, assert_allclose, run_module_suite
 
 
-def test_rescale():
-    # Test utils.rescale()
-    x = 1.0 + np.random.random(100)
-    y = utils.rescale(x, interval=(-np.pi, np.pi))
-    assert_(abs(np.min(y)) == np.max(y) == np.pi)
+def test_corrupt():
+    # Test utils.corrupt()
+    x = np.random.random(100)
+    assert_allclose(utils.corrupt(x, x, snr=16.0), 1.25 * x)
+
+
+def test_dist():
+    # Test utils.dist()
+    x = np.random.random((100, 5))
+    y = np.random.random((100, 5))
+
+    desired = np.sqrt(np.sum((x - y) ** 2, axis=1))
+    assert_allclose(utils.dist(x, y), desired)
+
+    desired = np.sum(np.abs(x - y), axis=1)
+    assert_allclose(utils.dist(x, y, metric='cityblock'), desired)
+
+    desired = np.max(np.abs(x - y), axis=1)
+    assert_allclose(utils.dist(x, y, metric='chebyshev'), desired)
 
 
 def test_gprange():
@@ -129,20 +143,6 @@ class TestNeighbors:
         utils.neighbors(x, maxnum=15)
 
 
-def test_reconstruct():
-    # Test utils.reconstruct()
-    # We're reconstructing a circle.
-    t = np.linspace(0, 10 * 2 * np.pi, 10000)
-    x = np.sin(t)
-    dim = 2
-    tau = 250
-
-    x1, x2 = utils.reconstruct(x, dim, tau).T
-    desired = np.cos(t[:-tau])
-
-    assert_allclose(x2, desired, atol=1e-3)
-
-
 def _func_shm(t, ampl, omega=(0.1 * np.pi), phase=0):
     # Utility function to test utils.parallel_map()
     sleep(0.5 * np.random.random())
@@ -165,19 +165,25 @@ def test_parallel_map():
     assert_allclose(xx, desired)
 
 
-def test_dist():
-    # Test utils.dist()
-    x = np.random.random((100, 5))
-    y = np.random.random((100, 5))
+def test_reconstruct():
+    # Test utils.reconstruct()
+    # We're reconstructing a circle.
+    t = np.linspace(0, 10 * 2 * np.pi, 10000)
+    x = np.sin(t)
+    dim = 2
+    tau = 250
 
-    desired = np.sqrt(np.sum((x - y) ** 2, axis=1))
-    assert_allclose(utils.dist(x, y), desired)
+    x1, x2 = utils.reconstruct(x, dim, tau).T
+    desired = np.cos(t[:-tau])
 
-    desired = np.sum(np.abs(x - y), axis=1)
-    assert_allclose(utils.dist(x, y, metric='cityblock'), desired)
+    assert_allclose(x2, desired, atol=1e-3)
 
-    desired = np.max(np.abs(x - y), axis=1)
-    assert_allclose(utils.dist(x, y, metric='chebyshev'), desired)
+
+def test_rescale():
+    # Test utils.rescale()
+    x = 1.0 + np.random.random(100)
+    y = utils.rescale(x, interval=(-np.pi, np.pi))
+    assert_(abs(np.min(y)) == np.max(y) == np.pi)
 
 if __name__ == '__main__':
     run_module_suite()
