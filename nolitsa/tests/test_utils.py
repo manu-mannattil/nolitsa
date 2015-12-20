@@ -185,5 +185,14 @@ def test_rescale():
     y = utils.rescale(x, interval=(-np.pi, np.pi))
     assert_(abs(np.min(y)) == np.max(y) == np.pi)
 
+
+def test_spectrum():
+    # Test utils.spectrum()
+    # Parseval's theorem.
+    for length in (1021, 1024):
+        x = np.random.random(length)
+        power = utils.spectrum(x)[1]
+        assert_allclose(np.mean(x ** 2), np.sum(power))
+
 if __name__ == '__main__':
     run_module_suite()

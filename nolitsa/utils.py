@@ -248,3 +248,55 @@ def rescale(x, interval=(0, 1)):
 
     return (interval[0] + (x - np.min(x)) * (interval[1] - interval[0]) /
             (np.max(x) - np.min(x)))
+
+
+def spectrum(x, dt=1.0, detrend=False):
+    """Return the power spectrum of the given time series.
+
+    Returns the power spectrum of the given time series.  This function
+    is a very simple implementation that does not involve any averaging
+    or windowing and assumes that the input series is periodic.  For
+    real data, use `scipy.signal.welch()` for accurate estimation of the
+    power spectrum.
+
+    Parameters
+    ----------
+    x : array
+        1D real input array of length N containing the time series.
+    dt : float, optional (default = 1.0)
+        Sample spacing (= 1/(sampling rate)).  Usually this is in units
+        of time.
+    detrend : bool, optional (default=False)
+        Subtract the mean from the series.
+
+    Returns
+    -------
+    freqs : array
+        Array containing frequencies k/(N*dt) for k = 1, ..., N/2.
+    power : array
+        Array containing P(f).
+
+    Example
+    -------
+    >>> signal = np.random.random(1024)
+    >>> power = spectrum(signal)[1]
+    >>> np.allclose(np.mean(signal ** 2), np.sum(power))
+    True
+
+    The above example is just the Parseval's theorem which states that
+    the mean squared amplitude of the input signal is equal to the sum
+    of P(f).
+    """
+    N = len(x)
+
+    if detrend:
+        x = x - np.mean(x)
+
+    # See Section 13.4 of Press et al. (2007) for the convention.
+    power = 2.0 * np.abs(np.fft.rfft(x)) ** 2 / N ** 2
+    power[0] = power[0] / 2.0
+    if N % 2 == 0:
+        power[-1] = power[-1] / 2.0
+
+    freqs = np.fft.rfftfreq(N, d=dt)
+    return freqs, power

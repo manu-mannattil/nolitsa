@@ -14,6 +14,63 @@ from numpy import fft
 from scipy.integrate import odeint
 
 
+def falpha(length=8192, alpha=1.0, fl=None, fu=None, mean=0.0, var=1.0):
+    """Generate (1/f)^alpha noise by inverting the power spectrum.
+
+    Generates (1/f)^alpha noise by inverting the power spectrum.
+    Follows the algorithm described in Voss (1988).
+
+    Parameters
+    ----------
+    length : int, optional (default = 2^13)
+        Length of the time series to be generated.
+    alpha : float, optional (default = 1.0)
+        Exponent in (1/f)^alpha.
+    fl : float, optional (default = None)
+        Lower cutoff frequency.
+    fu : float, optional (default = None)
+        Upper cutoff frequency.
+    mean : float, optional (default = 0.0)
+        Mean of the generated noise.
+    var : float, optional (default = 1.0)
+        Variance of the generated noise.
+
+    NOTE: As DFTs assume that the input data is periodic, the resultant
+    series x_{i} (= x_{i + N}) is also periodic.  To avoid this
+    periodicity, it is recommended to always generate a longer series
+    (two or four times longer) and trim it to the desired length.
+
+    Returns
+    -------
+    x : array
+        Array containing the time series.
+    """
+    freqs = fft.rfftfreq(length)
+    power = freqs[1:] ** -alpha
+    power = np.insert(power, 0, 0)  # P(0) = 0
+
+    if fl:
+        power[freqs < fl] = 0
+
+    if fu:
+        power[freqs > fu] = 0
+
+    # Randomize complex phases.
+    phase = 2 * np.pi * np.random.random(len(freqs))
+    y = np.sqrt(power) * np.exp(1j * phase)
+
+    # The last component (corresponding to the Nyquist frequency) of an
+    # RFFT with even number of points is always real.
+    if length % 2 == 0:
+        y[-1] = np.abs(y[-1] * np.sqrt(2))
+
+    x = fft.irfft(y, n=length)
+
+    # Rescale to proper variance and mean.
+    x = np.sqrt(var) * x / np.std(x)
+    return mean + x - np.mean(x)
+
+
 def henon(length=10000, x0=None, a=1.4, b=0.3, discard=500):
     """Generate time series using the Henon map.
 
