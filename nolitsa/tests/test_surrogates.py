@@ -24,12 +24,24 @@ def test_aaft():
     # Test surrogates.aaft()
     # Always test for both odd and even number of points.
     for n in (2 ** 16 - 1, 2 ** 16):
-        # Input is a Gaussian transformed using f(x) = exp(1.0 + x).
-        x = np.exp(1.0 + np.random.normal(size=n, scale=0.5))
+        # Input is a Gaussian transformed using f(x) = tanh(x)
+        x = np.random.normal(size=n)
+        x = np.tanh(x)
         y = surrogates.aaft(x)
 
         assert_allclose(utils.spectrum(x)[1], utils.spectrum(y)[1], atol=1e-3)
 
+
+def test_iaaft():
+    # Test surrogates.aaft()
+    # Always test for both odd and even number of points.
+    for n in (2 ** 14, 2 ** 14 + 1):
+        # Input is a Gaussian transformed using f(x) = tanh(x)
+        x = np.random.normal(size=n)
+        x = np.tanh(x)
+        y, i, e = surrogates.iaaft(x)
+
+        assert_allclose(utils.spectrum(x)[1], utils.spectrum(y)[1], atol=1e-6)
 
 if __name__ == '__main__':
     run_module_suite()
