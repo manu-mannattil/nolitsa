@@ -53,5 +53,16 @@ def test_c2_embed():
 
     assert_allclose(desired, d2.c2_embed(x, dim=dim, tau=tau)[0][1], atol=1e-3)
 
+
+def test_d2():
+    # Test d2.d2()
+    # Compute the local slope of 2x + 3x^2 and verify that
+    # it is equal to 2 + 6x.
+    x = np.linspace(-5, 5, 1000)
+    y = 2 * x + 3 * x ** 2
+
+    p, q = np.exp(x), np.exp(y)
+    assert_allclose(d2.d2(p, q), (2 + 6 * x[2:-2]))
+
 if __name__ == '__main__':
     run_module_suite()

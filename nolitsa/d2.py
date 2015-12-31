@@ -38,9 +38,9 @@ def c2(y, r=100, metric='chebyshev', window=10):
     Returns
     -------
     r : array
-        Distances for which correlation sums have been calculated.  Note that
-        this might be different from the supplied `r` as only the ones with a
-        nonzero ``C(r)`` is included.
+        Distances for which correlation sums have been calculated.  Note
+        that this might be different from the supplied `r` as only the
+        ones with a nonzero ``C(r)`` is included.
     c : array
         Correlation sums for the given distances.
     """
@@ -126,3 +126,38 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
                               'metric': metric,
                               'window': window,
                               }, processes=processes)
+
+
+def d2(r, c, hwin=3):
+    """Compute D2 using a local least square fit.
+
+    Computes D2 using a local least square fit of the equation C(r) ~
+    r^D2.  D2 for each point is computed by doing a least square fit
+    inside a window of size 2*hwin + 1 around it.  The idea is analogous
+    to that of a simple moving average.
+
+    Parameters
+    ----------
+    r : array
+        Distances for which correlation sums have been calculated.
+    c : array
+        Correlation sums for the given distances.
+    hwin : int, optional (default = 3)
+        Half-window length.  Actual window size is 2*hwin + 1.
+
+    Returns
+    -------
+    d : array
+        Average D2 for each r in `r[hwin:-hwin]`
+    """
+    N = len(r) - 2 * hwin
+
+    d = np.empty(N)
+    x, y = np.log(r), np.log(c)
+
+    for i in xrange(N):
+        p, q = x[i:i + 2 * hwin + 1], y[i:i + 2 * hwin + 1]
+        A = np.vstack([p, np.ones(2 * hwin + 1)]).T
+        d[i] = np.linalg.lstsq(A, q)[0][0]
+
+    return d

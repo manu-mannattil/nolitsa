@@ -22,8 +22,11 @@ Bibliography
 See also
 --------
 
-- [TISEAN: Nonlinear Time Series Analysis](http://www.mpipks-dresden.mpg.de/~tisean/)
+- [ANTA](http://staffhome.ecm.uwa.edu.au/~00027830/code.html)
 - [MATS: Measures of Analysis of Time Series toolkit](https://www.mathworks.com/matlabcentral/fileexchange/27561-measures-of-analysis-of-time-series-toolkit--mats-)
+- [Matlab Software Archive for Nonlinear Time Series Analysis](http://egr.uri.edu/nld/software/)
+- [PyUnicorn: Unified Complex Network and Recurrence Analysis Toolbox](https://github.com/pik-copan/pyunicorn)
+- [TISEAN: Nonlinear Time Series Analysis](http://www.mpipks-dresden.mpg.de/~tisean/)
 
 
 License
