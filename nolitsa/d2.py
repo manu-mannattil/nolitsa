@@ -8,7 +8,7 @@ from scipy.spatial import distance
 from nolitsa import utils
 
 
-def c2(y, r=100, metric='chebyshev', window=10):
+def c2(y, r=1000, metric='chebyshev', window=10):
     """Compute the correlation sum for the given distances.
 
     Computes the correlation sum of the given time series for the
@@ -22,7 +22,7 @@ def c2(y, r=100, metric='chebyshev', window=10):
     ----------
     y : ndarray
         Time series containing points in the phase space.
-    r : int or array (default = 100)
+    r : int or array (default = 1000)
         Distances for which the correlation sum should be calculated.
         If `r` is an int, then the distances are taken to be a geometric
         progression between a minimum and maximum length scale
@@ -57,7 +57,7 @@ def c2(y, r=100, metric='chebyshev', window=10):
             raise ValueError('Unknown metric.  Should be one of "chebyshev", '
                              '"cityblock", or "euclidean".')
 
-        r = utils.gprange(extent / 1000, extent, r)
+        r = utils.gprange(extent / 10000, extent, r)
     else:
         r = np.asarray(r)
         r = np.sort(r[r > 0])
@@ -76,7 +76,7 @@ def c2(y, r=100, metric='chebyshev', window=10):
     return r[c > 0], c[c > 0]
 
 
-def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
+def c2_embed(x, dim=[1], tau=1, r=1000, metric='chebyshev', window=10,
              parallel=True):
     """Compute the correlation sum using time delayed vectors.
 
@@ -92,7 +92,7 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
         computed.
     tau : int, optional (default = 1)
         Time delay.
-    r : int or array (default = 100)
+    r : int or array (default = 1000)
         Distances for which the correlation sum should be calculated.
         If `r` is an int, then the distances are taken to be a geometric
         progression between a minimum and maximum length scale
@@ -132,7 +132,7 @@ def d2(r, c, hwin=3):
     """Compute D2 using a local least square fit.
 
     Computes D2 using a local least square fit of the equation C(r) ~
-    r^D2.  D2 for each point is computed by doing a least square fit
+    r^D2.  D2 at each point is computed by doing a least square fit
     inside a window of size 2*hwin + 1 around it.  The idea is analogous
     to that of a simple moving average.
 
@@ -148,7 +148,7 @@ def d2(r, c, hwin=3):
     Returns
     -------
     d : array
-        Average D2 for each r in `r[hwin:-hwin]`
+        Average D2 at each r in `r[hwin:-hwin]`
     """
     N = len(r) - 2 * hwin
 
