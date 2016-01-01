@@ -66,5 +66,22 @@ def test_d2():
     p, q = np.exp(x), np.exp(y)
     assert_allclose(d2.d2(p, q), (2 + 6 * x[3:-3]))
 
+
+def test_d2tt():
+    # Test d2.d2tt()
+    #
+    # Takens-Theiler MLE for a true power law between r_min and r_max
+    # is:
+    #
+    #   D2 * C(r_max) / [C(r_max) - C(r_min)].
+    #
+    # When r_min -> 0, MLE becomes D2.
+    r_min, r_max = 1.0, 10.0
+    r = utils.gprange(r_min, r_max, 100)
+    c = np.e * r ** np.pi
+
+    desired = np.pi * (c[1:] / (c[1:] - c[0]))
+    assert_allclose(desired, d2.d2tt(r, c))
+
 if __name__ == '__main__':
     run_module_suite()

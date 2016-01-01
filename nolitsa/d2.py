@@ -161,3 +161,32 @@ def d2(r, c, hwin=3):
         d[i] = np.linalg.lstsq(A, q)[0][0]
 
     return d
+
+
+def d2tt(r, c):
+    """Compute the Takens-Theiler maximum likelihood estimator.
+
+    Computes the Takens-Theiler maximum likelihood estimator (MLE) for a
+    given set of distances and the corresponding correlation sums
+    (Theiler, 1990).
+
+    Parameters
+    ----------
+    r : array
+        Distances for which correlation sums have been calculated.
+    c : array
+        Correlation sums for the given distances.
+
+    Returns
+    -------
+    d : array
+        Takens-Theiler MLE for each distance starting from the second
+        one.
+    """
+    x1, y1 = np.log(r[:-1]), np.log(c[:-1])
+    x2, y2 = np.log(r[1:]), np.log(c[1:])
+
+    a = (y2 - y1) / (x2 - x1)
+    b = (y1 * x2 - y2 * x1) / (x2 - x1)
+
+    return c[1:] / np.cumsum(np.exp(b) / a * (r[1:] ** a - r[:-1] ** a))
