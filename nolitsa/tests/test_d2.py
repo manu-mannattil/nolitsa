@@ -5,7 +5,7 @@ from __future__ import division
 import itertools
 import numpy as np
 
-from nolitsa import d2, data
+from nolitsa import d2, data, utils
 from numpy.testing import assert_, assert_allclose, run_module_suite
 
 
@@ -45,13 +45,15 @@ def test_c2_embed():
     # Test d2.c2_embed()
     t = np.linspace(0, 10 * 2 * np.pi, 5000)
     y = np.array([np.sin(t), np.cos(t)]).T
-    desired = d2.c2(y)[1]
+    r = utils.gprange(0.01, 1, 1000)
+    desired = d2.c2(y, r=r)[1]
 
     dim = [2]
     tau = 125
     x = y[:, 0]
 
-    assert_allclose(desired, d2.c2_embed(x, dim=dim, tau=tau)[0][1], atol=1e-3)
+    assert_allclose(desired, d2.c2_embed(x, dim=dim, tau=tau, r=r)[0][1],
+                    atol=1e-3)
 
 
 def test_d2():
@@ -62,7 +64,7 @@ def test_d2():
     y = 2 * x + 3 * x ** 2
 
     p, q = np.exp(x), np.exp(y)
-    assert_allclose(d2.d2(p, q), (2 + 6 * x[2:-2]))
+    assert_allclose(d2.d2(p, q), (2 + 6 * x[3:-3]))
 
 if __name__ == '__main__':
     run_module_suite()
