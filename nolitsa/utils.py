@@ -264,8 +264,7 @@ def spectrum(x, dt=1.0, detrend=False):
     x : array
         1D real input array of length N containing the time series.
     dt : float, optional (default = 1.0)
-        Sample spacing (= 1/(sampling rate)).  Usually this is in units
-        of time.
+        Sampling time (= 1/(sampling rate)).
     detrend : bool, optional (default=False)
         Subtract the mean from the series.
 

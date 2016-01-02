@@ -184,8 +184,8 @@ def ttmle(r, c, zero=True):
     -------
     d : array
         Takens-Theiler MLE for the given distances.  The total length of
-        the array is `len(x)` if the MLE is integrated from zero; otherwise it
-        is `len(x) - 1`.
+        the array is `len(r)` if the MLE is integrated from zero; otherwise it
+        is `len(r) - 1`.
 
     Notes
     -----
