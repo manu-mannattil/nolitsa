@@ -109,7 +109,7 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10, smooth=7):
     To check if the power spectrum has converged, we see if the absolute
     difference between the current (cerr) and previous (perr) RMSD
     errors is within the limits set by the tolerance levels, i.e., if
-    ``abs(cerr - perr) < atol + rtol*perr``.  This follows the
+    ``abs(cerr - perr) <= atol + rtol*perr``.  This follows the
     convention used in the NumPy function `numpy.allclose()`.
 
     Additionally, `atol` and `rtol` can be both set to zero in which
@@ -138,7 +138,7 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10, smooth=7):
         cerr = np.sum((power - noise.sma(np.abs(t), hwin=smooth)) ** 2)
 
         # Check convergence.
-        if abs(cerr - perr) < atol + rtol * abs(perr):
+        if abs(cerr - perr) <= atol + rtol * abs(perr)
             break
         else:
             perr = cerr
