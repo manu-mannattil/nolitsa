@@ -183,14 +183,15 @@ def ttmle(r, c, zero=True):
     Returns
     -------
     d : array
-        Takens-Theiler MLE for each distance starting from the second
-        one.
+        Takens-Theiler MLE for the given distances.  The total length of
+        the array is `len(x)` if the MLE is integrated from zero; otherwise it
+        is `len(x) - 1`.
 
     Notes
     -----
     Integrating the expression for MLE from zero has the advantage that
     for a true power law of the from C(r) ~ r^D, the MLE gives D as the
-    output for all values of r.  Some implementations (e.g., TISEAN)
+    result for all values of r.  Some implementations (e.g., TISEAN)
     starts the integration only from the minimum distance supplied.  In
     any case this does not make much difference as the only real use of
     a "dimension" estimator is as a statistic for surrogate testing.
@@ -206,6 +207,8 @@ def ttmle(r, c, zero=True):
     denom = np.cumsum(np.exp(b) / a * (r[1:] ** a - r[:-1] ** a))
 
     if zero:
+        # Assume that the power law between r[0] and r[1] holds
+        # between 0 and r[0].
         denom = np.insert(denom, 0, np.exp(b[0]) / a[0] * r[0] ** a[0])
         denom[1:] = denom[1:] + denom[0]
         return c / denom
