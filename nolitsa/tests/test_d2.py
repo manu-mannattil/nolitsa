@@ -67,7 +67,7 @@ def test_d2():
     assert_allclose(d2.d2(p, q), (2 + 6 * x[3:-3]))
 
 
-def ttmle():
+def test_ttmle():
     # Test d2.ttmle()
     #
     # Takens-Theiler MLE for a true power law between r_min and r_max
@@ -81,7 +81,7 @@ def ttmle():
     c = np.e * r ** np.pi
 
     desired = np.pi * (c[1:] / (c[1:] - c[0]))
-    assert_allclose(desired, d2.d2tt(r, c))
+    assert_allclose(desired, d2.ttmle(r, c))
 
 if __name__ == '__main__':
     run_module_suite()
