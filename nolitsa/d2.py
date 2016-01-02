@@ -163,12 +163,13 @@ def d2(r, c, hwin=3):
     return d
 
 
-def ttmle(r, c):
+def ttmle(r, c, zero=True):
     """Compute the Takens-Theiler maximum likelihood estimator.
 
     Computes the Takens-Theiler maximum likelihood estimator (MLE) for a
     given set of distances and the corresponding correlation sums
-    (Theiler, 1990).
+    (Theiler, 1990).  The MLE is calculated by assuming that C(r) obeys
+    a true power law between adjacent r's.
 
     Parameters
     ----------
@@ -176,12 +177,23 @@ def ttmle(r, c):
         Distances for which correlation sums have been calculated.
     c : array
         Correlation sums for the given distances.
+    zero : bool, optional (default = True)
+        Integrate the MLE starting from zero (see Notes).
 
     Returns
     -------
     d : array
         Takens-Theiler MLE for each distance starting from the second
         one.
+
+    Notes
+    -----
+    Integrating the expression for MLE from zero has the advantage that
+    for a true power law of the from C(r) ~ r^D, the MLE gives D as the
+    output for all values of r.  Some implementations (e.g., TISEAN)
+    starts the integration only from the minimum distance supplied.  In
+    any case this does not make much difference as the only real use of
+    a "dimension" estimator is as a statistic for surrogate testing.
     """
     x1, y1 = np.log(r[:-1]), np.log(c[:-1])
     x2, y2 = np.log(r[1:]), np.log(c[1:])
@@ -189,4 +201,13 @@ def ttmle(r, c):
     a = (y2 - y1) / (x2 - x1)
     b = (y1 * x2 - y2 * x1) / (x2 - x1)
 
-    return c[1:] / np.cumsum(np.exp(b) / a * (r[1:] ** a - r[:-1] ** a))
+    # To integrate we use the discrete expression given in
+    # the TISEAN paper (Hegger et al., 1999).
+    denom = np.cumsum(np.exp(b) / a * (r[1:] ** a - r[:-1] ** a))
+
+    if zero:
+        denom = np.insert(denom, 0, np.exp(b[0]) / a[0] * r[0] ** a[0])
+        denom[1:] = denom[1:] + denom[0]
+        return c / denom
+    else:
+        return c[1:] / denom

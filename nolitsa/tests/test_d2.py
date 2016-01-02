@@ -69,19 +69,15 @@ def test_d2():
 
 def test_ttmle():
     # Test d2.ttmle()
-    #
-    # Takens-Theiler MLE for a true power law between r_min and r_max
-    # is:
-    #
-    #   D2 * C(r_max) / [C(r_max) - C(r_min)].
-    #
-    # When r_min -> 0, MLE becomes D2.
     r_min, r_max = 1.0, 10.0
     r = utils.gprange(r_min, r_max, 100)
     c = np.e * r ** np.pi
 
+    desired = np.pi
+    assert_allclose(desired, d2.ttmle(r, c, zero=True))
+
     desired = np.pi * (c[1:] / (c[1:] - c[0]))
-    assert_allclose(desired, d2.ttmle(r, c))
+    assert_allclose(desired, d2.ttmle(r, c, zero=False))
 
 if __name__ == '__main__':
     run_module_suite()
