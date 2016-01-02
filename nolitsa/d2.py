@@ -163,7 +163,7 @@ def d2(r, c, hwin=3):
     return d
 
 
-def d2tt(r, c):
+def ttmle(r, c):
     """Compute the Takens-Theiler maximum likelihood estimator.
 
     Computes the Takens-Theiler maximum likelihood estimator (MLE) for a

@@ -67,8 +67,8 @@ def test_d2():
     assert_allclose(d2.d2(p, q), (2 + 6 * x[3:-3]))
 
 
-def test_d2tt():
-    # Test d2.d2tt()
+def ttmle():
+    # Test d2.ttmle()
     #
     # Takens-Theiler MLE for a true power law between r_min and r_max
     # is:
