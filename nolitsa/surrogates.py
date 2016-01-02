@@ -64,7 +64,7 @@ def aaft(x):
     return np.sort(x)[np.argsort(np.argsort(y))]
 
 
-def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10, smooth=7):
+def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10):
     """Return iterative amplitude adjusted Fourier transform surrogates.
 
     Returns phase randomized, amplitude adjusted (IAAFT) surrogates with
@@ -84,10 +84,6 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10, smooth=7):
         Absolute tolerance for checking convergence (see Notes).
     rtol : float, optional (default = 1e-10)
         Relative tolerance for checking convergence (see Notes).
-    smooth : int, optional (default = 7)
-        Use a simple moving average (SMA) to smoothen the Fourier
-        amplitudes over (2*smooth + 1) frequencies while checking
-        convergence.
 
     Returns
     -------
@@ -97,15 +93,11 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10, smooth=7):
     i : int
         Number of iterations that have been performed.
     e : float
-        Root-mean-square-deviation (RMSD) between the power spectrum of
-        the surrogate series and that of the original series.
+        Root-mean-square-deviation (RMSD) between the Fourier amplitudes
+        of the surrogate series and that of the original series.
 
     Notes
     -----
-    While computing Fourier transforms, the full time series is used
-    without any smoothening.  Only while testing for convergence is the
-    spectrum smoothened.
-
     To check if the power spectrum has converged, we see if the absolute
     difference between the current (cerr) and previous (perr) RMSD
     errors is within the limits set by the tolerance levels, i.e., if
@@ -118,7 +110,6 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10, smooth=7):
     """
     # Calculate "true" Fourier amplitudes and sort the series.
     ampl = np.abs(np.fft.rfft(x))
-    power = noise.sma(ampl, hwin=smooth)
     sort = np.sort(x)
 
     # Previous and current error.
@@ -135,10 +126,10 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10, smooth=7):
         y = sort[np.argsort(np.argsort(s))]
 
         t = np.fft.rfft(y)
-        cerr = np.sum((power - noise.sma(np.abs(t), hwin=smooth)) ** 2)
+        cerr = np.sum((ampl - np.abs(t)) ** 2)
 
         # Check convergence.
-        if abs(cerr - perr) <= atol + rtol * abs(perr)
+        if abs(cerr - perr) <= atol + rtol * abs(perr):
             break
         else:
             perr = cerr
