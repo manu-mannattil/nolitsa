@@ -2,7 +2,7 @@
 
 import numpy as np
 from nolitsa import delay
-from numpy.testing import assert_, assert_allclose, run_module_suite
+from numpy.testing import assert_allclose, run_module_suite
 
 
 class TestAcorr:

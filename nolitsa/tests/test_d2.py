@@ -2,11 +2,10 @@
 
 from __future__ import division
 
-import itertools
 import numpy as np
 
-from nolitsa import d2, data, utils
-from numpy.testing import assert_, assert_allclose, run_module_suite
+from nolitsa import d2, utils
+from numpy.testing import assert_allclose, run_module_suite
 
 
 def test_c2():

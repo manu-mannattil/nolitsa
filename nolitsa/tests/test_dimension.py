@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import division
-import itertools
 import numpy as np
 
 from nolitsa import dimension
-from numpy.testing import assert_, assert_allclose, run_module_suite
+from numpy.testing import assert_allclose, run_module_suite
 
 
 class TestAFN:
@@ -35,11 +34,12 @@ class TestAFN:
         dim = np.arange(1, 10 + 2)
         window = 10
 
-        # Chebyshev distances remain bounded.  This gives "cleaner"
-        # results when embedding known objects like a line.  For a line,
-        # E = 1.0 for all dimensions as expected, whereas it is
-        # (d + 1) / d (for citblock) and sqrt(d + 1) / sqrt(d) for
-        # Euclidean.
+        # Chebyshev distances between near-neighbors remain bounded.
+        # This gives "cleaner" results when embedding known objects like
+        # a line.  For a line, E = 1.0 for all dimensions as expected,
+        # whereas it is (d + 1) / d (for cityblock) and sqrt(d + 1) /
+        # sqrt(d) for Euclidean.  In both cases, E -> 1.0 at large d,
+        # but E = 1.0 is definitely preferred.
         for metric in ('chebyshev', 'cityblock', 'euclidean'):
             Es_des = (window + 1) * b
 

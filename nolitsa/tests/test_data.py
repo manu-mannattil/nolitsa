@@ -6,7 +6,6 @@ import numpy as np
 
 from nolitsa import data, utils
 from numpy.testing import assert_allclose, run_module_suite
-from scipy.signal import welch
 
 
 def test_falpha():

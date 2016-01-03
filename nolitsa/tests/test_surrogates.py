@@ -7,6 +7,7 @@ import numpy as np
 from nolitsa import surrogates, utils
 from numpy.testing import assert_allclose, run_module_suite
 
+
 def test_ft():
     # Test surrogates.ft()
     # Always test for both odd and even number of points.
