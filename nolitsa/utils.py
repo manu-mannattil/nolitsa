@@ -84,7 +84,7 @@ def gprange(start, end, num=100):
     return start * ratio ** np.arange(num)
 
 
-def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
+def neighbors(y, metric='chebyshev', num=1, window=0, maxnum=-1):
     """Find nearest neighbors to all points in the given array.
 
     Finds nearest neighbors to all points in the given array using
@@ -94,7 +94,7 @@ def neighbors(y, metric='euclidean', num=1, window=0, maxnum=-1):
     ----------
     y : ndarray
         N-dimensional array containing time delayed vectors.
-    metric : string, optional (default = 'euclidean')
+    metric : string, optional (default = 'chebyshev')
         Metric to use for distance computation.  Must be one of
         "cityblock" (aka the Manhattan metric), "chebyshev" (aka the
         maximum norm metric), or "euclidean".

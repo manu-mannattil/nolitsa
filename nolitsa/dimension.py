@@ -7,7 +7,7 @@ import numpy as np
 from nolitsa import utils
 
 
-def _afn(d, x, tau=1, metric='euclidean', window=10, maxnum=-1):
+def _afn(d, x, tau=1, metric='chebyshev', window=10, maxnum=-1):
     """Return E(d) and E*(d) for a single d.
 
     Returns E(d) and E*(d) for the AFN method for a single d.  This
@@ -32,7 +32,7 @@ def _afn(d, x, tau=1, metric='euclidean', window=10, maxnum=-1):
     return np.mean(E), np.mean(Es)
 
 
-def afn(x, dim=[1], tau=1, metric='euclidean', window=10, maxnum=-1,
+def afn(x, dim=[1], tau=1, metric='chebyshev', window=10, maxnum=-1,
         parallel=True):
     """Averaged false neighbors algorithm.
 
@@ -49,7 +49,7 @@ def afn(x, dim=[1], tau=1, metric='euclidean', window=10, maxnum=-1,
         computed.
     tau : int, optional (default = 1)
         Time delay.
-    metric : string, optional (default = 'euclidean')
+    metric : string, optional (default = 'chebyshev')
         Metric to use for distance computation.  Must be one of
         "cityblock" (aka the Manhattan metric), "chebyshev" (aka the
         maximum norm metric), or "euclidean".
