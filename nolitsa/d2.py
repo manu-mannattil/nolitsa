@@ -8,21 +8,17 @@ from scipy.spatial import distance
 from nolitsa import utils
 
 
-def c2(y, r=1000, metric='chebyshev', window=10):
+def c2(y, r=100, metric='chebyshev', window=10):
     """Compute the correlation sum for the given distances.
 
     Computes the correlation sum of the given time series for the
     specified distances (Grassberger & Procaccia, 1983).
 
-    We could've used scipy.spatial.KDTree.count_neighbors() for this.
-    But then one cannot specify a minimum temporal separation which is
-    crucial for overcoming the autocorrelation error.
-
     Parameters
     ----------
     y : ndarray
-        Time series containing points in the phase space.
-    r : int or array (default = 1000)
+        N-dimensional real input array containing points in the phase space.
+    r : int or array, optional (default = 100)
         Distances for which the correlation sum should be calculated.
         If `r` is an int, then the distances are taken to be a geometric
         progression between a minimum and maximum length scale
@@ -43,6 +39,12 @@ def c2(y, r=1000, metric='chebyshev', window=10):
         ones with a nonzero ``C(r)`` is included.
     c : array
         Correlation sums for the given distances.
+
+    Notes
+    -----
+    This function is meant to be used to calculate the correlation sum from an
+    array of points in the phase space.  If you want to calculate it after
+    embedding a time series, see `d2_embed()`.
     """
     # Estimate the extent of the reconstructed phase space.
     if isinstance(r, int):
@@ -57,7 +59,7 @@ def c2(y, r=1000, metric='chebyshev', window=10):
             raise ValueError('Unknown metric.  Should be one of "chebyshev", '
                              '"cityblock", or "euclidean".')
 
-        r = utils.gprange(extent / 10000, extent, r)
+        r = utils.gprange(extent / 1000, extent, r)
     else:
         r = np.asarray(r)
         r = np.sort(r[r > 0])
@@ -76,7 +78,7 @@ def c2(y, r=1000, metric='chebyshev', window=10):
     return r[c > 0], c[c > 0]
 
 
-def c2_embed(x, dim=[1], tau=1, r=1000, metric='chebyshev', window=10,
+def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
              parallel=True):
     """Compute the correlation sum using time delayed vectors.
 
@@ -86,13 +88,13 @@ def c2_embed(x, dim=[1], tau=1, r=1000, metric='chebyshev', window=10,
     Parameters
     ----------
     x : array
-        1D scalar time series.
-    dim : int array (default = [1])
+        1D real input array containing the time series.
+    dim : int array, optional (default = [1])
         Embedding dimensions for which the correlation sum should be
         computed.
     tau : int, optional (default = 1)
         Time delay.
-    r : int or array (default = 1000)
+    r : int or array (default = 100)
         Distances for which the correlation sum should be calculated.
         If `r` is an int, then the distances are taken to be a geometric
         progression between a minimum and maximum length scale
