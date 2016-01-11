@@ -137,3 +137,37 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10):
 
     # Normalize error w.r.t. mean of the "true" power spectrum.
     return y, i, cerr / np.mean(ampl ** 2)
+
+
+
+def skew(x, t=1):
+    """Skew statistic to measure asymmetry w.r.t. time reversal.
+
+    Skew statistic measures the asymmetry in the time series w.r.t. time
+    reversal.  This asymmetry is often considered to be an indicator of
+    nonlinearity (see Notes).
+
+    Parameters
+    ----------
+    x : array
+        1D real input array containing the time series.
+    t : int, optional (default = 1)
+        Skew stastic measures the skewness in the distribution of
+        t-increments of the time series.  By default the skewness in
+        the distribution of its first-increments is returned.
+
+    Returns
+    -------
+    s : float
+        Coefficient of skewness of the distribution of t-increments.
+
+    Notes
+    -----
+    The skew statistic is often touted to have good distinguishing power
+    between nonlinearity and linearity.  But it is known to fail
+    miserably in both cases (i.e., it often judges nonlinear series as
+    linear and vice-versa) and should be avoided for serious analysis.
+    """
+    dx = x[t:] - x[:-t]
+    dx = dx - np.mean(dx)
+    return np.mean(dx ** 3) / np.mean(dx ** 2) ** 1.5
