@@ -93,20 +93,21 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10):
     i : int
         Number of iterations that have been performed.
     e : float
-        Root-mean-square-deviation (RMSD) between the Fourier amplitudes
-        of the surrogate series and that of the original series.
+        Root-mean-square deviation (RMSD) between the absolute squares
+        of the Fourier amplitudes of the surrogate series and that of
+        the original series.
 
     Notes
     -----
     To check if the power spectrum has converged, we see if the absolute
-    difference between the current (cerr) and previous (perr) RMSD
-    errors is within the limits set by the tolerance levels, i.e., if
-    ``abs(cerr - perr) <= atol + rtol*perr``.  This follows the
-    convention used in the NumPy function `numpy.allclose()`.
+    difference between the current (cerr) and previous (perr) RMSDs is
+    within the limits set by the tolerance levels, i.e., if ``abs(cerr -
+    perr) <= atol + rtol*perr``.  This follows the convention used in
+    the NumPy function `numpy.allclose()`.
 
     Additionally, `atol` and `rtol` can be both set to zero in which
-    case the iterations end only when the RMSD error stops changing or
-    when `maxiter` is reached.
+    case the iterations end only when the RMSD stops changing or when
+    `maxiter` is reached.
     """
     # Calculate "true" Fourier amplitudes and sort the series.
     ampl = np.abs(np.fft.rfft(x))
@@ -126,7 +127,7 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10):
         y = sort[np.argsort(np.argsort(s))]
 
         t = np.fft.rfft(y)
-        cerr = np.sum((ampl - np.abs(t)) ** 2)
+        cerr = np.sqrt(np.mean((ampl ** 2 - np.abs(t) ** 2) ** 2))
 
         # Check convergence.
         if abs(cerr - perr) <= atol + rtol * abs(perr):
@@ -134,4 +135,5 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10):
         else:
             perr = cerr
 
-    return y, i, np.sqrt(cerr / len(ampl))
+    # Normalize error w.r.t. mean of the "true" power spectrum.
+    return y, i, cerr / np.mean(ampl ** 2)

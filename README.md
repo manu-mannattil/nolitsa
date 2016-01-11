@@ -22,12 +22,14 @@ Bibliography
 See also
 --------
 
-- [ANTA](http://staffhome.ecm.uwa.edu.au/~00027830/code.html)
-- [MATS: Measures of Analysis of Time Series toolkit](https://www.mathworks.com/matlabcentral/fileexchange/27561-measures-of-analysis-of-time-series-toolkit--mats-)
-- [Matlab Software Archive for Nonlinear Time Series Analysis](http://egr.uri.edu/nld/software/)
-- [PyUnicorn: Unified Complex Network and Recurrence Analysis Toolbox](https://github.com/pik-copan/pyunicorn)
-- [TISEAN: Nonlinear Time Series Analysis](http://www.mpipks-dresden.mpg.de/~tisean/)
-
+- Matlab [software archive](http://egr.uri.edu/nld/software/) by D. Chelidze
+- Matlab package [ANTA](http://staffhome.ecm.uwa.edu.au/~00027830/code.html) by M. Small
+- R package [nonlinearTseries](https://cran.r-project.org/web/packages/nonlinearTseries/) by C.A. Garcia and G. Sawitzki
+- R package [tseriesChaos](https://cran.r-project.org/web/packages/tseriesChaos/) by A.F. Di Narzo
+- [MATS](https://www.mathworks.com/matlabcentral/fileexchange/27561-measures-of-analysis-of-time-series-toolkit--mats-) by D. Kugiumtzis and A. Tsimpiris
+- [PyUnicorn](https://github.com/pik-copan/pyunicorn) by J.F. Donges *et al.*
+- [TISEAN](http://www.mpipks-dresden.mpg.de/~tisean/) by R. Hegger *et al.*
+- [TSTOOL](http://www.dpi.physik.uni-goettingen.de/tstool/) package by C. Merkwirth *et al.*
 
 License
 -------
