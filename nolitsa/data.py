@@ -22,7 +22,7 @@ def falpha(length=8192, alpha=1.0, fl=None, fu=None, mean=0.0, var=1.0):
 
     Parameters
     ----------
-    length : int, optional (default = 2^13)
+    length : int, optional (default = 8192)
         Length of the time series to be generated.
     alpha : float, optional (default = 1.0)
         Exponent in (1/f)^alpha.
@@ -35,15 +35,17 @@ def falpha(length=8192, alpha=1.0, fl=None, fu=None, mean=0.0, var=1.0):
     var : float, optional (default = 1.0)
         Variance of the generated noise.
 
-    NOTE: As DFTs assume that the input data is periodic, the resultant
-    series x_{i} (= x_{i + N}) is also periodic.  To avoid this
-    periodicity, it is recommended to always generate a longer series
-    (two or four times longer) and trim it to the desired length.
-
     Returns
     -------
     x : array
         Array containing the time series.
+
+    Notes
+    -----
+    As DFTs assume that the input data is periodic, the resultant series
+    x_{i} (= x_{i + N}) is also periodic.  To avoid this periodicity, it
+    is recommended to always generate a longer series (two or three
+    times longer) and trim it to the desired length.
     """
     freqs = fft.rfftfreq(length)
     power = freqs[1:] ** -alpha
