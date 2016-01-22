@@ -8,7 +8,7 @@ from nolitsa import utils
 def acorr(x, maxlag=None, norm=True, detrend=True):
     """Return the autocorrelation of the given scalar time series.
 
-    Calculates the autocorrelation r(t) of the given scalar time series
+    Calculates the autocorrelation of the given scalar time series
     using the Wiener-Khinchin theorem.
 
     Parameters
@@ -18,10 +18,12 @@ def acorr(x, maxlag=None, norm=True, detrend=True):
     maxlag : int, optional (default = N)
         Return the autocorrelation only upto this lag.
     norm : bool, optional (default = True)
-        Normalize the autocorrelation such that r(0) = 1.
+        Normalize the autocorrelation so that it is equal to 1 for
+        zero lag.
     detrend: bool, optional (default = True)
         Subtract the mean from the time series.  This is done so that
-        for uncorrelated data, r(0) = 0.
+        for uncorrelated data, the autocorrelation vanishes for all
+        nonzero lags.
 
     Returns
     -------

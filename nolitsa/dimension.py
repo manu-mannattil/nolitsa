@@ -3,7 +3,6 @@
 from __future__ import division
 
 import numpy as np
-
 from nolitsa import utils
 
 
@@ -78,6 +77,103 @@ def afn(x, dim=[1], tau=1, metric='chebyshev', window=10, maxnum=-1,
 
     return utils.parallel_map(_afn, dim, (x,), {
                               'tau': tau,
+                              'metric': metric,
+                              'window': window,
+                              'maxnum': maxnum
+                              }, processes).T
+
+
+def _fnn(d, x, tau=1, R=10.0, A=2.0, metric='euclidean', window=10, maxnum=-1):
+    """Return fraction of false nearest neighbors for a single d.
+
+    Return fraction of false nearest neighbors for a single d.  This
+    function is meant to be called from the main `fnn` function.  See
+    the docstring of `fnn` for more.
+    """
+    # We need to reduce the number of points in dimension `d` by `tau`
+    # so that after reconstruction, there'll be equal number of points
+    # in both dimension `d` as well as dimension `d + 1`.
+    y1 = utils.reconstruct(x[:-tau], d, tau)
+    y2 = utils.reconstruct(x, d + 1, tau)
+
+    # Find near neighbors in dimension `d`.
+    index, dist = utils.neighbors(y1, metric=metric, num=1, window=window,
+                                  maxnum=maxnum)
+
+    # Find all potential false neighbors using Kennel et al.'s tests.
+    f1 = np.abs(y2[:, -1] - y2[index, -1]) / dist > R
+    f2 = utils.dist(y2, y2[index], metric=metric) / np.std(x) > A
+    f3 = f1 | f2
+
+    return np.mean(f1), np.mean(f2), np.mean(f3)
+
+
+def fnn(x, dim=[1], tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
+        maxnum=-1, parallel=True):
+    """Compute the fraction of false nearest neighbors.
+
+    Implements the false nearest neighbors (FNN) method described by
+    Kennel et al. (1992) to calculate the minimum embedding dimension
+    required to embed a scalar time series.
+
+    Parameters
+    ----------
+    x : array
+        1D real input array containing the time series.
+    dim : int array (default = [1])
+        Embedding dimensions for which the fraction of false nearest
+        neighbors should be computed.
+    tau : int, optional (default = 1)
+        Time delay.
+    R : float, optional (default = 10.0)
+        Tolerance level of FNN Test I.
+    A : float, optional (default = 2.0)
+        Tolerance level of FNN Test II.
+    metric : string, optional (default = 'euclidean')
+        Metric to use for distance computation.  Must be one of
+        "cityblock" (aka the Manhattan metric), "chebyshev" (aka the
+        maximum norm metric), or "euclidean".  Also see Notes.
+    window : int, optional (default = 10)
+        Minimum temporal separation (Theiler window) that should exist
+        between near neighbors.
+    maxnum : int, optional (default = -1 (optimum))
+        Maximum number of near neighbors that should be found for each
+        point.  In rare cases, when there are no neighbors which have a
+        non-zero distance, this will have to be increased (i.e., beyond
+        (num + 2 * window + 2)).
+    parallel : bool, optional (default = True)
+        Calculate the fraction of false nearest neighbors for each `d`
+        in parallel.
+
+    Returns
+    -------
+    f1 : array
+        Fraction of neighbors classified as false by Test I.
+    f2 : array
+        Fraction of neighbors classified as false by Test II.
+    f3 : array
+        Fraction of neighbors classified as false by either Test I
+        or Test II.
+
+    Notes
+    -----
+    The FNN fraction is metric depended for noisy time series.  In
+    particular, the second FNN test which measures the boundedness of
+    the reconstructed attractor depends heavily on the metric used.
+    E.g., if the Chebyshev metric is used, the near-neighbor distances
+    in the reconstructed attractor are always bounded and therefore the
+    reported FNN fraction becomes a nonzero constant (approximately)
+    instead of increasing with the embedding dimension.
+    """
+    if parallel:
+        processes = None
+    else:
+        processes = 1
+
+    return utils.parallel_map(_fnn, dim, (x,), {
+                              'tau': tau,
+                              'R': R,
+                              'A': A,
                               'metric': metric,
                               'window': window,
                               'maxnum': maxnum
