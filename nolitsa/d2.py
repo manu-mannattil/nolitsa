@@ -193,7 +193,7 @@ def ttmle(r, c, zero=True):
     -----
     Integrating the expression for MLE from zero has the advantage that
     for a true power law of the from C(r) ~ r^D, the MLE gives D as the
-    result for all values of r.  Some implementations (e.g., TISEAN)
+    estimate for all values of r.  Some implementations (e.g., TISEAN)
     starts the integration only from the minimum distance supplied.  In
     any case this does not make much difference as the only real use of
     a "dimension" estimator is as a statistic for surrogate testing.

@@ -90,7 +90,7 @@ def mi(x, y, bins=64):
     return h_xy - h_x - h_y
 
 
-def dmi(x, maxlag=1024, bins=64):
+def dmi(x, maxlag=1000, bins=64):
     """Return the time delayed mutual information of ``x_i``.
 
     Returns the mutual information between ``x_i`` and ``x_{i + t}``
@@ -101,10 +101,8 @@ def dmi(x, maxlag=1024, bins=64):
     ----------
     x : array
         1D scalar time series.
-    maxlag : int, optional (default = min(N, 1024))
-        Return the mutual information only upto this lag.  Since the
-        mutual information calculation is computationally expensive,
-        it is always advisable to use a small number.
+    maxlag : int, optional (default = min(N, 1000))
+        Return the mutual information only upto this lag.
     bins : int
         Number of bins to use while calculating the histogram.
 

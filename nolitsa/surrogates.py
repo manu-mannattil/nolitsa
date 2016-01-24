@@ -139,7 +139,6 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10):
     return y, i, cerr / np.mean(ampl ** 2)
 
 
-
 def skew(x, t=1):
     """Skew statistic to measure asymmetry w.r.t. time reversal.
 

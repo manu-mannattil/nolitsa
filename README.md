@@ -20,8 +20,9 @@ See also
 - R package [nonlinearTseries](https://cran.r-project.org/web/packages/nonlinearTseries/) by C.A. Garcia and G. Sawitzki
 - R package [tseriesChaos](https://cran.r-project.org/web/packages/tseriesChaos/) by A.F. Di Narzo
 - [MATS](https://www.mathworks.com/matlabcentral/fileexchange/27561-measures-of-analysis-of-time-series-toolkit--mats-) by D. Kugiumtzis and A. Tsimpiris
+- [PhysioToolkit](https://www.physionet.org/physiotools/) by A.L. Goldberger *et al.*
 - [PyUnicorn](https://github.com/pik-copan/pyunicorn) by J.F. Donges *et al.*
-- [TISEAN](http://www.mpipks-dresden.mpg.de/~tisean/) by R. Hegger *et al.*
+- [TISEAN](http://www.mpipks-dresden.mpg.de/~tisean/) by R. Hegger *et al.* (also see [RTisean](https://cran.r-project.org/src/contrib/Archive/RTisean/))
 - [TSTOOL](http://www.dpi.physik.uni-goettingen.de/tstool/) package by C. Merkwirth *et al.*
 
 Acknowledgments
