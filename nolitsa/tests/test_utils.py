@@ -19,14 +19,14 @@ def test_dist():
     x = np.random.random((100, 5))
     y = np.random.random((100, 5))
 
-    desired = np.sqrt(np.sum((x - y) ** 2, axis=1))
+    desired = np.max(np.abs(x - y), axis=1)
     assert_allclose(utils.dist(x, y), desired)
 
     desired = np.sum(np.abs(x - y), axis=1)
     assert_allclose(utils.dist(x, y, metric='cityblock'), desired)
 
-    desired = np.max(np.abs(x - y), axis=1)
-    assert_allclose(utils.dist(x, y, metric='chebyshev'), desired)
+    desired = np.sqrt(np.sum((x - y) ** 2, axis=1))
+    assert_allclose(utils.dist(x, y, metric='euclidean'), desired)
 
 
 def test_gprange():

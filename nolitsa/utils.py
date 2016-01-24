@@ -32,7 +32,7 @@ def corrupt(x, y, snr=100):
         raise ValueError('Signal and noise arrays should be of equal length.)')
 
 
-def dist(x, y, metric='euclidean'):
+def dist(x, y, metric='chebyshev'):
     """Compute the distance between all sequential pairs of points.
 
     Computes the distance between all sequential pairs of points from
@@ -44,6 +44,8 @@ def dist(x, y, metric='euclidean'):
         Input array.
     y : ndarray
         Input array.
+    metric : string, optional (default = 'chebyshev')
+        Metric to use while computing distances.
 
     Returns
     -------
