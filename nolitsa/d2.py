@@ -176,7 +176,7 @@ def ttmle(r, c, zero=True):
     Parameters
     ----------
     r : array
-        Distances for which correlation sums have been calculated.
+        Distances for which the correlation sums have been calculated.
     c : array
         Correlation sums for the given distances.
     zero : bool, optional (default = True)
@@ -186,8 +186,8 @@ def ttmle(r, c, zero=True):
     -------
     d : array
         Takens-Theiler MLE for the given distances.  The total length of
-        the array is `len(r)` if the MLE is integrated from zero; otherwise it
-        is `len(r) - 1`.
+        the array is `len(r)` if the MLE is integrated from zero;
+        otherwise it is `len(r) - 1`.
 
     Notes
     -----

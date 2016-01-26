@@ -202,22 +202,21 @@ def parallel_map(func, values, args=tuple(), kwargs=dict(),
 def reconstruct(x, dim=1, tau=1):
     """Construct time delayed vectors from a time series.
 
-    Constructs n-dimensional time delayed vectors from a scalar time
-    series.
+    Constructs time delayed vectors from a scalar time series.
 
     Parameters
     ----------
     x : array
         1D scalar time series.
     dim : int, optional (default = 1)
-        Embedding dimension (n).
+        Embedding dimension.
     tau : int, optional (default = 1)
         Time delay
 
     Returns
     -------
     ps : ndarray
-        The reconstructed n-dimensional phase space.
+        Array with time delayed vectors.
     """
     m = len(x) - (dim - 1) * tau
     if m <= 0:
