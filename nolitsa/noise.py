@@ -37,7 +37,7 @@ def sma(x, hwin=5):
         return x
 
 
-def nored(x, dim=1, tau=1, r=0, repeat=1):
+def nored(x, dim=1, tau=1, r=0, metric='chebyshev', repeat=1):
     """Simple noise reduction based on local phase space averaging.
 
     Simple noise reduction based on local phase space averaging
@@ -53,13 +53,17 @@ def nored(x, dim=1, tau=1, r=0, repeat=1):
         Time delay.
     r : float, optional (default = 0)
         Radius of neighborhood (see Notes).
+    metric : string, optional (default = 'chebyshev')
+        Metric to use for distance computation.  Must be one of
+        "cityblock" (aka the Manhattan metric), "chebyshev" (aka the
+        maximum norm metric), or "euclidean".
     repeat: int, optional (default = 1)
         Number of iterations.
 
     Return
     ------
     y : ndarray
-        1D real input array containing the time series after noise
+        1D real output array containing the time series after noise
         reduction.
 
     Notes
@@ -67,9 +71,20 @@ def nored(x, dim=1, tau=1, r=0, repeat=1):
     Choosing the right neighborhood radius is crucial for proper noise
     reduction.  A large radius will result in too much filtering.  By
     default a radius of zero is used, which means that no noise
-    reduction is done.  (This function is equivalent to the TISEAN
-    program `lazy`.)
+    reduction is done.  Note that the radius also depends on the metric
+    used for distance computation.  (This function is equivalent to the
+    TISEAN program `lazy`.)
     """
+    if metric == 'cityblock':
+        p = 1
+    elif metric == 'euclidean':
+        p = 2
+    elif metric == 'chebyshev':
+        p = np.inf
+    else:
+        raise ValueError('Unknown metric.  Should be one of "cityblock", '
+                         '"euclidean", or "chebyshev".')
+
     # Choose middle coordinate appropriately.
     if dim % 2 == 0:
         mid = tau * dim / 2
@@ -88,7 +103,7 @@ def nored(x, dim=1, tau=1, r=0, repeat=1):
         # (We don't use tree.query_ball_tree() as it almost always
         # results in a memory overflow, even though it's faster.)
         for i in xrange(len(ps)):
-            neighbors = tree.query_ball_point(ps[i], r=r, p=np.inf)
+            neighbors = tree.query_ball_point(ps[i], r=r, p=p)
             y[i + mid] = np.mean(ps[neighbors][:, mid / tau])
 
         # Choose the average correction as the new radius.
