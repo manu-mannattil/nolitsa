@@ -62,7 +62,7 @@ def nored(x, dim=1, tau=1, r=0, metric='chebyshev', repeat=1):
 
     Return
     ------
-    y : ndarray
+    y : array
         1D real output array containing the time series after noise
         reduction.
 
@@ -72,8 +72,10 @@ def nored(x, dim=1, tau=1, r=0, metric='chebyshev', repeat=1):
     reduction.  A large radius will result in too much filtering.  By
     default a radius of zero is used, which means that no noise
     reduction is done.  Note that the radius also depends on the metric
-    used for distance computation.  (This function is equivalent to the
-    TISEAN program `lazy`.)
+    used for distance computation.  Best results are often obtained
+    using large embedding dimensions with a delay of 1 and the Chebyshev
+    metric.  (This function is a featureful equivalent of the TISEAN
+    program `lazy`.)
     """
     if metric == 'cityblock':
         p = 1
