@@ -29,8 +29,8 @@ Acknowledgments
 ---------------
 
 Special thanks are due to Sagar Chakraborty for hours of constructive
-criticism, encouragement, and advice.  I am also grateful to other
-members of the Simulation and Modeling Lab, IIT Kanpur for stimulating
+criticism, encouragement, and advice.  Other members of the Simulation
+and Modeling Lab, IIT Kanpur are also thanked for stimulating
 discussions.
 
 License

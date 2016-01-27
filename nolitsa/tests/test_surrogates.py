@@ -4,7 +4,7 @@ from __future__ import division
 
 import numpy as np
 
-from nolitsa import surrogates, utils
+from nolitsa import surrogates, noise, utils
 from numpy.testing import assert_allclose, run_module_suite
 
 
@@ -25,8 +25,8 @@ def test_aaft():
     # Test surrogates.aaft()
     # Always test for both odd and even number of points.
     for n in (2 ** 16 - 1, 2 ** 16):
-        # Input is a Gaussian transformed using f(x) = tanh(x)
-        x = np.random.normal(size=n)
+        # Correlated Gaussian numbers transformed using f(x) = tanh(x)
+        x = noise.sma(np.random.normal(size=n), hwin=5)
         x = np.tanh(x)
         y = surrogates.aaft(x)
 
@@ -37,8 +37,8 @@ def test_iaaft():
     # Test surrogates.aaft()
     # Always test for both odd and even number of points.
     for n in (2 ** 14, 2 ** 14 + 1):
-        # Input is a Gaussian transformed using f(x) = tanh(x)
-        x = np.random.normal(size=n)
+        # Correlated Gaussian numbers transformed using f(x) = tanh(x)
+        x = noise.sma(np.random.normal(size=n), hwin=5)
         x = np.tanh(x)
         y, i, e = surrogates.iaaft(x)
 
