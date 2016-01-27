@@ -11,7 +11,7 @@ from numpy.testing import assert_allclose, run_module_suite
 def test_ft():
     # Test surrogates.ft()
     # Always test for both odd and even number of points.
-    for n in (1021, 1024):
+    for n in (2 ** 10, 3 ** 7):
         # NOTE that zero mean series almost always causes an assertion
         # error since the relative tolerance between different "zeros"
         # can be quite large.  This is not a bug!
@@ -24,7 +24,7 @@ def test_ft():
 def test_aaft():
     # Test surrogates.aaft()
     # Always test for both odd and even number of points.
-    for n in (2 ** 16 - 1, 2 ** 16):
+    for n in (2 ** 16, 3 ** 10):
         # Correlated Gaussian numbers transformed using f(x) = tanh(x)
         x = noise.sma(np.random.normal(size=n), hwin=5)
         x = np.tanh(x)
@@ -36,7 +36,7 @@ def test_aaft():
 def test_iaaft():
     # Test surrogates.aaft()
     # Always test for both odd and even number of points.
-    for n in (2 ** 14, 2 ** 14 + 1):
+    for n in (2 ** 14, 3 ** 9):
         # Correlated Gaussian numbers transformed using f(x) = tanh(x)
         x = noise.sma(np.random.normal(size=n), hwin=5)
         x = np.tanh(x)

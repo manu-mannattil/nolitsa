@@ -10,11 +10,11 @@ from numpy.testing import assert_allclose, run_module_suite
 
 def test_falpha():
     # Tests data.falpha()
-    x = data.falpha(length=1024, mean=np.pi, var=np.e)
+    x = data.falpha(length=(2 ** 10), mean=np.pi, var=np.e)
     assert_allclose(np.mean(x), np.pi)
     assert_allclose(np.std(x) ** 2, np.e)
 
-    for length in (1021, 1024):
+    for length in (2 ** 10, 3 ** 7):
         for alpha in (1.0, 2.0, 3.0):
             mean, var = 1.0 + np.random.random(2)
             x = data.falpha(alpha=alpha, length=length,

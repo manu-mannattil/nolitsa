@@ -189,7 +189,7 @@ def test_rescale():
 def test_spectrum():
     # Test utils.spectrum()
     # Parseval's theorem.
-    for length in (1021, 1024):
+    for length in (2 ** 10, 3 ** 7):
         x = np.random.random(length)
         power = utils.spectrum(x)[1]
         assert_allclose(np.mean(x ** 2), np.sum(power))
