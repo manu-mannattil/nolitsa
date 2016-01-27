@@ -184,10 +184,10 @@ def ttmle(r, c, zero=True):
 
     Returns
     -------
+    r : array
+        Distances at which the Takens-Theiler MLE has been computed.
     d : array
-        Takens-Theiler MLE for the given distances.  The total length of
-        the array is `len(r)` if the MLE is integrated from zero;
-        otherwise it is `len(r) - 1`.
+        Takens-Theiler MLE for the given distances.
 
     Notes
     -----
@@ -198,6 +198,10 @@ def ttmle(r, c, zero=True):
     any case this does not make much difference as the only real use of
     a "dimension" estimator is as a statistic for surrogate testing.
     """
+    # Prune the arrays so that only unique correlation sums remain.
+    c, i = np.unique(c, return_index=True)
+    r = r[i]
+
     x1, y1 = np.log(r[:-1]), np.log(c[:-1])
     x2, y2 = np.log(r[1:]), np.log(c[1:])
 
@@ -213,6 +217,6 @@ def ttmle(r, c, zero=True):
         # between 0 and r[0].
         denom = np.insert(denom, 0, np.exp(b[0]) / a[0] * r[0] ** a[0])
         denom[1:] = denom[1:] + denom[0]
-        return c / denom
+        return r, c / denom
     else:
-        return c[1:] / denom
+        return r[1:], c[1:] / denom

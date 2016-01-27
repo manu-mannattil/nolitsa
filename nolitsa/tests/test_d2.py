@@ -73,10 +73,10 @@ def test_ttmle():
     c = np.e * r ** np.pi
 
     desired = np.pi
-    assert_allclose(desired, d2.ttmle(r, c, zero=True))
+    assert_allclose(desired, d2.ttmle(r, c, zero=True)[1])
 
     desired = np.pi * (c[1:] / (c[1:] - c[0]))
-    assert_allclose(desired, d2.ttmle(r, c, zero=False))
+    assert_allclose(desired, d2.ttmle(r, c, zero=False)[1])
 
 if __name__ == '__main__':
     run_module_suite()
