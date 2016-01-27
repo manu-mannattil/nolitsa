@@ -4,6 +4,7 @@ import numpy as np
 from scipy.spatial import cKDTree as KDTree
 from nolitsa import utils
 
+
 def sma(x, hwin=5):
     """Compute simple moving average.
 
@@ -36,56 +37,59 @@ def sma(x, hwin=5):
         return x
 
 
-
-def nored(x, dim=1, r=0, repeat=1):
+def nored(x, dim=1, tau=1, r=0, repeat=1):
     """Simple noise reduction based on local phase space averaging.
 
-    Simple noise reduction based on local phase space averaging (Kantz &
-    Schreiber, 2003).
+    Simple noise reduction based on local phase space averaging
+    (Schreiber, 1993; Kantz & Schreiber, 2003).
 
     Parameters
     ----------
     x : array
-        1D real input array of length N containing the time series.
+        1D real input array containing the time series.
     dim : int, optional (default = 1)
         Embedding dimension.
+    tau : int, optional (default = 1)
+        Time delay.
     r : float, optional (default = 0)
-        Absolute radius of neighborhood (see Notes).
+        Radius of neighborhood (see Notes).
     repeat: int, optional (default = 1)
         Number of iterations.
 
     Return
     ------
     y : ndarray
-        1D real input array of length N containing the time series after
-        noise reduction.
+        1D real input array containing the time series after noise
+        reduction.
 
     Notes
     -----
     Choosing the right neighborhood radius is crucial for proper noise
-    reduction.  A large radius will result in too much filtering.  A
-    very large radius may also result in a memory overflow.  By default
-    a radius of zero is used, which means that no noise reduction is
-    done.  (This function is equivalent to the TISEAN program `lazy`.)
+    reduction.  A large radius will result in too much filtering.  By
+    default a radius of zero is used, which means that no noise
+    reduction is done.  (This function is equivalent to the TISEAN
+    program `lazy`.)
     """
     # Choose middle coordinate appropriately.
     if dim % 2 == 0:
-        mid = dim / 2
+        mid = tau * dim / 2
     else:
-        mid = (dim - 1) / 2
+        mid = tau * (dim - 1) / 2
 
     y = np.copy(x)
 
     for rep in xrange(repeat):
         z = np.copy(y)
-        ps = utils.reconstruct(y, dim=dim)
+        ps = utils.reconstruct(y, dim=dim, tau=tau)
 
         tree = KDTree(ps)
-        neighbors = tree.query_ball_tree(tree, r=r, p=np.inf)
 
         # State-space averaging.
+        # (We don't use tree.query_ball_tree() as it almost always
+        # results in a memory overflow, even though it's faster.)
         for i in xrange(len(ps)):
-            y[i + mid] = np.mean(ps[neighbors[i]][:, mid])
+            neighbors = tree.query_ball_point(ps[i], r=r, p=np.inf)
+            y[i + mid] = np.mean(ps[neighbors][:, mid / tau])
 
         # Choose the average correction as the new radius.
         r = np.sqrt(np.mean((y - z) ** 2))

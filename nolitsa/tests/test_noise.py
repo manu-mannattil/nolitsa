@@ -26,54 +26,55 @@ class TestNoRed:
         # expression for the new time series from this information.  Of
         # course the results depend on whether the embedding dimension
         # is even or odd.  So we test for all odd/even combinations of
-        # length and dimension.  (TISEAN's `lazy` fails this test with a
-        # moderate imprecision.)
-        for n in (50, 51):
-            for dim in (1, 2, 3, 12, 13):
-                m = n - (dim - 1)
+        # length, delay, and dimension.  (TISEAN's `lazy` fails this
+        # test with a moderate imprecision.)
+        for n in (200, 201):
+            for tau in (1, 2, 3, 12, 13):
+                for dim in (1, 2, 3, 12, 13):
+                    m = n - (dim - 1) * tau
 
-                i = np.arange(1, n + 1)
-                a, b = 1.0 + np.random.random(2)
-                x = a + i * b
+                    i = np.arange(1, n + 1)
+                    a, b = 1.0 + np.random.random(2)
+                    x = a + i * b
 
-                y = noise.nored(x, dim=dim, r=(1.5 * b))
-                desired = np.empty(n)
+                    y = noise.nored(x, dim=dim, r=(1.5 * b), tau=tau)
+                    z = np.empty(n)
 
-                # I'll be damned if I have to derive this again.
-                if dim == 1:
-                    desired[0] = 0.5 * (x[0] + x[1])
-                    desired[-1] = 0.5 * (x[-2] + x[-1])
-                    desired[1:-1] = (x[:-2] + x[1:-1] + x[2:]) / 3.0
-                elif dim % 2 == 0:
-                    c = dim / 2
+                    # I'll be damned if I have to derive this again.
+                    if dim == 1:
+                        z[0] = 0.5 * (x[0] + x[1])
+                        z[-1] = 0.5 * (x[-2] + x[-1])
+                        z[1:-1] = (x[:-2] + x[1:-1] + x[2:]) / 3.0
+                    elif dim % 2 == 0:
+                        c = tau * dim / 2
 
-                    # Start points.
-                    desired[:c] = x[:c]
-                    desired[c] = a + (1 + c + 0.5) * b
+                        # Start points.
+                        z[:c] = x[:c]
+                        z[c] = a + (1 + c + 0.5) * b
 
-                    # Points in the middle.
-                    desired[c + 1:-c] = a + (np.arange(2, m) + c) * b
+                        # Points in the middle.
+                        z[c + 1:-(c - tau + 1)] = a + (np.arange(2, m) + c) * b
 
-                    # End points.
-                    desired[-c] = a + (m + c - 0.5) * b
-                    if c > 1:
-                        # If c = 1, then there is only one end point.
-                        desired[-(c - 1):] = x[-(c - 1):]
-                else:
-                    c = (dim - 1) / 2
+                        # End points.
+                        z[-(c - tau + 1)] = a + (m + c - 0.5) * b
+                        if c > tau:
+                            # If c <= tau, then there is only one end point.
+                            z[-(c - tau):] = x[-(c - tau):]
+                    else:
+                        c = tau * (dim - 1) / 2
 
-                    # Start points.
-                    desired[:c] = x[:c]
-                    desired[c] = a + (1 + c + 0.5) * b
+                        # Start points.
+                        z[:c] = x[:c]
+                        z[c] = a + (1 + c + 0.5) * b
 
-                    # Points in the middle.
-                    desired[c + 1:-(c + 1)] = a + (np.arange(2, m) + c) * b
+                        # Points in the middle.
+                        z[c + 1:-(c + 1)] = a + (np.arange(2, m) + c) * b
 
-                    # End points.
-                    desired[-(c + 1)] = a + (m + c - 0.5) * b
-                    desired[-c:] = x[-c:]
+                        # End points.
+                        z[-(c + 1)] = a + (m + c - 0.5) * b
+                        z[-c:] = x[-c:]
 
-                assert_allclose(y, desired)
+                    assert_allclose(y, z)
 
 if __name__ == '__main__':
     run_module_suite()
