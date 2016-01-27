@@ -12,10 +12,11 @@ class TestNoRed:
     def test_zero_radius(self):
         # With zero radius the function should simply return the
         # original series.
-        for n in (50, 51):
-            for dim in (1, 2, 3, 12, 13):
-                x = np.random.random(n)
-                assert_allclose(noise.nored(x, r=0), x)
+        for n in (200, 201):
+            for tau in (1, 2, 3, 12, 13):
+                for dim in (1, 2, 3, 12, 13):
+                    x = np.random.random(n)
+                    assert_allclose(noise.nored(x, r=0, tau=tau), x)
 
     def test_line(self):
         # We embed a line of the form x = a + i*b and do noise reduction
