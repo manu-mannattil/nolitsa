@@ -8,11 +8,11 @@ from scipy.spatial import cKDTree as KDTree
 from scipy.spatial import distance
 
 
-def corrupt(x, y, snr=100, detrend=True):
+def corrupt(x, y, snr=100):
     """Corrupt time series with noise.
 
     Corrupts input time series with supplied noise to obtain a series
-    with the specified signal to noise ratio.
+    with the specified signal-to-noise ratio.
 
     Parameters
     ----------
@@ -21,24 +21,24 @@ def corrupt(x, y, snr=100, detrend=True):
     y : ndarray
         1D array with noise (the 'noise').
     snr : float, optional (default = 100).
-        Signal-to-noise ratio.  Ratio of the RMS amplitude of the signal
-        to the RMS amplitude of the noise.
-    detrend : bool, optional (default = True)
-        Remove the mean from the noise (i.e., a constant detrend).  The
-        RMS amplitude of the noise then equals its standard deviation.
+        Signal-to-noise ratio (SNR) (see Notes).
 
     Returns
     -------
     x : array
         1D array with corrupted series.
-    """
-    if len(x) == len(y):
-        if detrend:
-            y = y - np.mean(y)
 
-        return x + y * np.sqrt(np.sum(x ** 2) / (np.sum(y ** 2) * snr))
-    else:
+    Notes
+    -----
+    Contrary to the convention used in engineering sciences, here SNR is
+    defined as the ratio of the variance of the signal to the variance
+    of the noise.  The noise is also assumed to have zero mean.
+    """
+    if len(x) != len(y):
         raise ValueError('Signal and noise arrays should be of equal length.)')
+
+    y = y - np.mean(y)
+    return x + (np.std(x) / np.sqrt(snr)) * (y / np.std(y))
 
 
 def dist(x, y, metric='chebyshev'):
