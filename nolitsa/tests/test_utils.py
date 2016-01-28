@@ -11,6 +11,7 @@ from numpy.testing import assert_, assert_allclose, run_module_suite
 def test_corrupt():
     # Test utils.corrupt()
     x = np.random.random(100)
+    x = x - np.mean(x)
     assert_allclose(utils.corrupt(x, x, snr=16.0), 1.25 * x)
 
 

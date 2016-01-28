@@ -21,9 +21,9 @@ def acorr(x, maxlag=None, norm=True, detrend=True):
         Normalize the autocorrelation so that it is equal to 1 for
         zero lag.
     detrend: bool, optional (default = True)
-        Subtract the mean from the time series.  This is done so that
-        for uncorrelated data, the autocorrelation vanishes for all
-        nonzero lags.
+        Subtract the mean from the time series (i.e., a constant
+        detrend).  This is done so that for uncorrelated data, the
+        autocorrelation vanishes for all nonzero lags.
 
     Returns
     -------
