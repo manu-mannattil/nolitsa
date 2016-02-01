@@ -21,7 +21,7 @@ class TestAcorr:
             desired[i] = np.sum(x[:-i] * x[i:])
 
         desired = desired / desired[0]
-        assert_allclose(delay.acorr(x), desired, atol=1E-8)
+        assert_allclose(delay.acorr(x), desired)
 
     def test_sin(self):
         # Test using a finite sine wave.

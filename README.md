@@ -17,6 +17,8 @@ See also
 
 - Matlab [software](http://egr.uri.edu/nld/software/) by D. Chelidze
 - Matlab package [ANTA](http://staffhome.ecm.uwa.edu.au/~00027830/code.html) by M. Small
+- R package [fNonlinear](https://cran.r-project.org/web/packages/fNonlinear/) by D. Wuertz *et al.*
+- R package [fractal](https://cran.r-project.org/web/packages/fractal/) by W. Constantine and D. Percival
 - R package [nonlinearTseries](https://cran.r-project.org/web/packages/nonlinearTseries/) by C.A. Garcia and G. Sawitzki
 - R package [tseriesChaos](https://cran.r-project.org/web/packages/tseriesChaos/) by A.F. Di Narzo
 - [MATS](https://www.mathworks.com/matlabcentral/fileexchange/27561-measures-of-analysis-of-time-series-toolkit--mats-) by D. Kugiumtzis and A. Tsimpiris

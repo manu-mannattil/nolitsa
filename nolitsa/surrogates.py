@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from nolitsa import noise
+from nolitsa import noise, utils
 
 
 def ft(x):
@@ -139,34 +139,60 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10):
     return y, i, cerr / np.mean(ampl ** 2)
 
 
-def skew(x, t=1):
-    """Skew statistic to measure asymmetry w.r.t. time reversal.
+def mismatch(x, length=None, weight=0.5, neigh=3):
+    """Find the segment which minimizes end-point mismatch.
 
-    Skew statistic measures the asymmetry in the time series w.r.t. time
-    reversal.  This asymmetry is often considered to be an indicator of
-    nonlinearity (see Notes).
+    Finds the segment in the time series which has minimum end-point
+    mismatch.  To do this we calculate the mismatch between the end
+    points of all segments of the given length and pick the segment with
+    least mismatch (Ehlers et al. (1998)).  We also enforce the
+    condition that the difference between the first derivatives at the
+    end points must be a minimum.
 
     Parameters
     ----------
     x : array
-        1D real input array containing the time series.
-    t : int, optional (default = 1)
-        Skew stastic measures the skewness in the distribution of
-        t-increments of the time series.  By default the skewness in
-        the distribution of its first-increments is returned.
+        Real input array containg the time series.
+    length : int, optional
+        Length of segment.  By default the largest possible length which
+        is a power of one of the first five primes is selected.
+    weight : float, optional (default = 0.5)
+        Weight given to discontinuity in the first difference of the
+        time series.  Must be between 0 and 1.
+    neigh : int, optional (default = 3)
+        Num of end points using which the discontinuity statistic should
+        be computed.
 
     Returns
     -------
-    s : float
-        Coefficient of skewness of the distribution of t-increments.
+    ends : tuple
+        Indices of the end points of the segment.
+    d : float
+        Discontinuity statistic for the segment.
 
     Notes
     -----
-    The skew statistic is often touted to have good distinguishing power
-    between nonlinearity and linearity.  But it is known to fail
-    miserably in both cases (i.e., it often judges nonlinear series as
-    linear and vice-versa) and should be avoided for serious analysis.
+    Both the time series and its first difference are linearly rescaled
+    to [0, 1].  Thus the discontinuity statistic varies between 0 and 1
+    (0 means no discontinuity and 1 means maximum discontinuity).
     """
-    dx = x[t:] - x[:-t]
-    dx = dx - np.mean(dx)
-    return np.mean(dx ** 3) / np.mean(dx ** 2) ** 1.5
+    # Calculate the first difference of the time series and rescale it
+    # to [0, 1]
+    dx = utils.rescale(np.diff(x))
+    x = utils.rescale(x)[1:]
+    n = len(x)
+
+    if not length:
+        primes = np.array([2, 3, 5, 7, 11])
+        i = np.argmax(primes ** np.floor(np.log(n) / np.log(primes)) - n)
+        length = primes[i] ** (np.floor(np.log(n) / np.log(primes[i])))
+
+    d = np.zeros(n - (length + neigh))
+
+    for i in np.arange(n - (length + neigh)):
+        d[i] = ((1 - weight) * (np.mean((x[i:i + neigh] -
+                                x[i + length:i + length + neigh]) ** 2.0)) +
+                weight * (np.mean((dx[i:i + neigh] -
+                          dx[i + length:i + length + neigh]) ** 2.0)))
+
+    return (1 + np.argmin(d), 1 + np.argmin(d) + length), np.min(d)
