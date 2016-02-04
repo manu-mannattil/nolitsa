@@ -48,12 +48,12 @@ def test_iaaft():
 def test_mismatch():
     # Test surrogates.mismatch()
     # A constant series with a minor perturbation.
-    x = 10 + 1e-10 * np.random.random(1000)
+    x = 10.0 + 1e-10 * np.random.random(1000)
 
     # Remove perturbations in a known interval (729 = 3 ** 6).
     neigh = 7
     desired = (23, 23 + 729)
-    x[desired[0] - 1:desired[1] + neigh] = 0
+    x[desired[0] - 1:desired[1] + neigh] = 10.0
 
     assert_allclose(desired, surrogates.mismatch(x, neigh=neigh)[0])
 

@@ -62,7 +62,8 @@ def falpha(length=8192, alpha=1.0, fl=None, fu=None, mean=0.0, var=1.0):
     y = np.sqrt(power) * np.exp(1j * phase)
 
     # The last component (corresponding to the Nyquist frequency) of an
-    # RFFT with even number of points is always real.
+    # RFFT with even number of points is always real.  (We don't have to
+    # make the mean real as P(0) = 0.)
     if length % 2 == 0:
         y[-1] = np.abs(y[-1] * np.sqrt(2))
 

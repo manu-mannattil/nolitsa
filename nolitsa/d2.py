@@ -135,8 +135,7 @@ def d2(r, c, hwin=3):
 
     Computes D2 using a local least square fit of the equation C(r) ~
     r^D2.  D2 at each point is computed by doing a least square fit
-    inside a window of size 2*hwin + 1 around it.  The idea is analogous
-    to that of a simple moving average.
+    inside a window of size 2*hwin + 1 around it (Galka, 2000).
 
     Parameters
     ----------
