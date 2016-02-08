@@ -18,7 +18,7 @@ def mle(y, maxt=500, window=10, metric='euclidean', maxnum=-1):
         Multi-dimensional real input array containing points in the
         phase space.
     maxt : int, optional (default = 500)
-        Maximum time (iterations) up to which the stretching factor
+        Maximum time (iterations) up to which the average divergence
         should be computed.
     window : int, optional (default = 10)
         Minimum temporal separation (Theiler window) that should exist
@@ -32,12 +32,12 @@ def mle(y, maxt=500, window=10, metric='euclidean', maxnum=-1):
     Returns
     -------
     d : array
-        Stretching factor for each time upto `maxt`.
+        Average divergence for each time upto `maxt`.
 
     Notes
     -----
     This function does not directly estimate the MLE.  The MLE should be
-    estimated by linearly fitting the stretching factor (i.e., the
+    estimated by linearly fitting the average divergence (i.e., the
     average of the logarithms of near-neighbor distances) with time.
     It is also important to choose an appropriate Theiler window so that
     the near-neighbors do not lie on the same trajectory, in which case
@@ -77,12 +77,12 @@ def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
     x : ndarray
         1D real input array containing the time series.
     dim : int array, optional (default = [1])
-        Embedding dimensions for which the stretching factor should be
+        Embedding dimensions for which the average divergence should be
         computed.
     tau : int, optional (default = 1)
         Time delay.
     maxt : int, optional (default = 500)
-        Maximum time (iterations) up to which the stretching factor
+        Maximum time (iterations) up to which the average divergence
         should be computed.
     window : int, optional (default = 10)
         Minimum temporal separation (Theiler window) that should exist
@@ -93,19 +93,19 @@ def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
         non-zero distance, this will have to be increased (i.e., beyond
         (num + 2 * window + 2)).
     parallel : bool, optional (default = True)
-        Compute the stretching factor for each embedding dimension in
+        Compute the average divergence for each embedding dimension in
         parallel.
 
     Returns
     -------
     d : array
-        Stretching factor for each time upto `maxt`, for each embedding
+        Average divergence for each time upto `maxt`, for each embedding
         dimension.
 
     Notes
     -----
     This function does not directly estimate the MLE.  The MLE should be
-    estimated by linearly fitting the stretching factor (i.e., the
+    estimated by linearly fitting the average divergence (i.e., the
     average of the logarithms of near-neighbor distances) with time.
     It is also important to choose an appropriate Theiler window so that
     the near-neighbors do not lie on the same trajectory, in which case
