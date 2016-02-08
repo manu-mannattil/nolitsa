@@ -259,7 +259,7 @@ def mackey_glass(length=10000, x0=None, a=0.2, b=0.1, c=10.0, tau=23.0,
     return x[n * discard::sample]
 
 
-def roessler(length=10000, x0=None, a=0.15, b=0.20, c=10.0, step=0.001,
+def roessler(length=10000, x0=None, a=0.2, b=0.2, c=5.7, step=0.001,
              sample=0.1, discard=1000):
     """Generate time series for the Rössler system.
 
@@ -271,11 +271,11 @@ def roessler(length=10000, x0=None, a=0.15, b=0.20, c=10.0, step=0.001,
         Length of the time series to be generated.
     x0 : array, optional (default = random)
         Initial condition for the flow.
-    a : float, optional (default = 0.15)
+    a : float, optional (default = 0.2)
         Constant ``a`` in the Röessler system.
-    b : float, optional (default = 0.20)
+    b : float, optional (default = 0.2)
         Constant ``b`` in the Röessler system.
-    c : float, optional (default = 10.0)
+    c : float, optional (default = 5.7)
         Constant ``c`` in the Röessler system.
     step : float, optional (default = 0.001)
         Approximate step size of integration.
