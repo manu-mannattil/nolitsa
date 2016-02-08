@@ -126,7 +126,7 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
     return utils.parallel_map(c2, yy, kwargs={
                               'r': r,
                               'metric': metric,
-                              'window': window,
+                              'window': window
                               }, processes=processes)
 
 

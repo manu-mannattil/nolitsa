@@ -5,12 +5,6 @@ NoLiTSA (**No**n**Li**near **T**ime **S**eries **A**nalysis) is
 a rudimentary Python module implementing several standard algorithms
 used in nonlinear time series analysis.
 
-Publications
-------------
-
-Different iterations of this module were used to (partially) produce the
-results of the following publications:
-
 
 See also
 --------
