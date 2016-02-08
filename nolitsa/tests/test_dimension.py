@@ -63,6 +63,7 @@ class TestFNN():
     def test_line(self):
         x = np.linspace(0, 10, 1000)
         dim = np.arange(1, 10 + 1)
+
         # A line has zero FNN at all embedding dimensions.
         f1, f2, f3 = dimension.fnn(x, dim=dim, tau=1, window=0)
         np.allclose(f1, 0)
