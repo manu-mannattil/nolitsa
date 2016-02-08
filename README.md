@@ -1,5 +1,6 @@
 NoLiTSA
 -------
+[![Licence: CC0/Public Domain](https://img.shields.io/badge/license-CC0-blue.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 
 NoLiTSA (**No**n**Li**near **T**ime **S**eries **A**nalysis) is
 a rudimentary Python module implementing several standard algorithms
