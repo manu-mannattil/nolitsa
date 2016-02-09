@@ -100,7 +100,7 @@ def henon(length=10000, x0=None, a=1.4, b=0.3, discard=500):
     x = np.empty((length + discard, 2))
 
     if not x0:
-        x[0] = (0.0, 0.9) + 0.1 * (-1 + 2 * np.random.random(2))
+        x[0] = (0.0, 0.9) + 0.01 * (-1 + 2 * np.random.random(2))
     else:
         x[0] = x0
 
