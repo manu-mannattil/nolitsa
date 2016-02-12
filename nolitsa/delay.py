@@ -5,7 +5,7 @@ import numpy as np
 from nolitsa import utils
 
 
-def acorr(x, maxlag=None, norm=True, detrend=True):
+def acorr(x, maxtau=None, norm=True, detrend=True):
     """Return the autocorrelation of the given scalar time series.
 
     Calculates the autocorrelation of the given scalar time series
@@ -15,28 +15,28 @@ def acorr(x, maxlag=None, norm=True, detrend=True):
     ----------
     x : array_like
         Scalar time series.
-    maxlag : int, optional (default = N)
-        Return the autocorrelation only upto this lag.
+    maxtau : int, optional (default = N)
+        Return the autocorrelation only upto this time delay.
     norm : bool, optional (default = True)
         Normalize the autocorrelation so that it is equal to 1 for
-        zero lag.
+        zero time delay.
     detrend: bool, optional (default = True)
         Subtract the mean from the time series (i.e., a constant
         detrend).  This is done so that for uncorrelated data, the
-        autocorrelation vanishes for all nonzero lags.
+        autocorrelation vanishes for all nonzero time delays.
 
     Returns
     -------
     r : array
-        Array with the autocorrelation upto maxlag.
+        Array with the autocorrelation upto maxtau.
     """
     x = np.asarray(x)
     N = len(x)
 
-    if not maxlag:
-        maxlag = N
+    if not maxtau:
+        maxtau = N
     else:
-        maxlag = min(N, maxlag)
+        maxtau = min(N, maxtau)
 
     if detrend:
         x = x - np.mean(x)
@@ -47,9 +47,9 @@ def acorr(x, maxlag=None, norm=True, detrend=True):
     r = np.real(np.fft.ifft(y * y.conj(), 2 * N - 1))
 
     if norm:
-        return r[:maxlag] / r[0]
+        return r[:maxtau] / r[0]
     else:
-        return r[:maxlag]
+        return r[:maxtau]
 
 
 def mi(x, y, bins=64):
@@ -90,34 +90,72 @@ def mi(x, y, bins=64):
     return h_xy - h_x - h_y
 
 
-def dmi(x, maxlag=1000, bins=64):
+def dmi(x, maxtau=1000, bins=64):
     """Return the time delayed mutual information of ``x_i``.
 
     Returns the mutual information between ``x_i`` and ``x_{i + t}``
-    upto a `t` equal to `maxlag` (i.e., the time delayed mutual
+    upto a `t` equal to `maxtau` (i.e., the time delayed mutual
     information).
 
     Parameters
     ----------
     x : array
         1D scalar time series.
-    maxlag : int, optional (default = min(N, 1000))
-        Return the mutual information only upto this lag.
+    maxtau : int, optional (default = min(N, 1000))
+        Return the mutual information only upto this time delay.
     bins : int
         Number of bins to use while calculating the histogram.
 
     Returns
     -------
     ii : array
-        Array with the time delayed mutual information upto maxlag.
+        Array with the time delayed mutual information upto maxtau.
     """
     N = len(x)
-    maxlag = min(N, maxlag)
+    maxtau = min(N, maxtau)
 
-    ii = np.empty(maxlag)
+    ii = np.empty(maxtau)
     ii[0] = mi(x, x, bins)
 
-    for lag in range(1, maxlag):
-        ii[lag] = mi(x[:-lag], x[lag:], bins)
+    for tau in range(1, maxtau):
+        ii[tau] = mi(x[:-tau], x[tau:], bins)
 
     return ii
+
+
+def adfd(x, dim=1, maxtau=100):
+    """Compute average displacement from the diagonal (ADFD).
+
+    Computes the average displacement of the time delayed vectors from
+    the phase space diagonal which helps in picking a suitable time
+    delay (Rosenstein et al., 1994).
+
+    Parameters
+    ----------
+    x : array
+        1D real input array containing the time series.
+    dim : int, optional (default = 1)
+        Embedding dimension.
+    maxtau : int, optional (default = 100)
+        Calculate the ADFD only up to this delay.
+
+    Returns
+    -------
+    disp : array
+        ADFD for all time delays up to `maxtau`.
+    """
+    disp = np.zeros(maxtau)
+    N = len(x)
+
+    maxtau = min(maxtau, int(N / dim))
+
+    for tau in xrange(1, maxtau):
+        y1 = utils.reconstruct(x, dim=dim, tau=tau)
+
+        # Reconstruct with zero time delay.
+        y2 = x[:N - (dim - 1) * tau]
+        y2 = y2.repeat(dim).reshape(len(y2), dim)
+
+        disp[tau] = np.mean(utils.dist(y1, y2, metric='euclidean'))
+
+    return disp
