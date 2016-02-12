@@ -64,8 +64,8 @@ def test_adfd():
     sqsum = lambda n: n * (n + 1) * (2 * n + 1) / 6.0
 
     dim, maxtau = 7, 25
-    desired = np.sqrt(sqsum(7 - 1)) * b * np.arange(maxtau)
-    assert_allclose(delay.adfd(x, dim=7, maxtau=maxtau), desired)
+    desired = np.sqrt(sqsum(dim - 1)) * b * np.arange(maxtau)
+    assert_allclose(delay.adfd(x, dim=dim, maxtau=maxtau), desired)
 
 if __name__ == '__main__':
     run_module_suite()
