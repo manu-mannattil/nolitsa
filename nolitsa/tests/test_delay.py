@@ -53,8 +53,8 @@ def test_mi():
     assert_allclose(delay.mi(x, x, bins=bins), np.log2(bins))
 
 
-def test_adhd():
-    # Test delay.adhd()
+def test_adfd():
+    # Test delay.adfd()
     # Embed a straight line.
     a, b = 1.0 + np.random.random(2)
     t = np.arange(1000)
