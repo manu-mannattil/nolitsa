@@ -5,7 +5,7 @@ import numpy as np
 from nolitsa import utils
 
 
-def mle(y, maxt=500, window=10, metric='euclidean', maxnum=-1):
+def mle(y, maxt=500, window=10, metric='euclidean', maxnum=None):
     """Estimate the maximum Lyapunov exponent.
 
     Estimates the maximum Lyapunov exponent (MLE) from a
@@ -23,11 +23,11 @@ def mle(y, maxt=500, window=10, metric='euclidean', maxnum=-1):
     window : int, optional (default = 10)
         Minimum temporal separation (Theiler window) that should exist
         between near-neighbors (see Notes).
-    maxnum : int, optional (default = -1 (optimum))
+    maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
         point.  In rare cases, when there are no neighbors which have a
         non-zero distance, this will have to be increased (i.e., beyond
-        (num + 2 * window + 2)).
+        2 * window + 3).
 
     Returns
     -------
@@ -43,7 +43,7 @@ def mle(y, maxt=500, window=10, metric='euclidean', maxnum=-1):
     the near-neighbors do not lie on the same trajectory, in which case
     the estimated MLE will always be close to zero.
     """
-    index, dist = utils.neighbors(y, metric=metric, num=1, window=window,
+    index, dist = utils.neighbors(y, metric=metric, window=window,
                                   maxnum=maxnum)
     m = len(y)
     maxt = min(m - window - 1, maxt)
@@ -66,7 +66,7 @@ def mle(y, maxt=500, window=10, metric='euclidean', maxnum=-1):
 
 
 def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
-              metric='euclidean', maxnum=-1, parallel=True):
+              metric='euclidean', maxnum=None, parallel=True):
     """Estimate the maximum Lyapunov exponent from a scalar time series.
 
     Estimates the maximum Lyapunov exponent (MLE) using time-delayed
@@ -87,11 +87,11 @@ def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
     window : int, optional (default = 10)
         Minimum temporal separation (Theiler window) that should exist
         between near-neighbors (see Notes).
-    maxnum : int, optional (default = -1 (optimum))
+    maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
         point.  In rare cases, when there are no neighbors which have a
         non-zero distance, this will have to be increased (i.e., beyond
-        (num + 2 * window + 2)).
+        2 * window + 3).
     parallel : bool, optional (default = True)
         Compute the average divergence for each embedding dimension in
         parallel.

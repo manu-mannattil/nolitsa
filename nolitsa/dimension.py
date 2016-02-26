@@ -6,7 +6,7 @@ import numpy as np
 from nolitsa import utils
 
 
-def _afn(d, x, tau=1, metric='chebyshev', window=10, maxnum=-1):
+def _afn(d, x, tau=1, metric='chebyshev', window=10, maxnum=None):
     """Return E(d) and E*(d) for a single d.
 
     Returns E(d) and E*(d) for the AFN method for a single d.  This
@@ -20,7 +20,7 @@ def _afn(d, x, tau=1, metric='chebyshev', window=10, maxnum=-1):
     y2 = utils.reconstruct(x, d + 1, tau)
 
     # Find near neighbors in dimension `d`.
-    index, dist = utils.neighbors(y1, metric=metric, num=1, window=window,
+    index, dist = utils.neighbors(y1, metric=metric, window=window,
                                   maxnum=maxnum)
 
     # Compute the magnification and the increase in near-neighbor
@@ -31,7 +31,7 @@ def _afn(d, x, tau=1, metric='chebyshev', window=10, maxnum=-1):
     return np.mean(E), np.mean(Es)
 
 
-def afn(x, dim=[1], tau=1, metric='chebyshev', window=10, maxnum=-1,
+def afn(x, dim=[1], tau=1, metric='chebyshev', window=10, maxnum=None,
         parallel=True):
     """Averaged false neighbors algorithm.
 
@@ -55,11 +55,11 @@ def afn(x, dim=[1], tau=1, metric='chebyshev', window=10, maxnum=-1,
     window : int, optional (default = 10)
         Minimum temporal separation (Theiler window) that should exist
         between near neighbors.
-    maxnum : int, optional (default = -1 (optimum))
+    maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
         point.  In rare cases, when there are no neighbors which have a
         non-zero distance, this will have to be increased (i.e., beyond
-        (num + 2 * window + 2)).
+        2 * window + 3).
     parallel : bool, optional (default = True)
         Calculate E(d) and E*(d) for each d in parallel.
 
@@ -83,7 +83,8 @@ def afn(x, dim=[1], tau=1, metric='chebyshev', window=10, maxnum=-1,
                               }, processes).T
 
 
-def _fnn(d, x, tau=1, R=10.0, A=2.0, metric='euclidean', window=10, maxnum=-1):
+def _fnn(d, x, tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
+         maxnum=None):
     """Return fraction of false nearest neighbors for a single d.
 
     Return fraction of false nearest neighbors for a single d.  This
@@ -97,7 +98,7 @@ def _fnn(d, x, tau=1, R=10.0, A=2.0, metric='euclidean', window=10, maxnum=-1):
     y2 = utils.reconstruct(x, d + 1, tau)
 
     # Find near neighbors in dimension `d`.
-    index, dist = utils.neighbors(y1, metric=metric, num=1, window=window,
+    index, dist = utils.neighbors(y1, metric=metric, window=window,
                                   maxnum=maxnum)
 
     # Find all potential false neighbors using Kennel et al.'s tests.
@@ -109,7 +110,7 @@ def _fnn(d, x, tau=1, R=10.0, A=2.0, metric='euclidean', window=10, maxnum=-1):
 
 
 def fnn(x, dim=[1], tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
-        maxnum=-1, parallel=True):
+        maxnum=None, parallel=True):
     """Compute the fraction of false nearest neighbors.
 
     Implements the false nearest neighbors (FNN) method described by
@@ -136,11 +137,11 @@ def fnn(x, dim=[1], tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
     window : int, optional (default = 10)
         Minimum temporal separation (Theiler window) that should exist
         between near neighbors.
-    maxnum : int, optional (default = -1 (optimum))
+    maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
         point.  In rare cases, when there are no neighbors which have a
         non-zero distance, this will have to be increased (i.e., beyond
-        (num + 2 * window + 2)).
+        2 * window + 3).
     parallel : bool, optional (default = True)
         Calculate the fraction of false nearest neighbors for each `d`
         in parallel.

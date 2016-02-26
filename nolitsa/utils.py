@@ -95,10 +95,10 @@ def gprange(start, end, num=100):
     return start * ratio ** np.arange(num)
 
 
-def neighbors(y, metric='chebyshev', num=1, window=0, maxnum=-1):
-    """Find nearest neighbors to all points in the given array.
+def neighbors(y, metric='chebyshev', window=0, maxnum=None):
+    """Find nearest neighbors of all points in the given array.
 
-    Finds nearest neighbors to all points in the given array using
+    Finds nearest neighbors of all points in the given array using
     SciPy's KDTree search.
 
     Parameters
@@ -109,17 +109,15 @@ def neighbors(y, metric='chebyshev', num=1, window=0, maxnum=-1):
         Metric to use for distance computation.  Must be one of
         "cityblock" (aka the Manhattan metric), "chebyshev" (aka the
         maximum norm metric), or "euclidean".
-    num : int, optional (default = 1)
-        Number of near neighbors that should be found for each point.
     window : int, optional (default = 0)
         Minimum temporal separation (Theiler window) that should exist
         between near neighbors.  This is crucial while computing
         Lyapunov exponents.
-    maxnum : int, optional (default = -1 (optimum))
+    maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
         point.  In rare cases, when there are no neighbors which have a
         nonzero distance, this will have to be increased (i.e., beyond
-        (num + 2 * window + 2)).
+        2 * window + 3).
 
     Returns
     -------
@@ -141,8 +139,10 @@ def neighbors(y, metric='chebyshev', num=1, window=0, maxnum=-1):
     tree = KDTree(y)
     n = len(y)
 
-    # In most cases a nonzero neighbor will be found when maxnum = 10.
-    maxnum = max(10, maxnum, num + 2 * window + 2)
+    if not maxnum:
+        maxnum = (window + 1) + 1 + (window + 1)
+    else:
+        maxnum = max(1, maxnum)
 
     if maxnum >= n:
         raise ValueError('maxnum is bigger than array length.')
@@ -151,16 +151,16 @@ def neighbors(y, metric='chebyshev', num=1, window=0, maxnum=-1):
     indices = np.empty(n, dtype=int)
 
     for i, x in enumerate(y):
-        for k in xrange(num + 1, maxnum + 1):
+        for k in xrange(2, maxnum + 2):
             dist, index = tree.query(x, k=k, p=p)
             valid = (np.abs(index - i) > window) & (dist > 0)
 
-            if np.count_nonzero(valid) >= num:
-                dists[i] = dist[valid][:num]
-                indices[i] = index[valid][:num]
+            if np.count_nonzero(valid):
+                dists[i] = dist[valid][0]
+                indices[i] = index[valid][0]
                 break
 
-            if k == maxnum:
+            if k == (maxnum + 1):
                 raise Exception('Could not find any near neighbor with a '
                                 'nonzero distance.  Try increasing the '
                                 'value of maxnum.')

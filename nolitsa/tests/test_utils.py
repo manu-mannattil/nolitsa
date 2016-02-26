@@ -129,10 +129,10 @@ class TestNeighbors:
     def test_maxnum(self):
         # Make sure that appropriate exceptions are raised if no nonzero
         # neighbor is found with the given maxnum.
-        x = np.arange(10).repeat(15 - 1)[:, np.newaxis]
+        x = np.arange(10).repeat(15)[:, np.newaxis]
 
         # Should raise exceptions.
-        for maxnum in range(15):
+        for maxnum in range(1, 15):
             try:
                 utils.neighbors(x, maxnum=maxnum)
             except:
