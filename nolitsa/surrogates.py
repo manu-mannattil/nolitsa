@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from nolitsa import noise, utils
+from nolitsa import utils
 
 
 def ft(x):

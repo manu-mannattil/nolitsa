@@ -4,6 +4,7 @@ from __future__ import division
 
 import numpy as np
 
+from scipy import stats
 from scipy.spatial import cKDTree as KDTree
 from scipy.spatial import distance
 
@@ -309,3 +310,50 @@ def spectrum(x, dt=1.0, detrend=False):
 
     freqs = np.fft.rfftfreq(N, d=dt)
     return freqs, power
+
+
+def statcheck(x, bins=50):
+    """Check for stationarity using a chi-squared test.
+
+    Checks for stationarity in the time series using the stationarity
+    test introduced by Isliker & Kurths (1993).
+
+    Parameters
+    ----------
+    x : array
+        Input time series
+    p : int, optional (default = 50)
+        Number of equiprobable bins used to compute the histograms.
+
+    Returns
+    -------
+    chisq : float
+        Chi-squared test statistic.
+    p : float
+        p-value of the test computed according to the number of bins
+        used and `chisq` from the chi-squared distribution.  If it is
+        smaller than the significance level (say, 0.05), the series is
+        non-stationary.  (One should actually say we can reject the
+        null hypothesis of stationarity at 0.05 significance level.)
+
+    Notes
+    -----
+    The value of `p` should be selected such that there is at least 5
+    points in each bin.
+    """
+    if len(x) / bins <= 5:
+        raise ValueError('Using %d bins will result in bins with '
+                         'less than 5 points each.' % bins)
+
+    # Use the m-quantile function to compute equiprobable bins.
+    prob = np.arange(1.0 / bins, 1.0, 1.0 / bins)
+    bins = np.append(stats.mstats.mquantiles(x, prob=prob), np.max(x))
+
+    p_full = np.histogram(x, bins)[0]
+    p_full = p_full / np.sum(p_full)
+
+    y = x[:int(len(x) / 2)]
+    observed = np.histogram(y, bins)[0]
+    expected = len(y) * p_full
+
+    return stats.chisquare(observed, expected)

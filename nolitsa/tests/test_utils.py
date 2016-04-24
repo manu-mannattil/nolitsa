@@ -195,5 +195,16 @@ def test_spectrum():
         power = utils.spectrum(x)[1]
         assert_allclose(np.mean(x ** 2), np.sum(power))
 
+
+class TestStatcheck():
+    def test_stationary(self):
+        x = np.arange(500)
+        x = np.hstack([x, x])
+        assert_allclose(utils.statcheck(x)[1], 1.0)
+
+    def test_non_stationary(self):
+        x = np.arange(1000)
+        assert_(utils.statcheck(x)[1] < 1E-30)
+
 if __name__ == '__main__':
     run_module_suite()
