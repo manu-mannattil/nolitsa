@@ -312,7 +312,7 @@ def spectrum(x, dt=1.0, detrend=False):
     return freqs, power
 
 
-def statcheck(x, bins=50):
+def statcheck(x, bins=100):
     """Check for stationarity using a chi-squared test.
 
     Checks for stationarity in the time series using the stationarity
@@ -322,7 +322,7 @@ def statcheck(x, bins=50):
     ----------
     x : array
         Input time series
-    p : int, optional (default = 50)
+    bins : int, optional (default = 100)
         Number of equiprobable bins used to compute the histograms.
 
     Returns
