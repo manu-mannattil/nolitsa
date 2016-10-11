@@ -12,7 +12,7 @@ def c2(y, r=100, metric='chebyshev', window=10):
     """Compute the correlation sum for the given distances.
 
     Computes the correlation sum of the given time series for the
-    specified distances (Grassberger & Procaccia, 1983).
+    specified distances (Grassberger & Procaccia 1983).
 
     Parameters
     ----------
@@ -169,7 +169,7 @@ def ttmle(r, c, zero=True):
 
     Computes the Takens-Theiler maximum likelihood estimator (MLE) for a
     given set of distances and the corresponding correlation sums
-    (Theiler, 1990).  The MLE is calculated by assuming that C(r) obeys
+    (Theiler 1990).  The MLE is calculated by assuming that C(r) obeys
     a true power law between adjacent r's.
 
     Parameters

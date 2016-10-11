@@ -338,7 +338,7 @@ def statcheck(x, bins=100):
 
     Notes
     -----
-    The value of `p` should be selected such that there is at least 5
+    The value of `bins` should be selected such that there is at least 5
     points in each bin.
     """
     if len(x) / bins <= 5:
