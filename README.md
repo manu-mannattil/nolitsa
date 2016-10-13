@@ -1,11 +1,27 @@
 NoLiTSA
--------
+=======
 [![Licence: CC0/Public Domain](https://img.shields.io/badge/license-CC0-blue.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 
 NoLiTSA (**No**n**Li**near **T**ime **S**eries **A**nalysis) is
 a rudimentary Python module implementing several standard algorithms
 used in nonlinear time series analysis.
 
+Features
+--------
+
+* Estimation of embedding delay using autocorrelation, delayed mutual
+  information, and reconstruction expansion.
+* Embedding dimension estimation using false nearest neighbors and
+  average false neighbors.
+* Computation of correlation sum and correlation dimension from both
+  scalar and vector time series.
+* Estimation of the maximal Lyapunov exponent from both scalar and
+  vector time series.
+* Generation of FT, AAFT, and IAAFT surrogates from a scalar time
+  series.
+* Simple noise reduction scheme for filtering deterministic time series.
+* Miscellaneous functions for end point correction, stationarity check,
+  fast near neighbor search, etc.
 
 License
 -------
