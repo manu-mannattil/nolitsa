@@ -28,7 +28,7 @@ Publications
 Various iterations of the code were used in the following
 publication(s):
 
-* M. Mannattil, H. Gupta, and S. Chakraborty, “Revisiting Evidence of Chaos in X-ray Light Curves: The Case of GRS 1915+105,” [Astrophys. J. 833, 208 (2016)](https://dx.doi.org/10.3847/1538-4357/833/2/208).
+* M. Mannattil, H. Gupta, and S. Chakraborty, “Revisiting Evidence of Chaos in X-ray Light Curves: The Case of GRS 1915+105,” [Astrophys. J. __833__, 208 (2016)](https://dx.doi.org/10.3847/1538-4357/833/2/208).
 
 License
 -------
