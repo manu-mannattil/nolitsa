@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+
+from __future__ import absolute_import, division, print_function
 
 import numpy as np
-from nolitsa import utils
+from . import utils
 
 
 def _afn(d, x, tau=1, metric='chebyshev', window=10, maxnum=None):

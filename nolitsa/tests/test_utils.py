@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import, division, print_function
+
 import itertools
 import numpy as np
 
@@ -46,7 +48,7 @@ def test_gprange():
     assert_allclose(utils.gprange(start, end, num=num), desired)
 
 
-class TestNeighbors:
+class TestNeighbors(object):
     # Test utils.neighbors()
 
     def test_uniform_acceleration(self):
@@ -196,7 +198,7 @@ def test_spectrum():
         assert_allclose(np.mean(x ** 2), np.sum(power))
 
 
-class TestStatcheck():
+class TestStatcheck(object):
     def test_stationary(self):
         x = np.arange(500)
         x = np.hstack([x, x])

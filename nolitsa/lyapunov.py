@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
+
 import numpy as np
-from nolitsa import utils
+
+from . import utils
 
 
 def mle(y, maxt=500, window=10, metric='euclidean', maxnum=None):
@@ -51,7 +53,7 @@ def mle(y, maxt=500, window=10, metric='euclidean', maxnum=None):
     d = np.empty(maxt)
     d[0] = np.mean(np.log(dist))
 
-    for t in xrange(1, maxt):
+    for t in range(1, maxt):
         t1 = np.arange(t, m)
         t2 = index[:-t] + t
 

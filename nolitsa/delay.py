@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
+
 import numpy as np
-from nolitsa import utils
+
+from . import utils
 
 
 def acorr(x, maxtau=None, norm=True, detrend=True):
@@ -149,7 +151,7 @@ def adfd(x, dim=1, maxtau=100):
 
     maxtau = min(maxtau, int(N / dim))
 
-    for tau in xrange(1, maxtau):
+    for tau in range(1, maxtau):
         y1 = utils.reconstruct(x, dim=dim, tau=tau)
 
         # Reconstruct with zero time delay.

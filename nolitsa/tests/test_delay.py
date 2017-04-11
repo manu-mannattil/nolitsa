@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import, division, print_function
 import numpy as np
 from nolitsa import delay
 from numpy.testing import assert_allclose, run_module_suite
 
 
-class TestAcorr:
+class TestAcorr(object):
     # Test delay.acorr()
 
     def test_random(self):
@@ -17,7 +18,7 @@ class TestAcorr:
         desired = np.empty(n)
         desired[0] = np.sum(x ** 2)
 
-        for i in xrange(1, n):
+        for i in range(1, n):
             desired[i] = np.sum(x[:-i] * x[i:])
 
         desired = desired / desired[0]

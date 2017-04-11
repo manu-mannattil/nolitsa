@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
 from scipy.spatial import distance
-from nolitsa import utils
+from . import utils
 
 
 def c2(y, r=100, metric='chebyshev', window=10):
@@ -68,7 +68,7 @@ def c2(y, r=100, metric='chebyshev', window=10):
     c = np.zeros(len(r))
     n = len(y)
 
-    for i in xrange(n - window - 1):
+    for i in range(n - window - 1):
         dists = distance.cdist([y[i]], y[i + window + 1:], metric=metric)[0]
         c += np.histogram(dists, bins=bins)[0]
 
@@ -156,7 +156,7 @@ def d2(r, c, hwin=3):
     d = np.empty(N)
     x, y = np.log(r), np.log(c)
 
-    for i in xrange(N):
+    for i in range(N):
         p, q = x[i:i + 2 * hwin + 1], y[i:i + 2 * hwin + 1]
         A = np.vstack([p, np.ones(2 * hwin + 1)]).T
         d[i] = np.linalg.lstsq(A, q)[0][0]

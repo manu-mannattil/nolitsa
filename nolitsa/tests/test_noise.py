@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 import numpy as np
 
 from nolitsa import noise
 from numpy.testing import assert_allclose, run_module_suite
 
 
-class TestNoRed:
+class TestNoRed(object):
     # Test noise.nored()
     def test_zero_radius(self):
         # With zero radius the function should simply return the
@@ -47,7 +47,7 @@ class TestNoRed:
                         z[-1] = 0.5 * (x[-2] + x[-1])
                         z[1:-1] = (x[:-2] + x[1:-1] + x[2:]) / 3.0
                     elif dim % 2 == 0:
-                        c = tau * dim / 2
+                        c = tau * dim // 2
 
                         # Start points.
                         z[:c] = x[:c]
@@ -62,7 +62,7 @@ class TestNoRed:
                             # If c <= tau, then there is only one end point.
                             z[-(c - tau):] = x[-(c - tau):]
                     else:
-                        c = tau * (dim - 1) / 2
+                        c = tau * (dim - 1) // 2
 
                         # Start points.
                         z[:c] = x[:c]

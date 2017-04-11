@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+
+from __future__ import absolute_import, division, print_function
+
 import numpy as np
-from nolitsa import utils
+from . import utils
 
 
 def ft(x):
@@ -185,7 +188,7 @@ def mismatch(x, length=None, weight=0.5, neigh=3):
     if not length:
         primes = np.array([2, 3, 5, 7, 11])
         i = np.argmax(primes ** np.floor(np.log(n) / np.log(primes)) - n)
-        length = primes[i] ** (np.floor(np.log(n) / np.log(primes[i])))
+        length = int(primes[i] ** (np.floor(np.log(n) / np.log(primes[i]))))
 
     d = np.zeros(n - (length + neigh))
 

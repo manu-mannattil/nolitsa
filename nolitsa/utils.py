@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
@@ -152,7 +152,7 @@ def neighbors(y, metric='chebyshev', window=0, maxnum=None):
     indices = np.empty(n, dtype=int)
 
     for i, x in enumerate(y):
-        for k in xrange(2, maxnum + 2):
+        for k in range(2, maxnum + 2):
             dist, index = tree.query(x, k=k, p=p)
             valid = (np.abs(index - i) > window) & (dist > 0)
 

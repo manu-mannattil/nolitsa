@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
+
 import numpy as np
 
 from nolitsa import dimension
 from numpy.testing import assert_allclose, run_module_suite
 
 
-class TestAFN:
+class TestAFN(object):
     # Tests for dimension.afn()
 
     def test_noise(self):
@@ -56,7 +57,7 @@ class TestAFN:
             assert_allclose(Es_des, Es)
 
 
-class TestFNN():
+class TestFNN(object):
     # Because of the binary magnifaction function used in the FNN test,
     # it's not easy to create unit-tests like AFN.  So we make-do with
     # silly tests.

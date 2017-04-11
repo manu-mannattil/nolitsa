@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+
+from __future__ import absolute_import, division, print_function
+
 import numpy as np
 from scipy.spatial import cKDTree as KDTree
-from nolitsa import utils
+from . import utils
 
 
 def sma(x, hwin=5):
@@ -89,13 +92,13 @@ def nored(x, dim=1, tau=1, r=0, metric='chebyshev', repeat=1):
 
     # Choose middle coordinate appropriately.
     if dim % 2 == 0:
-        mid = tau * dim / 2
+        mid = tau * dim // 2
     else:
-        mid = tau * (dim - 1) / 2
+        mid = tau * (dim - 1) // 2
 
     y = np.copy(x)
 
-    for rep in xrange(repeat):
+    for rep in range(repeat):
         z = np.copy(y)
         ps = utils.reconstruct(y, dim=dim, tau=tau)
 
@@ -104,9 +107,9 @@ def nored(x, dim=1, tau=1, r=0, metric='chebyshev', repeat=1):
         # State-space averaging.
         # (We don't use tree.query_ball_tree() as it almost always
         # results in a memory overflow, even though it's faster.)
-        for i in xrange(len(ps)):
+        for i in range(len(ps)):
             neighbors = tree.query_ball_point(ps[i], r=r, p=p)
-            y[i + mid] = np.mean(ps[neighbors][:, mid / tau])
+            y[i + mid] = np.mean(ps[neighbors][:, mid // tau])
 
         # Choose the average correction as the new radius.
         r = np.sqrt(np.mean((y - z) ** 2))

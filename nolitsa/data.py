@@ -5,8 +5,7 @@
 Parameters and initial conditions have been taken from Sprott (2003).
 """
 
-
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
