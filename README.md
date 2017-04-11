@@ -28,17 +28,16 @@ Features
 Installation
 ------------
 
-NoLiTSA can be installed by running
+NoLiTSA can be installed using pip by running
 
-    $ pip install git+https://https://github.com/manu-mannattil/nolitsa.git
+    $ pip install git+https://github.com/manu-mannattil/nolitsa.git
 
 NoLiTSA requires `numpy` and `scipy`, and should (theoretically) work
 with both Python 2 and 3.
 
 ### Tests
 
-NoLiTSA's unit tests can be run by calling `nosetests` from the
-`nolitsa/tests/` directory, or by using
+NoLiTSA's unit tests can be executed by calling `nosetests`, or by using
 
     $ python setup.py test
 
