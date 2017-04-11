@@ -3,9 +3,12 @@ python:
     - "2.7"
     - "3.6"
 before_install:
+    # Without this old versions of pip can fail to install NumPy.
     - pip install -U pip
 install:
-    - pip install .
+    - pip install python-coveralls
     - pip install -r requirements.txt
 script:
-    - nosetests
+    - nosetests --with-coverage --cover-package=nolitsa
+after_success:
+    - coveralls
