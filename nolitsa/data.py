@@ -225,7 +225,7 @@ def mackey_glass(length=10000, x0=None, a=0.2, b=0.1, c=10.0, tau=23.0,
     """Generate time series using the Mackey-Glass equation.
 
     Generates time series using the discrete approximation of the
-    Mackey-Glass delay differential equation described in Grassberger &
+    Mackey-Glass delay differential equation described by Grassberger &
     Procaccia (1983).
 
     Parameters
