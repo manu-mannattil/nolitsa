@@ -27,9 +27,6 @@ def test_c2():
         elif metric == 'euclidean':
             modb = np.sqrt(np.sum(b ** 2))
 
-        minr = (window + 1) * modb
-        maxr = (n - 1) * modb
-
         # We need to offset the r values a bit so that the half-open
         # bins used in np.histogram get closed.
         r = np.arange(window + 1, n) * modb + 1e-10
@@ -77,6 +74,7 @@ def test_ttmle():
 
     desired = np.pi * (c[1:] / (c[1:] - c[0]))
     assert_allclose(desired, d2.ttmle(r, c, zero=False)[1])
+
 
 if __name__ == '__main__':
     run_module_suite()

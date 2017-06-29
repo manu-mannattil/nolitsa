@@ -44,5 +44,6 @@ def test_mle_embed():
     assert_allclose(desired, lyapunov.mle_embed(x, dim=dim, tau=tau,
                                                 maxt=25)[0], atol=1e-1)
 
+
 if __name__ == '__main__':
     run_module_suite()

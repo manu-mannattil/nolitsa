@@ -18,17 +18,17 @@ class TestAFN(object):
         window = 10
         metric = 'chebyshev'
         E, Es = dimension.afn(x, dim=dim, metric=metric, window=window)
-        E1, E2 = E[1:] / E[:-1], Es[1:] / Es[:-1]
+        _, E2 = E[1:] / E[:-1], Es[1:] / Es[:-1]
 
-        # The standard deviation of E2 should be ~ 0 for uncorrelated random
-        # numbers (Ramdani et al., 2006).  Additionally, the mean of E2
-        # should be ~ 1.0.
+        # The standard deviation of E2 should be ~ 0 for uncorrelated
+        # random numbers [Ramdani et al., Physica D 223, 229 (2006)].
+        # Additionally, the mean of E2 should be ~ 1.0.
         assert_allclose(np.std(E2), 0, atol=0.1)
         assert_allclose(np.mean(E2), 1, atol=0.1)
 
     def test_line(self):
         # Test dimension.afn() by embedding a line.
-        # Particle moving uniformly in 1D.
+        # Particle moving uniformly in 1-D.
         a, b = np.random.random(2)
         t = np.arange(100)
         x = a + b * t
@@ -95,6 +95,7 @@ class TestFNN(object):
 
         f1 = dimension.fnn(x, dim=dim, tau=25)[0]
         np.allclose(f1, desired)
+
 
 if __name__ == '__main__':
     run_module_suite()

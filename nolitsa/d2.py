@@ -1,5 +1,26 @@
 # -*- coding: utf-8 -*-
 
+"""Functions to estimate correlation sums and dimensions.
+
+This module provides functions to estimate the correlation sum and the
+correlation dimension from both scalar and vector time series.
+
+Correlation Sum
+---------------
+
+  * c2 -- estimates the correlation sum from a vector time series.
+  * c2_embed -- estimates the correlation sum from a scalar time series
+    after embedding.
+
+Correlation Dimension
+---------------------
+
+  * d2 -- estimates the "local" correlation dimension from correlation
+    sums and distances using a local least squares fit.
+  * ttmle -- estimates the correlation dimension from correlation sums
+    and distances using a maximum likelihood estimator.
+"""
+
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
@@ -17,10 +38,11 @@ def c2(y, r=100, metric='chebyshev', window=10):
     Parameters
     ----------
     y : ndarray
-        N-dimensional real input array containing points in the phase space.
+        N-dimensional real input array containing points in the phase
+        space.
     r : int or array, optional (default = 100)
         Distances for which the correlation sum should be calculated.
-        If `r` is an int, then the distances are taken to be a geometric
+        If r is an int, then the distances are taken to be a geometric
         progression between a minimum and maximum length scale
         (estimated according to the metric and the input series).
     metric : string, optional (default = 'chebyshev')
@@ -35,16 +57,16 @@ def c2(y, r=100, metric='chebyshev', window=10):
     -------
     r : array
         Distances for which correlation sums have been calculated.  Note
-        that this might be different from the supplied `r` as only the
-        ones with a nonzero ``C(r)`` is included.
+        that this might be different from the supplied r as only the
+        distances with a nonzero C(r) are included.
     c : array
         Correlation sums for the given distances.
 
     Notes
     -----
-    This function is meant to be used to calculate the correlation sum from an
-    array of points in the phase space.  If you want to calculate it after
-    embedding a time series, see `d2_embed()`.
+    This function is meant to be used to calculate the correlation sum
+    from an array of points in the phase space.  If you want to
+    calculate it after embedding a time series, see d2_embed().
     """
     # Estimate the extent of the reconstructed phase space.
     if isinstance(r, int):
@@ -80,23 +102,23 @@ def c2(y, r=100, metric='chebyshev', window=10):
 
 def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
              parallel=True):
-    """Compute the correlation sum using time delayed vectors.
+    """Compute the correlation sum using time-delayed vectors.
 
-    Computes the correlation sum using time delayed vectors constructed
-    from the time series.
+    Computes the correlation sum using time-delayed vectors constructed
+    from a time series.
 
     Parameters
     ----------
     x : array
-        1D real input array containing the time series.
+        1-D real input array containing the time series.
     dim : int array, optional (default = [1])
-        Embedding dimensions for which the correlation sum should be
+        Embedding dimensions for which the correlation sums ought to be
         computed.
     tau : int, optional (default = 1)
         Time delay.
-    r : int or array (default = 100)
+    r : int or array, optional (default = 100)
         Distances for which the correlation sum should be calculated.
-        If `r` is an int, then the distances are taken to be a geometric
+        If r is an int, then the distances are taken to be a geometric
         progression between a minimum and maximum length scale
         (estimated according to the metric and the input series).
     metric : string, optional (default = 'euclidean')
@@ -107,14 +129,14 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
         Minimum temporal separation (Theiler window) that should exist
         between pairs.
     parallel : bool, optional (default = True)
-        Calculate the correlation sum for each embedding dimension in
+        Calculate the correlation sums for each embedding dimension in
         parallel.
 
     Returns
     -------
     rc : ndarray
-        The output is an array with shape ``(len(dim), 2, len(r))`` of
-        ``(r, C(r))`` pairs for each dimension.
+        The output is an array with shape (len(dim), 2, len(r)) of
+        (r, C(r)) pairs for each dimension.
     """
     if parallel:
         processes = None
@@ -131,11 +153,12 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
 
 
 def d2(r, c, hwin=3):
-    """Compute D2 using a local least square fit.
+    """Compute D2 using a local least squares fit.
 
-    Computes D2 using a local least square fit of the equation C(r) ~
-    r^D2.  D2 at each point is computed by doing a least square fit
-    inside a window of size 2*hwin + 1 around it (Galka, 2000).
+    Computes D2 using a local least squares fit of the equation
+    C(r) ~ r^D2.  D2 at each point is computed by doing a least
+    squares fit inside a window of size 2*hwin + 1 around it (Galka
+    2000).
 
     Parameters
     ----------
@@ -149,7 +172,7 @@ def d2(r, c, hwin=3):
     Returns
     -------
     d : array
-        Average D2 at each r in `r[hwin:-hwin]`
+        Average D2 at each distance in r[hwin:-hwin]
     """
     N = len(r) - 2 * hwin
 
@@ -167,8 +190,8 @@ def d2(r, c, hwin=3):
 def ttmle(r, c, zero=True):
     """Compute the Takens-Theiler maximum likelihood estimator.
 
-    Computes the Takens-Theiler maximum likelihood estimator (MLE) for a
-    given set of distances and the corresponding correlation sums
+    Computes the Takens-Theiler maximum likelihood estimator (MLE) for
+    a given set of distances and the corresponding correlation sums
     (Theiler 1990).  The MLE is calculated by assuming that C(r) obeys
     a true power law between adjacent r's.
 
@@ -192,10 +215,11 @@ def ttmle(r, c, zero=True):
     -----
     Integrating the expression for MLE from zero has the advantage that
     for a true power law of the from C(r) ~ r^D, the MLE gives D as the
-    estimate for all values of r.  Some implementations (e.g., TISEAN)
-    starts the integration only from the minimum distance supplied.  In
-    any case this does not make much difference as the only real use of
-    a "dimension" estimator is as a statistic for surrogate testing.
+    estimate for all values of r.  Some implementations (e.g., TISEAN,
+    Hegger et al. 1999) starts the integration only from the minimum
+    distance supplied.  In any case, this does not make much difference
+    as the only real use of a "dimension" estimator is as a statistic
+    for surrogate testing.
     """
     # Prune the arrays so that only unique correlation sums remain.
     c, i = np.unique(c, return_index=True)
@@ -207,8 +231,8 @@ def ttmle(r, c, zero=True):
     a = (y2 - y1) / (x2 - x1)
     b = (y1 * x2 - y2 * x1) / (x2 - x1)
 
-    # To integrate we use the discrete expression given in
-    # the TISEAN paper (Hegger et al., 1999).
+    # To integrate, we use the discrete expression (Eq. 24) given in
+    # the TISEAN paper (Hegger et al. 1999).
     denom = np.cumsum(np.exp(b) / a * (r[1:] ** a - r[:-1] ** a))
 
     if zero:

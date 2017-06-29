@@ -77,5 +77,6 @@ class TestNoRed(object):
 
                     assert_allclose(y, z)
 
+
 if __name__ == '__main__':
     run_module_suite()

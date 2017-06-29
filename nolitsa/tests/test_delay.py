@@ -68,5 +68,6 @@ def test_adfd():
     desired = np.sqrt(sqsum(dim - 1)) * b * np.arange(maxtau)
     assert_allclose(delay.adfd(x, dim=dim, maxtau=maxtau), desired)
 
+
 if __name__ == '__main__':
     run_module_suite()

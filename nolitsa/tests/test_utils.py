@@ -208,5 +208,6 @@ class TestStatcheck(object):
         x = np.arange(1000)
         assert_(utils.statcheck(x)[1] < 1E-30)
 
+
 if __name__ == '__main__':
     run_module_suite()

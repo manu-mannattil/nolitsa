@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 
+"""Functions to estimate embedding dimension.
+
+This module provides a set of functions to estimate the minimum
+embedding dimension required to embed a scalar time series.
+
+  * afn -- use the averaged false neighbors method to estimate the
+    minimum embedding dimension.
+  * fnn -- use the false nearest neighbors method to estimate the
+    minimum embedding dimension.
+"""
 
 from __future__ import absolute_import, division, print_function
 
@@ -8,23 +18,23 @@ from . import utils
 
 
 def _afn(d, x, tau=1, metric='chebyshev', window=10, maxnum=None):
-    """Return E(d) and E*(d) for a single d.
+    """Return E(d) and E^*(d) for a single d.
 
-    Returns E(d) and E*(d) for the AFN method for a single d.  This
-    function is meant to be called from the main `afn` function.  See
-    the docstring of `afn` for more.
+    Returns E(d) and E^*(d) for the AFN method for a single d.  This
+    function is meant to be called from the main afn() function.  See
+    the docstring of afn( for more.)
     """
-    # We need to reduce the number of points in dimension `d` by `tau`
+    # We need to reduce the number of points in dimension d by tau
     # so that after reconstruction, there'll be equal number of points
-    # in both dimension `d` as well as dimension `d + 1`.
+    # at both dimension d as well as dimension d + 1.
     y1 = utils.reconstruct(x[:-tau], d, tau)
     y2 = utils.reconstruct(x, d + 1, tau)
 
-    # Find near neighbors in dimension `d`.
+    # Find near neighbors in dimension d.
     index, dist = utils.neighbors(y1, metric=metric, window=window,
                                   maxnum=maxnum)
 
-    # Compute the magnification and the increase in near-neighbor
+    # Compute the magnification and the increase in the near-neighbor
     # distances and return the averages.
     E = utils.dist(y2, y2[index], metric=metric) / dist
     Es = np.abs(y2[:, -1] - y2[index, -1])
@@ -37,15 +47,15 @@ def afn(x, dim=[1], tau=1, metric='chebyshev', window=10, maxnum=None,
     """Averaged false neighbors algorithm.
 
     This function implements the averaged false neighbors method
-    described by Cao (1997) to calculate the minimum embedding dimension
+    described by Cao (1997) to estimate the minimum embedding dimension
     required to embed a scalar time series.
 
     Parameters
     ----------
     x : array
-        1D scalar time series.
+        1-D scalar time series.
     dim : int array (default = [1])
-        Embedding dimensions for which E(d) and E*(d) should be
+        Embedding dimensions for which E(d) and E^*(d) should be
         computed.
     tau : int, optional (default = 1)
         Time delay.
@@ -58,18 +68,18 @@ def afn(x, dim=[1], tau=1, metric='chebyshev', window=10, maxnum=None,
         between near neighbors.
     maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
-        point.  In rare cases, when there are no neighbors which have a
-        non-zero distance, this will have to be increased (i.e., beyond
+        point.  In rare cases, when there are no neighbors that are at a
+        nonzero distance, this will have to be increased (i.e., beyond
         2 * window + 3).
     parallel : bool, optional (default = True)
-        Calculate E(d) and E*(d) for each d in parallel.
+        Calculate E(d) and E^*(d) for each d in parallel.
 
     Returns
     -------
     E : array
         E(d) for each of the d's.
     Es : array
-        E*(d) for each of the d's.
+        E^*(d) for each of the d's.
     """
     if parallel:
         processes = None
@@ -88,17 +98,17 @@ def _fnn(d, x, tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
          maxnum=None):
     """Return fraction of false nearest neighbors for a single d.
 
-    Return fraction of false nearest neighbors for a single d.  This
-    function is meant to be called from the main `fnn` function.  See
-    the docstring of `fnn` for more.
+    Returns the fraction of false nearest neighbors for a single d.
+    This function is meant to be called from the main fnn() function.
+    See the docstring of fnn() for more.
     """
-    # We need to reduce the number of points in dimension `d` by `tau`
+    # We need to reduce the number of points in dimension d by tau
     # so that after reconstruction, there'll be equal number of points
-    # in both dimension `d` as well as dimension `d + 1`.
+    # at both dimension d as well as dimension d + 1.
     y1 = utils.reconstruct(x[:-tau], d, tau)
     y2 = utils.reconstruct(x, d + 1, tau)
 
-    # Find near neighbors in dimension `d`.
+    # Find near neighbors in dimension d.
     index, dist = utils.neighbors(y1, metric=metric, window=window,
                                   maxnum=maxnum)
 
@@ -121,16 +131,16 @@ def fnn(x, dim=[1], tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
     Parameters
     ----------
     x : array
-        1D real input array containing the time series.
+        1-D real input array containing the time series.
     dim : int array (default = [1])
         Embedding dimensions for which the fraction of false nearest
         neighbors should be computed.
     tau : int, optional (default = 1)
         Time delay.
     R : float, optional (default = 10.0)
-        Tolerance level of FNN Test I.
+        Tolerance parameter for FNN Test I.
     A : float, optional (default = 2.0)
-        Tolerance level of FNN Test II.
+        Tolerance parameter for FNN Test II.
     metric : string, optional (default = 'euclidean')
         Metric to use for distance computation.  Must be one of
         "cityblock" (aka the Manhattan metric), "chebyshev" (aka the
@@ -140,11 +150,11 @@ def fnn(x, dim=[1], tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
         between near neighbors.
     maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
-        point.  In rare cases, when there are no neighbors which have a
-        non-zero distance, this will have to be increased (i.e., beyond
+        point.  In rare cases, when there are no neighbors that are at a
+        nonzero distance, this will have to be increased (i.e., beyond
         2 * window + 3).
     parallel : bool, optional (default = True)
-        Calculate the fraction of false nearest neighbors for each `d`
+        Calculate the fraction of false nearest neighbors for each d
         in parallel.
 
     Returns
@@ -160,7 +170,7 @@ def fnn(x, dim=[1], tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
     Notes
     -----
     The FNN fraction is metric depended for noisy time series.  In
-    particular, the second FNN test which measures the boundedness of
+    particular, the second FNN test, which measures the boundedness of
     the reconstructed attractor depends heavily on the metric used.
     E.g., if the Chebyshev metric is used, the near-neighbor distances
     in the reconstructed attractor are always bounded and therefore the

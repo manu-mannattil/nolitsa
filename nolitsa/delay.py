@@ -1,5 +1,20 @@
 # -*- coding: utf-8 -*-
 
+"""Functions to estimate the embedding delay.
+
+This module provides a set of functions that can be used to estimate the
+time delay required to create embed a scalar time series.
+
+  * acorr -- computes the autocorrelation of a scalar time series.
+  * mi -- computes the mutual information between two scalar time
+    series.
+  * dmi -- computes the mutual information between a scalar time series
+    and its time-delayed counterpart.
+  * adfd -- computes the average displacement of the time-delayed
+    vectors from the phase space diagonal as a function of the time
+    delay.
+"""
+
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
@@ -16,9 +31,9 @@ def acorr(x, maxtau=None, norm=True, detrend=True):
     Parameters
     ----------
     x : array_like
-        Scalar time series.
+        1-D real time series of length N.
     maxtau : int, optional (default = N)
-        Return the autocorrelation only upto this time delay.
+        Return the autocorrelation only up to this time delay.
     norm : bool, optional (default = True)
         Normalize the autocorrelation so that it is equal to 1 for
         zero time delay.
@@ -30,7 +45,7 @@ def acorr(x, maxtau=None, norm=True, detrend=True):
     Returns
     -------
     r : array
-        Array with the autocorrelation upto maxtau.
+        Array with the autocorrelation up to maxtau.
     """
     x = np.asarray(x)
     N = len(x)
@@ -58,7 +73,7 @@ def mi(x, y, bins=64):
     """Calculate the mutual information between two random variables.
 
     Calculates mutual information, I = S(x) + S(y) - S(x,y), between two
-    random variables x and y.
+    random variables x and y, where S(x) is the Shannon entropy.
 
     Parameters
     ----------
@@ -93,25 +108,31 @@ def mi(x, y, bins=64):
 
 
 def dmi(x, maxtau=1000, bins=64):
-    """Return the time delayed mutual information of ``x_i``.
+    """Return the time-delayed mutual information of x_i.
 
-    Returns the mutual information between ``x_i`` and ``x_{i + t}``
-    upto a `t` equal to `maxtau` (i.e., the time delayed mutual
-    information).
+    Returns the mutual information between x_i and x_{i + t} (i.e., the
+    time-delayed mutual information), up to a t equal to maxtau.  Based
+    on the paper by Fraser & Swinney (1986), but uses a much simpler,
+    albeit, time consuming algorithm.
 
     Parameters
     ----------
     x : array
-        1D scalar time series.
+        1-D real time series of length N.
     maxtau : int, optional (default = min(N, 1000))
-        Return the mutual information only upto this time delay.
+        Return the mutual information only up to this time delay.
     bins : int
         Number of bins to use while calculating the histogram.
 
     Returns
     -------
     ii : array
-        Array with the time delayed mutual information upto maxtau.
+        Array with the time-delayed mutual information up to maxtau.
+
+    Notes
+    -----
+    For the purpose of finding the time delay of minimum delayed mutual
+    information, the exact number of bins is not very important.
     """
     N = len(x)
     maxtau = min(N, maxtau)
@@ -128,14 +149,14 @@ def dmi(x, maxtau=1000, bins=64):
 def adfd(x, dim=1, maxtau=100):
     """Compute average displacement from the diagonal (ADFD).
 
-    Computes the average displacement of the time delayed vectors from
+    Computes the average displacement of the time-delayed vectors from
     the phase space diagonal which helps in picking a suitable time
-    delay (Rosenstein et al., 1994).
+    delay (Rosenstein et al. 1994).
 
     Parameters
     ----------
     x : array
-        1D real input array containing the time series.
+        1-D real time series of length N.
     dim : int, optional (default = 1)
         Embedding dimension.
     maxtau : int, optional (default = 100)
@@ -144,7 +165,7 @@ def adfd(x, dim=1, maxtau=100):
     Returns
     -------
     disp : array
-        ADFD for all time delays up to `maxtau`.
+        ADFD for all time delays up to maxtau.
     """
     disp = np.zeros(maxtau)
     N = len(x)

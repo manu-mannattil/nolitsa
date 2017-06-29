@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 
+"""Functions to estimate the maximum Lyapunov exponent.
+
+This module provides two functions to estimate the maximum Lyapunov
+exponent (MLE) from a scalar and vector time series.
+
+  * mle -- estimate the MLE from a vector time series
+  * mle_embed -- estimate the MLE from a scalar time series after
+    reconstruction.
+"""
+
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
@@ -24,17 +34,17 @@ def mle(y, maxt=500, window=10, metric='euclidean', maxnum=None):
         should be computed.
     window : int, optional (default = 10)
         Minimum temporal separation (Theiler window) that should exist
-        between near-neighbors (see Notes).
+        between near neighbors (see Notes).
     maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
-        point.  In rare cases, when there are no neighbors which have a
-        non-zero distance, this will have to be increased (i.e., beyond
+        point.  In rare cases, when there are no neighbors that are at a
+        nonzero distance, this will have to be increased (i.e., beyond
         2 * window + 3).
 
     Returns
     -------
     d : array
-        Average divergence for each time upto `maxt`.
+        Average divergence for each time up to maxt.
 
     Notes
     -----
@@ -42,7 +52,7 @@ def mle(y, maxt=500, window=10, metric='euclidean', maxnum=None):
     estimated by linearly fitting the average divergence (i.e., the
     average of the logarithms of near-neighbor distances) with time.
     It is also important to choose an appropriate Theiler window so that
-    the near-neighbors do not lie on the same trajectory, in which case
+    the near neighbors do not lie on the same trajectory, in which case
     the estimated MLE will always be close to zero.
     """
     index, dist = utils.neighbors(y, metric=metric, window=window,
@@ -72,12 +82,12 @@ def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
     """Estimate the maximum Lyapunov exponent from a scalar time series.
 
     Estimates the maximum Lyapunov exponent (MLE) using time-delayed
-    vectors created from a scalar time series (Rosenstein et al., 1993).
+    vectors created from a scalar time series (Rosenstein et al. 1993).
 
     Parameters
     ----------
     x : ndarray
-        1D real input array containing the time series.
+        1-D real input array containing the time series.
     dim : int array, optional (default = [1])
         Embedding dimensions for which the average divergence should be
         computed.
@@ -88,11 +98,11 @@ def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
         should be computed.
     window : int, optional (default = 10)
         Minimum temporal separation (Theiler window) that should exist
-        between near-neighbors (see Notes).
+        between near neighbors (see Notes).
     maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
-        point.  In rare cases, when there are no neighbors which have a
-        non-zero distance, this will have to be increased (i.e., beyond
+        point.  In rare cases, when there are no neighbors that are at a
+        nonzero distance, this will have to be increased (i.e., beyond
         2 * window + 3).
     parallel : bool, optional (default = True)
         Compute the average divergence for each embedding dimension in
@@ -101,7 +111,7 @@ def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
     Returns
     -------
     d : array
-        Average divergence for each time upto `maxt`, for each embedding
+        Average divergence for each time up to maxt, for each embedding
         dimension.
 
     Notes
@@ -110,7 +120,7 @@ def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
     estimated by linearly fitting the average divergence (i.e., the
     average of the logarithms of near-neighbor distances) with time.
     It is also important to choose an appropriate Theiler window so that
-    the near-neighbors do not lie on the same trajectory, in which case
+    the near neighbors do not lie on the same trajectory, in which case
     the estimated MLE will always be close to zero.
     """
     if parallel:

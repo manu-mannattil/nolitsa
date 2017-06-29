@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+"""Functions for noise reduction.
+
+This module provides two functions for reducing noise in a time series.
+
+  * sma -- returns the simple moving average of a time series.
+  * nored -- simple noise reduction algorithm to suppress noise in
+    deterministic time series.
+"""
 
 from __future__ import absolute_import, division, print_function
 
@@ -16,7 +24,7 @@ def sma(x, hwin=5):
     Parameters
     ----------
     x : array
-        1D real input array of length N containing the time series.
+        1-D real input array of length N containing the time series.
     hwin : int, optional (default = 5)
         Half-window length.  Actual window size is 2*hwin + 1.
 
@@ -43,13 +51,13 @@ def sma(x, hwin=5):
 def nored(x, dim=1, tau=1, r=0, metric='chebyshev', repeat=1):
     """Simple noise reduction based on local phase space averaging.
 
-    Simple noise reduction based on local phase space averaging
-    (Schreiber, 1993; Kantz & Schreiber, 2003).
+    Simple noise reduction scheme based on local phase space averaging
+    (Schreiber 1993; Kantz & Schreiber 2004).
 
     Parameters
     ----------
     x : array
-        1D real input array containing the time series.
+        1-D real input array containing the time series.
     dim : int, optional (default = 1)
         Embedding dimension.
     tau : int, optional (default = 1)
@@ -66,19 +74,19 @@ def nored(x, dim=1, tau=1, r=0, metric='chebyshev', repeat=1):
     Return
     ------
     y : array
-        1D real output array containing the time series after noise
+        1-D real output array containing the time series after noise
         reduction.
 
     Notes
     -----
     Choosing the right neighborhood radius is crucial for proper noise
     reduction.  A large radius will result in too much filtering.  By
-    default a radius of zero is used, which means that no noise
+    default, a radius of zero is used, which means that no noise
     reduction is done.  Note that the radius also depends on the metric
     used for distance computation.  Best results are often obtained
-    using large embedding dimensions with a delay of 1 and the Chebyshev
+    using large embedding dimensions with a unit delay and the Chebyshev
     metric.  (This function is a featureful equivalent of the TISEAN
-    program `lazy`.)
+    program "lazy".)
     """
     if metric == 'cityblock':
         p = 1
@@ -90,7 +98,7 @@ def nored(x, dim=1, tau=1, r=0, metric='chebyshev', repeat=1):
         raise ValueError('Unknown metric.  Should be one of "cityblock", '
                          '"euclidean", or "chebyshev".')
 
-    # Choose middle coordinate appropriately.
+    # Choose the middle coordinate appropriately.
     if dim % 2 == 0:
         mid = tau * dim // 2
     else:

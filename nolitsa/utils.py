@@ -1,5 +1,21 @@
 # -*- coding: utf-8 -*-
 
+"""Miscellaneous utility functions.
+
+A module for common utility functions used elsewhere.
+
+  * corruput -- corrupts a time series with noise.
+  * dist -- computes the distance between points from two arrays.
+  * gprange -- generates a geometric progression between two points.
+  * neighbors -- finds the nearest neighbors of all points in an array.
+  * parallel_map -- a parallel version of map().
+  * reconstruct -- constructs time-delayed vectors from a scalar time
+    series.
+  * rescale -- rescales a scalar time series into a desired interval.
+  * spectrum -- returns the power spectrum of a scalar time series.
+  * statcheck -- checks if a time series is stationary.
+"""
+
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
@@ -18,16 +34,16 @@ def corrupt(x, y, snr=100):
     Parameters
     ----------
     x : array
-        1D array with scalar time series (the 'signal').
+        1-D array with scalar time series (the 'signal').
     y : ndarray
-        1D array with noise (the 'noise').
+        1-D array with noise (the 'noise').
     snr : float, optional (default = 100).
         Signal-to-noise ratio (SNR) (see Notes).
 
     Returns
     -------
     x : array
-        1D array with corrupted series.
+        1-D array with corrupted series.
 
     Notes
     -----
@@ -99,13 +115,13 @@ def gprange(start, end, num=100):
 def neighbors(y, metric='chebyshev', window=0, maxnum=None):
     """Find nearest neighbors of all points in the given array.
 
-    Finds nearest neighbors of all points in the given array using
+    Finds the nearest neighbors of all points in the given array using
     SciPy's KDTree search.
 
     Parameters
     ----------
     y : ndarray
-        N-dimensional array containing time delayed vectors.
+        N-dimensional array containing time-delayed vectors.
     metric : string, optional (default = 'chebyshev')
         Metric to use for distance computation.  Must be one of
         "cityblock" (aka the Manhattan metric), "chebyshev" (aka the
@@ -113,10 +129,10 @@ def neighbors(y, metric='chebyshev', window=0, maxnum=None):
     window : int, optional (default = 0)
         Minimum temporal separation (Theiler window) that should exist
         between near neighbors.  This is crucial while computing
-        Lyapunov exponents.
+        Lyapunov exponents and the correlation dimension.
     maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
-        point.  In rare cases, when there are no neighbors which have a
+        point.  In rare cases, when there are no neighbors that are at a
         nonzero distance, this will have to be increased (i.e., beyond
         2 * window + 3).
 
@@ -171,31 +187,31 @@ def neighbors(y, metric='chebyshev', window=0, maxnum=None):
 
 def parallel_map(func, values, args=tuple(), kwargs=dict(),
                  processes=None):
-    """Use `Pool.apply_async` to get a parallel map().
+    """Use Pool.apply_async() to get a parallel map().
 
-    Uses `Pool.apply_async` to provide a parallel version of map().
+    Uses Pool.apply_async() to provide a parallel version of map().
     Unlike Pool's map() which does not let you accept arguments and/or
     keyword arguments, this one does.
 
     Parameters
     ----------
     func : function
-        This function will be applied on every element in `values` in
+        This function will be applied on every element of values in
         parallel.
     values : array
         Input array.
     args : tuple, optional (default: ())
-        Additional arguments for `func`.
+        Additional arguments for func.
     kwargs : dictionary, optional (default: {})
-        Additional keyword arguments for `func`.
+        Additional keyword arguments for func.
     processes : int, optional (default: None)
         Number of processes to run in parallel.  By default, the output
-        of `cpu_count()` is used.
+        of cpu_count() is used.
 
     Returns
     -------
     results : array
-        Output after applying `func` on each element in `values`.
+        Output after applying func on each element in values.
     """
     from multiprocessing import Pool
 
@@ -210,14 +226,14 @@ def parallel_map(func, values, args=tuple(), kwargs=dict(),
 
 
 def reconstruct(x, dim=1, tau=1):
-    """Construct time delayed vectors from a time series.
+    """Construct time-delayed vectors from a time series.
 
-    Constructs time delayed vectors from a scalar time series.
+    Constructs time-delayed vectors from a scalar time series.
 
     Parameters
     ----------
     x : array
-        1D scalar time series.
+        1-D scalar time series.
     dim : int, optional (default = 1)
         Embedding dimension.
     tau : int, optional (default = 1)
@@ -226,7 +242,7 @@ def reconstruct(x, dim=1, tau=1):
     Returns
     -------
     ps : ndarray
-        Array with time delayed vectors.
+        Array with time-delayed vectors.
     """
     m = len(x) - (dim - 1) * tau
     if m <= 0:
@@ -267,13 +283,13 @@ def spectrum(x, dt=1.0, detrend=False):
     Returns the power spectrum of the given time series.  This function
     is a very simple implementation that does not involve any averaging
     or windowing and assumes that the input series is periodic.  For
-    real data, use `scipy.signal.welch()` for accurate estimation of the
-    power spectrum.
+    real-world data, use scipy.signal.welch() for accurate estimation of
+    the power spectrum.
 
     Parameters
     ----------
     x : array
-        1D real input array of length N containing the time series.
+        1-D real input array of length N containing the time series.
     dt : float, optional (default = 1.0)
         Sampling time (= 1/(sampling rate)).
     detrend : bool, optional (default=False)
@@ -315,8 +331,8 @@ def spectrum(x, dt=1.0, detrend=False):
 def statcheck(x, bins=100):
     """Check for stationarity using a chi-squared test.
 
-    Checks for stationarity in the time series using the stationarity
-    test introduced by Isliker & Kurths (1993).
+    Checks for stationarity in a time series using the stationarity
+    test discussed by Isliker & Kurths (1993).
 
     Parameters
     ----------
@@ -331,14 +347,14 @@ def statcheck(x, bins=100):
         Chi-squared test statistic.
     p : float
         p-value of the test computed according to the number of bins
-        used and `chisq` from the chi-squared distribution.  If it is
+        used and chisq, using the chi-squared distribution.  If it is
         smaller than the significance level (say, 0.05), the series is
-        non-stationary.  (One should actually say we can reject the
+        nonstationary.  (One should actually say we can reject the
         null hypothesis of stationarity at 0.05 significance level.)
 
     Notes
     -----
-    The value of `bins` should be selected such that there is at least 5
+    The value of bins should be selected such that there is at least 5
     points in each bin.
     """
     if len(x) / bins <= 5:

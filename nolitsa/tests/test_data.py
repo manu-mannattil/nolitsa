@@ -27,5 +27,6 @@ def test_falpha():
 
             assert_allclose(-alpha, desired)
 
+
 if __name__ == '__main__':
     run_module_suite()

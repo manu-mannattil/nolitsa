@@ -1,5 +1,24 @@
 # -*- coding: utf-8 -*-
 
+"""Functions to generate surrogate series.
+
+This module provides a set of functions to generate surrogate series
+from a given time series using multiple algorithms.
+
+Surrogate Generation
+--------------------
+
+  * ft -- generates Fourier transform surrogates.
+  * aaft -- generates amplitude adjusted Fourier transform surrogates.
+  * iaaft -- generates iterative amplitude adjusted Fourier transform
+    surrogates.
+
+Utilities
+---------
+
+  * mismatch -- finds the segment of a time series with the least
+    end-point mismatch.
+"""
 
 from __future__ import absolute_import, division, print_function
 
@@ -10,9 +29,9 @@ from . import utils
 def ft(x):
     """Return simple Fourier transform surrogates.
 
-    Returns phase randomized (FT) surrogates which preserve the power
-    spectrum (or equivalently the linear correlations) but *completely
-    destroy* the probability distribution.
+    Returns phase randomized (FT) surrogates that preserve the power
+    spectrum (or equivalently the linear correlations), but completely
+    destroy the probability distribution.
 
     Parameters
     ----------
@@ -41,7 +60,7 @@ def aaft(x):
 
     Returns phase randomized, amplitude adjusted (AAFT) surrogates with
     crudely the same power spectrum and distribution as the original
-    data (Theiler et al., 1992).  AAFT surrogates are used in testing
+    data (Theiler et al. 1992).  AAFT surrogates are used in testing
     the null hypothesis that the input series is correlated Gaussian
     noise transformed by a monotonic time-independent measuring
     function.
@@ -49,7 +68,7 @@ def aaft(x):
     Parameters
     ----------
     x : array
-        1D input array containg the time series.
+        1-D input array containg the time series.
 
     Returns
     -------
@@ -72,13 +91,13 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10):
 
     Returns phase randomized, amplitude adjusted (IAAFT) surrogates with
     the same power spectrum (to a very high accuracy) and distribution
-    as the original data using an iterative scheme (Schreiber & Schmitz,
+    as the original data using an iterative scheme (Schreiber & Schmitz
     1996).
 
     Parameters
     ----------
     x : array
-        1D real input array of length N containing the time series.
+        1-D real input array of length N containing the time series.
     maxiter : int, optional (default = 1000)
         Maximum iterations to be performed while checking for
         convergence.  The scheme may converge before this number as
@@ -104,13 +123,13 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10):
     -----
     To check if the power spectrum has converged, we see if the absolute
     difference between the current (cerr) and previous (perr) RMSDs is
-    within the limits set by the tolerance levels, i.e., if ``abs(cerr -
-    perr) <= atol + rtol*perr``.  This follows the convention used in
-    the NumPy function `numpy.allclose()`.
+    within the limits set by the tolerance levels, i.e., if abs(cerr -
+    perr) <= atol + rtol*perr.  This follows the convention used in
+    the NumPy function numpy.allclose().
 
-    Additionally, `atol` and `rtol` can be both set to zero in which
+    Additionally, atol and rtol can be both set to zero in which
     case the iterations end only when the RMSD stops changing or when
-    `maxiter` is reached.
+    maxiter is reached.
     """
     # Calculate "true" Fourier amplitudes and sort the series.
     ampl = np.abs(np.fft.rfft(x))
@@ -143,12 +162,12 @@ def iaaft(x, maxiter=1000, atol=1e-8, rtol=1e-10):
 
 
 def mismatch(x, length=None, weight=0.5, neigh=3):
-    """Find the segment which minimizes end-point mismatch.
+    """Find the segment that minimizes end-point mismatch.
 
-    Finds the segment in the time series which has minimum end-point
+    Finds the segment in the time series that has minimum end-point
     mismatch.  To do this we calculate the mismatch between the end
     points of all segments of the given length and pick the segment with
-    least mismatch (Ehlers et al. (1998)).  We also enforce the
+    least mismatch (Ehlers et al. 1998).  We also enforce the
     condition that the difference between the first derivatives at the
     end points must be a minimum.
 
