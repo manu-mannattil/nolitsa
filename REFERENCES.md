@@ -15,6 +15,6 @@ References
 - Schreiber, T. & Schmitz, A. (1996). Improved surrogate data for nonlinearity tests. [_Phys. Rev. Lett._ __77__, 635](https://dx.doi.org/10.1103/PhysRevLett.77.635).
 - Schreiber, T. (1993). Extremely simple nonlinear noise-reduction method. [_Phys. Rev. E_ __47__, 2401](https://doi.org/10.1103%2Fphysreve.47.2401).
 - Sprott, J.C. (2003). _Chaos and Time-Series Analysis_, Oxford University Press, New York.
-- Theiler, J. (1990). Statistical precision of dimension estimators. [Phys. Rev. A_ __41__, 3038](https://doi.org/10.1103%2Fphysreva.41.3038).
+- Theiler, J. (1990). Statistical precision of dimension estimators. [_Phys. Rev. A_ __41__, 3038](https://doi.org/10.1103%2Fphysreva.41.3038).
 - Theiler, J., Eubank, S., Longtin, A., Galdrikian, B. & Farmer, J.D. (1992). Testing for nonlinearity in time series. [_Physica D_ __58__, 77](https://dx.doi.org/10.1016/0167-2789(92)90102-S).
 - Voss, R.F. (1988). Fractals in nature. In [_The Science of Fractal Images_ (pp. 21-70)](https://dx.doi.org/10.1007/978-1-4612-3784-6_1), Springer, New York.
