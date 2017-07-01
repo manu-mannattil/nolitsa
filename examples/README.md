@@ -25,25 +25,74 @@ Examples
     + [Delayed mutual information for map like data can give bad
       estimates](delay/henon.py)
     + Time delay estimation for
+        - [Henon map](delay/henon.py)
         - [Ikeda map](delay/ikeda.py)
-        - [Rössler attractor](delay/roessler.py)
+        - [Rössler oscillator](delay/roessler.py)
         - [Lorenz attractor](delay/lorenz.py)
+    + Average deviation from the diagonal (ADFD)
+        - [Mackey–Glass system](delay/adfd_mackey-glass.py)
+        - [Rössler oscillator](delay/adfd_roessler.py)
 
 * Averaged false neighbors (AFN), aka Cao's test
     + Averaged false neighbors for:
         - [Henon map](afn/henon.py)
         - [Ikeda map](afn/ikeda.py)
-        - [Lorenz system](afn/lorenz.py)
+        - [Lorenz attractor](afn/lorenz.py)
         - [Mackey–Glass system](afn/mackey-glass.py)
-        - [Rössler system](afn/roessler.py)
+        - [Rössler oscillator](afn/roessler.py)
         - [Data from a far-infrared laser](afn/laser.py)
     + [AFN is not impervious to every stochastic data](afn/ar1.py)
     + [AFN can cause trouble with discrete data](afn/roessler-8bit.py)
 
+* False nearest neighbors (FNN)
+    + FNN for:
+        - [Henon map](fnn/henon.py)
+        - [Ikeda map](fnn/ikeda.py)
+        - [Mackey–Glass system](fnn/mackey-glass.py)
+        - [Uncorrelated noise](fnn/noise.py)
+    + [FNN results depend on the metric used](fnn/metric.py)
+    + [FNN can fail when temporal correlations are not removed](fnn/corrnum.py)
+
+* Noise reduction
+    + [Filtering human breath data](noise/breath.py)
+    + [Cleaning the "GOAT" vowel](noise/goat.py)
+    + [Simple moving average vs. nonlinear noise reduction](noise/henon_sma.py)
+    + [Filtering data from a far-infrared laser](noise/laser.py)
+
+* Correlation sum/correlation dimension
+    + Computing the correlation sum for:
+        - [Henon map](d2/henon.py)
+        - [Ikeda map](d2/ikeda.py)
+        - [Lorenz attractor](d2/lorenz.py)
+        - [Rössler oscillator](d2/roessler.py)
+        - [Mackey–Glass system](d2/mackey-glass.py)
+        - [White noise](d2/white.py)
+    + Subtleties
+        - [AR(1) process can mimic a deterministic process](d2/ar1.py)
+        - [Brown noise can have a saturating $D_2$](d2/brown.py)
+    + Computing $D2$ of geometrical object
+        - [Nonstationary spiral](d2/spiral.py)
+        - [Closed noisy curve](d2/curve.py)
+
+* Maximum Lyapunov exponent (MLE)
+    + Computing the MLE for:
+        - [Henon map](lyapunov/henon.py)
+        - [Lorenz attractor](lyapunov/lorenz.py)
+        - [Rössler oscillator](lyapunov/roessler.py)
+        - [Closed noisy curve](lyapunov/curve.py)
+
 * Surrogate analysis
+    + Algorithms
+        - [AAFT surrogates](surrogates/aaft.py)
+        - [IAAFT surrogates](surrogates/iaaft.py)
+    + Examples of surrogate analysis of
+        - [Linearly correlated noise](surrogates/corrnoise.py)
+        - [Nonlinear time series](surrogates/lorenz.py)
     + Time reversal asymmetry:
-        - [Skew-statistic fails for linear stochastic data](surrogates/skewnoise.py)
-        - [Skew-statistic fails for Lorenz](surrogates/skewlorenz.py)
+        - [Skew statistic fails for linear stochastic data](surrogates/skewnoise.py)
+        - [Skew statistic fails for Lorenz](surrogates/skewlorenz.py)
+    + [Why end point mismatch in a time series ought to be reduced](surrogates/mismatch.py)
+    + [Converting a time series to a uniform deviate is harmful](surrogates/unidev.py)
 
 Tips
 =====
@@ -72,7 +121,7 @@ situations.
 
     * Distances are independent of the embedding dimension $d$ and
       always remain bounded as opposed to Euclidean and cityblock
-      distances which crudely go as $\sqrt{d}$ and $d$ respectively.
+      distances, which crudely go as $\sqrt{d}$ and $d$ respectively.
       This helps in comparing the correlation sum plots at different
       embedding dimensions.
 
@@ -87,7 +136,7 @@ situations.
    cases where it is known to result in spurious estimates of dimension
    and/or determinism.
 
-1. Avoid the skew-statistic which attempts to measures asymmetry w.r.t.
+1. Avoid the skew statistic which attempts to measures asymmetry w.r.t.
    time reversal for detecting nonlinearity.  It tells very little about
    the origin of nonlinearity and fails miserably in many cases.
 
@@ -103,5 +152,5 @@ situations.
 
 1. Some chaotic time series such as those from Lorenz attractor may
    display long-range correlations (because of its "reversing" nature).
-   In such cases a delay may be determined by computing autocorrelation
+   In such cases, a delay may be determined by computing autocorrelation
    function of the *square* of the original time series.
