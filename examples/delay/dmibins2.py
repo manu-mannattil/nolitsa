@@ -10,12 +10,12 @@ time series.
 
 For many examples, the DMI at a lag of zero computed with 2^m bins is
 approximately m bits.  This is because the distribution is nearly flat
-when the number of bins is small making the probability of being in a
+when the number of bins is small, making the probability of being in a
 bin ~ 2^-m.
 
 Surprisingly, using a small number of bins doesn't seem to affect the
-estimation of the delay. Even with two bins, the extremas of the DMI are
-clearly visible. (Why?)
+estimation of the delay.  Even with two bins, the extremas of the DMI
+are clearly visible.  (Why?)
 """
 
 import numpy as np

@@ -27,7 +27,7 @@ NOTE: An audio recording of this data can be heard in the file
 [1]: http://teflpedia.com/IPA_phoneme_/%C9%99%CA%8A/
 """
 
-from nolitsa import noise, utils, delay
+from nolitsa import noise
 import matplotlib.pyplot as plt
 import numpy as np
 

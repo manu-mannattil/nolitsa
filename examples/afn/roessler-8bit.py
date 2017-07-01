@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""AFN for 8-bit time series from the Rossler oscillator.
+"""AFN for 8-bit time series from the Rössler oscillator.
 
 Since each point in the time series is an 8-bit integer (i.e., it's in
 the range [-127, 127]), the reconstructed phase space is essentially a
@@ -10,8 +10,8 @@ data set, we have to "kick" points off the grid a little bit by adding
 an insignificant amount of noise.  See Example 6.4 in Kantz & Schreiber
 (2003).
 
-But the quality of reconstruction depends on the noise level.  Adding a
-too insignificant amount of noise does not help at all!  This is
+But the quality of reconstruction depends on the noise level.  Adding
+an insignificant amount of noise does not help at all!  This is
 probably one of the rare case where a higher level of additive noise
 improves the results.
 """

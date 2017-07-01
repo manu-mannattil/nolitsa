@@ -3,7 +3,7 @@
 
 """AFN for data from the Mackey-Glass delay differential equation.
 
-The minimum embedding dimension comes out to be 5-7 (depending on
+The minimum embedding dimension comes out to be 5-7 (depending on the
 initial condition) with both E1 and E2 curves giving very strong hints
 of determinism.  According to Grassberger & Procaccia (1983) the
 correlation dimension of the Mackey-Glass system with a delay of 23 is

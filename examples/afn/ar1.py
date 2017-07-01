@@ -17,7 +17,7 @@ Two points are to be noted:
    beginning.
 
 2. Imposing a minimum temporal separation equal to the autocorrelation
-   time of the series while searching for near-neighbors solves the
+   time of the series while searching for near neighbors solves the
    problem.
 """
 

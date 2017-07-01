@@ -15,7 +15,7 @@ bin ~ 2^-m.
 
 Surprisingly, using a small number of bins doesn't seem to affect the
 estimation of the delay.  Even with two bins, the extremas of the DMI
-are clearly visible. (Why?)
+are clearly visible.  (Why?)
 """
 
 import numpy as np
@@ -24,7 +24,7 @@ from nolitsa import data, delay
 
 x = data.roessler()[1][:, 0]
 
-plt.title(r'Delayed mutual information for the Rössler system')
+plt.title(r'Delayed mutual information for the Rössler oscillator')
 plt.xlabel(r'$\tau$')
 plt.ylabel(r'$I(\tau)$')
 

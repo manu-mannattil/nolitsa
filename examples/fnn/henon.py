@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Generate data.
-x = data.henon(length=5000)[:,0]
+x = data.henon(length=5000)[:, 0]
 
 dim = np.arange(1, 10 + 1)
 f1, f2, f3 = dimension.fnn(x, tau=1, dim=dim, window=10, metric='cityblock')

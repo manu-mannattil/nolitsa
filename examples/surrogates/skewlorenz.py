@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from nolitsa import data, surrogates
 
+
 def skew(x, t=1):
     """Skew statistic to measure asymmetry w.r.t. time reversal.
 
@@ -44,7 +45,8 @@ def skew(x, t=1):
     dx = dx - np.mean(dx)
     return np.mean(dx ** 3) / np.mean(dx ** 2) ** 1.5
 
-x = data.lorenz(length=(2 ** 12))[1][:,0]
+
+x = data.lorenz(length=(2 ** 12))[1][:, 0]
 
 plt.figure(1)
 

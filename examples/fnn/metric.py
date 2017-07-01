@@ -4,7 +4,7 @@
 """FNN is metric depended for noisy data.
 
 The FNN fraction is metric depended for noisy time series.  In
-particular, the second FNN test which measures the boundedness of the
+particular, the second FNN test, which measures the "boundedness" of the
 reconstructed attractor depends heavily on the metric used.  E.g., if
 the Chebyshev metric is used, the near-neighbor distances in the
 reconstructed attractor are always bounded and therefore the reported
@@ -12,7 +12,7 @@ FNN fraction becomes a constant (approximately) instead of increasing
 with the embedding dimension.
 """
 
-from nolitsa import data, dimension
+from nolitsa import dimension
 import matplotlib.pyplot as plt
 import numpy as np
 

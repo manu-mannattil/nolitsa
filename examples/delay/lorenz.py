@@ -4,12 +4,11 @@
 """Time delay estimation for time series from the Lorenz attractor
 
 The first minimum of the delayed mutual information occurs at 5 and the
-autocorrelation time is 11.  Note that both these values depend on the
-sampling time used and should not be taken as "universal" time delays
-for reconstructing the Lorenz attractor.
-
-If one plots the 2D phase portrait of the attractor with a delay of 11,
-one can see that it's overfolded.
+autocorrelation time is 11.  A better choice is provided by the mutual
+information curve.  If one plots the 2D phase portrait of the attractor
+with a delay of 11, one can see that it's overfolded.  Note that both
+these values depend on the sampling time used and should not be taken as
+"universal" time delays for reconstructing the Lorenz attractor.
 """
 
 import numpy as np

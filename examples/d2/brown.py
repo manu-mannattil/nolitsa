@@ -7,8 +7,9 @@ Expected: D2 = 2 / (alpha - 1) = 2.0
 
 Of course, this value is not due to the existence of any invariant
 measure.  What is being measured here is the fractal dimension of the
-Brownian trail.  The scaling region would vanish if we impose a Theiler
-window, telling us that the underlying system is not low-dimensional.
+Brownian trail.  The scaling region would vanish if we impose a nonzero
+Theiler window, telling us that the underlying system is not
+low dimensional.
 """
 
 import numpy as np

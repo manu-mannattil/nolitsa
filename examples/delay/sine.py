@@ -7,7 +7,7 @@ Autocorrelation function of a finite sine wave over n cycles is:
 
   r(tau) = [(2*n*pi - tau)*cos(tau) + sin(tau)] / 2*n*pi
 
-As n -> infty, r(tau) = cos(tau) as expected.
+As n -> infinity, r(tau) = cos(tau) as expected.
 """
 
 import numpy as np
@@ -25,7 +25,7 @@ plt.title(r'Autocorrelation of a finite sine wave')
 plt.xlabel(r'$t$')
 plt.ylabel(r'$r(t)$')
 plt.plot(t[::25], r[::25], 'o', label='Numerical')
-plt.plot(t, r_exp, label='Theorectial')
+plt.plot(t, r_exp, label='Theoretical')
 
 plt.legend()
 plt.show()

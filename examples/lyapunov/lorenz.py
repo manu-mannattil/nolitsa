@@ -3,11 +3,11 @@
 
 """Maximum Lyapunov exponent for the Lorenz system.
 
-Our estimate is quite close to the "accepted" value of 1.50.  
+Our estimate is quite close to the "accepted" value of 1.50.
 Cf. Fig. 2 of Rosenstein et al. (1993).
 """
 
-from nolitsa import data, lyapunov, utils, delay
+from nolitsa import data, lyapunov
 import numpy as np
 import matplotlib.pyplot as plt
 

@@ -4,10 +4,10 @@
 """Transforming a time series into a uniform deviate is harmful.
 
 Uniform deviate transformation is a nonlinear transformation, and
-thus, does not preserve the linear properties of the time series.
+thus, it does not preserve the linear properties of a time series.
 In the example below, we see that the power spectra of the surrogates
 don't match the power spectrum of the original time series if they're
-both transformed into a uniform deviate.
+both converted into a uniform deviate.
 
 Some authors (e.g., Harikrishnan et al. [Physica D 215 (2006) 137-145])
 perform a uniform deviate transformation just before surrogate analysis.
@@ -15,10 +15,13 @@ This can lead to incorrect results.
 """
 
 from __future__ import division
+
 import numpy as np
 import matplotlib.pyplot as plt
-from nolitsa import delay, surrogates, d2, delay, data
+
+from nolitsa import surrogates
 from scipy.signal import welch
+
 
 def uniform(x):
     """Convert series into a uniform deviate.
@@ -33,7 +36,8 @@ def uniform(x):
 
     return y / len(x)
 
-x = np.loadtxt('../series/br1.dat')[:,1]
+
+x = np.loadtxt('../series/br1.dat')[:, 1]
 
 for i in range(19):
     y = surrogates.iaaft(x)[0]

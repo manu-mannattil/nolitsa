@@ -19,7 +19,7 @@ dim = np.arange(1, 10 + 2)
 E, Es = dimension.afn(x, tau=14, dim=dim, window=45, metric='cityblock')
 E1, E2 = E[1:] / E[:-1], Es[1:] / Es[:-1]
 
-plt.title(r'AFN for time series from the Rössler attractor')
+plt.title(r'AFN for time series from the Rössler oscillator')
 plt.xlabel(r'Embedding dimension $d$')
 plt.ylabel(r'$E_1(d)$ and $E_2(d)$')
 plt.plot(dim[:-1], E1, 'bo-', label=r'$E_1(d)$')

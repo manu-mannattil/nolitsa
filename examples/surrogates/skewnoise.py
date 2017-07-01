@@ -17,7 +17,7 @@ first difference, shuffle the increments, and calculate the cumulative
 sum of the shuffled increments, we end up with a time series which would
 come out to be nonlinear according to the above rule of thumb.  But
 since this new series is the cumulative sum of uncorrelated random
-numbers, it's a purely linear one.  Obviously, this does't make any
+numbers, it's a purely linear one.  Obviously, this doesn't make any
 sense.
 
 Of course, the distribution of increments would slowly become symmetric
@@ -31,7 +31,8 @@ practical situations.
 
 import matplotlib.pyplot as plt
 import numpy as np
-from nolitsa import data, surrogates, delay
+from nolitsa import data, surrogates
+
 
 def skew(x, t=1):
     """Skew statistic to measure asymmetry w.r.t. time reversal.
@@ -65,10 +66,11 @@ def skew(x, t=1):
     dx = dx - np.mean(dx)
     return np.mean(dx ** 3) / np.mean(dx ** 2) ** 1.5
 
+
 # Start with time series from the Henon map, take the first-difference,
 # shuffle the increments, and calculate the cumulative sum of the
 # shuffled increments.
-x = data.henon(length=(2 ** 12))[:,0]
+x = data.henon(length=(2 ** 12))[:, 0]
 dx = x[1:] - x[:-1]
 np.random.shuffle(dx)
 x = np.cumsum(dx)

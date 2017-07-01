@@ -3,7 +3,7 @@
 
 """D2 for white noise.
 
-D2 is (theorectically) equal to the embedding dimension for white noise.
+D2 is (theoretically) equal to the embedding dimension for white noise.
 """
 
 import numpy as np

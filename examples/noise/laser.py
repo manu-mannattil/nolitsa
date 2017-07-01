@@ -15,7 +15,7 @@ sets.
 [1]: http://www-psych.stanford.edu/~andreas/Time-Series/SantaFe.html
 """
 
-from nolitsa import noise, utils, delay
+from nolitsa import noise
 import matplotlib.pyplot as plt
 import numpy as np
 

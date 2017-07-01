@@ -4,8 +4,9 @@
 """Illustration of IAAFT surrogates.
 
 This script illustrates IAAFT surrogates for human breath rate data.
-Note that compared to AAFT surrogates, the power spectrum is closer to
-the true power spectrum (cf. the plot in "aaft.py").
+Note that compared to AAFT surrogates, the power spectra of the
+surrogates are closer to the true power spectrum (cf. the plot in
+"aaft.py").
 """
 
 from scipy.signal import welch

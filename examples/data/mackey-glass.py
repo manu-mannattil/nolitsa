@@ -12,7 +12,6 @@ equation are: a = 0.2, b = 0.1, c = 10.0, and tau = 23.0 with the grid
 size n usually taken larger than 1000.
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
 from nolitsa import data
 

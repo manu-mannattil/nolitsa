@@ -3,18 +3,19 @@
 
 """FNN for correlated random numbers.
 
-Correlated random numbers are created by running an SMA (with 61 bins)
-over uncorrelated random numbers in [0, 1].  Without a Theiler window,
-the FNN fraction drops to zero soon after d ~ log(3000) / log(10) ~ 4.0.
-Ordinarily the second test would have helped here and an increase in FNN
-should occur.  But here, the strong temporal correlations between the
-points in the series prevent it from working.
+Correlated random numbers are created by running a simple moving average
+(with 61 bins) over uncorrelated random numbers in [0, 1].  Without
+a Theiler window, the FNN fraction drops to zero soon after
+d ~ log(3000) / log(10) ~ 4.0.  Ordinarily the second test would have
+helped here and an increase in FNN should occur.  But here, the strong
+temporal correlations between the points in the series prevent it from
+working.
 
 Of course, once we impose a Theiler window equal to the autocorrelation
 time of the series, the second test reports large amounts of FNNs.
 """
 
-from nolitsa import data, dimension, noise, delay
+from nolitsa import dimension, noise, delay
 import matplotlib.pyplot as plt
 import numpy as np
 

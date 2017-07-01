@@ -8,7 +8,7 @@ d = log(10^4) / log(10) = 4.0.  Of course, Test II shows that something
 is awry.
 """
 
-from nolitsa import data, dimension
+from nolitsa import dimension
 import matplotlib.pyplot as plt
 import numpy as np
 

@@ -9,7 +9,6 @@ end-points don't match).  These high-frequency oscillations appear as a
 sort of "crinkliness" spread throughout the time series.
 """
 
-from scipy.signal import welch
 from nolitsa import data, surrogates
 
 import matplotlib.pyplot as plt

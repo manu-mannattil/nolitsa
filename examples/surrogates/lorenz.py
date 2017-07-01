@@ -11,7 +11,7 @@ the null hypothesis of a linear correlated stochastic process.
 
 import matplotlib.pyplot as plt
 import numpy as np
-from nolitsa import surrogates, d2, noise, delay, data
+from nolitsa import surrogates, d2, data
 
 x = data.lorenz(x0=[-13.5, -16.0, 31.0], length=(2 ** 12))[1][:, 0]
 x = x[422:3547]

@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Generate data.
-x = data.ikeda(length=5000)[:,0]
+x = data.ikeda(length=5000)[:, 0]
 dim = np.arange(1, 15 + 1)
 
 f1 = dimension.fnn(x, tau=1, dim=dim, window=0, metric='chebyshev')[2]

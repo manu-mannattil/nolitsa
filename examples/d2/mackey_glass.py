@@ -4,7 +4,7 @@
 """D2 for the Mackey-Glass system.
 
 The estimates here are, depending on the initial condition, sometimes
-lower than the value (D2 ~ 2.4) calculated by Grassberger-Procaccia
+lower than the value (D2 ~ 2.4) calculated by Grassberger & Procaccia
 (1983).  One should use average over an ensemble of initial conditions
 in such a case.
 """

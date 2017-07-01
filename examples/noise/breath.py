@@ -5,7 +5,7 @@
 
 The data was obtained from 2048 continuous samples of dataset B1
 (starting from the 12750th) of the Santa Fe time series contest [1].
-This data is low-dimensional, and is thought to be a limit cycle [See
+This data is low dimensional, and is thought to be a limit cycle [See
 Example 10.7 of Kantz & Schreiber (2004).]  As can be seen, the
 structure of the limit cycle is much more prominent when the filtered
 time series is used.

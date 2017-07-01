@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Time delay estimation for time series from the Rössler attractor
+"""Time delay estimation for time series from the Rössler oscillator.
 
 The first minimum of the delayed mutual information occurs at 14 and the
 autocorrelation time is 11.  Note that both these values depend on the
 sampling time used and should not be taken as "universal" time delays
-for reconstructing the Rössler attractor.
+for reconstructing the Rössler oscillator.
 """
 
 import numpy as np
@@ -52,7 +52,7 @@ print(r'Autocorrelation time = %d' % r_delay)
 plt.figure(1)
 
 plt.subplot(211)
-plt.title(r'Delay estimation for Rössler attractor')
+plt.title(r'Delay estimation for Rössler oscillator')
 plt.ylabel(r'Delayed mutual information')
 plt.plot(lag, i, i_delay, i[i_delay], 'o')
 
