@@ -27,7 +27,7 @@ Installation
 
 NoLiTSA can be installed using pip by running
 
-    $ pip install git+https://github.com/manu-mannattil/nolitsa.git
+    $ pip install .../path/to/nolitsa
 
 NoLiTSA requires `numpy` and `scipy`, and should (theoretically) work
 with both Python 2 and 3.

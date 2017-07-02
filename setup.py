@@ -19,7 +19,6 @@ algorithms used for nonlinear time series analysis.""",
         'Programming Language :: Python'
         'Programming Language :: Python :: 3',
     ],
-    url='https://github.com/manu-mannattil/nolitsa',
     author='Manu Mannattil',
     author_email='manu.mannattil@gmail.com',
     license='BSD',
