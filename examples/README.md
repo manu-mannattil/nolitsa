@@ -1,5 +1,8 @@
-General workflow
-================
+Examples
+========
+
+General Workflow
+----------------
 
 1. Check stationarity.
 1. Estimate time delay (e.g., autcorrelation, mutual information, 2D/3D
@@ -12,8 +15,8 @@ General workflow
 1. Additional tests for nonlinearity (e.g., prediction error, etc.)
 1. Conclusion.
 
-Examples
-========
+Practical Demonstrations
+------------------------
 
 * Generating test data sets
     + [Mackey–Glass system](data/mackey-glass.py)
@@ -70,7 +73,7 @@ Examples
     + Subtleties
         - [AR(1) process can mimic a deterministic process](d2/ar1.py)
         - [Brown noise can have a saturating $D_2$](d2/brown.py)
-    + Computing $D2$ of geometrical object
+    + Computing $D_2$ of geometrical object
         - [Nonstationary spiral](d2/spiral.py)
         - [Closed noisy curve](d2/curve.py)
 
@@ -94,8 +97,8 @@ Examples
     + [Why end point mismatch in a time series ought to be reduced](surrogates/mismatch.py)
     + [Converting a time series to a uniform deviate is harmful](surrogates/unidev.py)
 
-Tips
-=====
+General Tips
+------------
 
 While there is no dearth of good literature on nonlinear time series
 analysis, here are a few things that I found to be useful in practical
