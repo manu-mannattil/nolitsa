@@ -11,7 +11,7 @@ the range [0, 255]), the reconstructed phase space is essentially a grid
 with zero dimension.  To actually measure the dimension of this data
 set, we have to "kick" points off the grid a little bit by adding an
 insignificant amount of noise.  See Example 6.4 in Kantz & Schreiber
-(2003).
+(2004).
 
 From the E1(d) curve, one concludes that the minimum embedding dimension
 should be close to 8 [Cao (1997) reports 7 as the minimum embedding

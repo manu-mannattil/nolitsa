@@ -8,7 +8,7 @@ the range [-127, 127]), the reconstructed phase space is essentially a
 grid with zero dimension.  To actually measure the dimension of this
 data set, we have to "kick" points off the grid a little bit by adding
 an insignificant amount of noise.  See Example 6.4 in Kantz & Schreiber
-(2003).
+(2004).
 
 But the quality of reconstruction depends on the noise level.  Adding
 an insignificant amount of noise does not help at all!  This is
