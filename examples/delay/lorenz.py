@@ -17,10 +17,10 @@ from nolitsa import data, delay, noise
 
 
 def localmin(x):
-    """Return all local minimums from the given data set.
+    """Return all local minima from the given data set.
 
-    Returns all local minimums from the given data set.  Note that even
-    "kinky" minimums (which are probably not minimums) will also be
+    Returns all local minima from the given data set.  Note that even
+    "kinky" minima (which are probably not real minima) will be
     returned.
 
     Parameters
@@ -31,7 +31,7 @@ def localmin(x):
     Returns
     -------
     i : array
-        Array containing location of all local minimums.
+        Array containing location of all local minima.
     """
     return (np.diff(np.sign(np.diff(x))) > 0).nonzero()[0] + 1
 
@@ -43,12 +43,12 @@ lag = np.arange(100)
 r = delay.acorr(x, maxtau=100)
 i = delay.dmi(x, maxtau=100)
 
-# While looking for local minimas in the DMI curve, it's useful to do an
-# SMA to remove "kinky" minimas.
+# While looking for local minima in the DMI curve, it's useful to do an
+# SMA to remove "kinky" minima.
 i_delay = localmin(noise.sma(i, hwin=1)) + 1
 r_delay = np.argmax(r < 1.0 / np.e)
 
-print(r'Minimas of delayed mutual information = %s' % i_delay)
+print(r'Minima of delayed mutual information = %s' % i_delay)
 print(r'Autocorrelation time = %d' % r_delay)
 
 plt.figure(1)

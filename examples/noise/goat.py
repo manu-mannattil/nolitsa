@@ -5,7 +5,7 @@
 
 To generate this data set, I recorded a friend saying the "GOAT vowel"
 phoneme /əʊ/ (the vowel sound in "goat", "boat", etc. [1]) and took a
-2 second section of the recording which looked fairly periodic.
+2 second section of the recording that looked fairly periodic.
 Although the audio was recorded at 44.1 kHz, I downsampled it to
 11.025 kHz to create a more manageable data set.  The original log
 that Audacity produced during the recording is given below:

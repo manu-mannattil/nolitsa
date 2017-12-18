@@ -4,7 +4,7 @@
 """AFN for time series from a far-infrared laser.
 
 The time series is from Data Set A of the Sata Fe Time Series
-competition.  This is a map-like data from an far-infrared laser.
+Competition.  This is a map-like data from a far-infrared laser.
 
 Since each value of the time series is an 8-bit integer (i.e., it's in
 the range [0, 255]), the reconstructed phase space is essentially a grid

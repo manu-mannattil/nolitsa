@@ -113,7 +113,7 @@ def dmi(x, maxtau=1000, bins=64):
     Returns the mutual information between x_i and x_{i + t} (i.e., the
     time-delayed mutual information), up to a t equal to maxtau.  Based
     on the paper by Fraser & Swinney (1986), but uses a much simpler,
-    albeit, time consuming algorithm.
+    albeit, time-consuming algorithm.
 
     Parameters
     ----------

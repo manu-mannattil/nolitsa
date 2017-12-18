@@ -4,7 +4,7 @@
 
 A module for common utility functions used elsewhere.
 
-  * corruput -- corrupts a time series with noise.
+  * corrupt -- corrupts a time series with noise.
   * dist -- computes the distance between points from two arrays.
   * gprange -- generates a geometric progression between two points.
   * neighbors -- finds the nearest neighbors of all points in an array.

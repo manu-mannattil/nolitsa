@@ -8,7 +8,7 @@ vectors decrease drastically (or equivalently, the irrelevance increases
 rapidly).  Best results are often obtained with a time delay of 1.
 
 Here, we see that for data coming out of the Ikeda map, the delayed
-mutual information curve (which does not have any local minimums) gives
+mutual information curve (which does not have any local minima) gives
 us a very bad estimate of the time delay.
 """
 

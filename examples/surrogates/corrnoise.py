@@ -3,10 +3,11 @@
 
 """IAAFT surrogates for correlated noise.
 
-The properties of linearly correlated noise can be quite accurately
-captured by IAAFT surrogates.  Thus, they cannot easily fool a dimension
-estimator (here we use Takens's maximum likelihood estimator for the
-correlation dimension) if surrogate analysis is performed additionally.
+The properties of linearly correlated noise can be captured quite
+accurately by IAAFT surrogates.  Thus, they cannot easily fool
+a dimension estimator (here we use Takens's maximum likelihood estimator
+for the correlation dimension) if surrogate analysis is performed
+additionally.
 """
 
 import matplotlib.pyplot as plt

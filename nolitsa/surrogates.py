@@ -5,8 +5,8 @@
 This module provides a set of functions to generate surrogate series
 from a given time series using multiple algorithms.
 
-Surrogate Generation
---------------------
+Surrogates Generation
+---------------------
 
   * ft -- generates Fourier transform surrogates.
   * aaft -- generates amplitude adjusted Fourier transform surrogates.

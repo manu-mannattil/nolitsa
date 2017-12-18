@@ -4,10 +4,10 @@
 """Illustration of Theiler window using an AR(1) series.
 
 An AR(1) time series is temporally correlated.  Thus, if a judicious
-(nonzero) value of the Theiler window is not used, the estimated dimension
-converges to the fractal dimension of the trajectory formed by the time
-series in the phase space.  This, however, has nothing to do with any
-low-dimensional nature of the underlying process.
+(nonzero) value of the Theiler window is not used, the estimated
+dimension converges to the fractal dimension of the trajectory formed by
+the time series in the phase space.  This, however, has nothing to do
+with any low-dimensional nature of the underlying process.
 """
 
 from nolitsa import d2

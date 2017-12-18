@@ -15,10 +15,9 @@ Time series from the Henon map shows very strong asymmetry under time
 reversal.  So if we start with time series from the Henon map, take the
 first difference, shuffle the increments, and calculate the cumulative
 sum of the shuffled increments, we end up with a time series which would
-come out to be nonlinear according to the above rule of thumb.  But
-since this new series is the cumulative sum of uncorrelated random
-numbers, it's a purely linear one.  Obviously, this doesn't make any
-sense.
+come out as nonlinear according to the above rule of thumb.  But since
+this new series is the cumulative sum of uncorrelated random numbers,
+it's a purely linear one.  Obviously, this doesn't make any sense.
 
 Of course, the distribution of increments would slowly become symmetric
 as we take larger and larger increments, and pretty soon the series
