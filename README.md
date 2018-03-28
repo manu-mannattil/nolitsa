@@ -34,7 +34,7 @@ Installation
 NoLiTSA can be installed using pip by running
 
     $ git clone https://github.com/manu-mannattil/nolitsa.git
-    $ pip install nolitsa
+    $ pip install ./nolitsa
 
 or, with newer versions of pip:
 
