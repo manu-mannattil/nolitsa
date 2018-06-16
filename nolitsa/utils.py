@@ -215,7 +215,7 @@ def parallel_map(func, values, args=tuple(), kwargs=dict(),
     """
     # True single core processing, in order to allow the func to be executed in
     # a Pool in a calling script.
-    if processes is not None and not processes:
+    if processes == 1:
         return np.asarray([func(value, *args, **kwargs) for value in values])
 
     from multiprocessing import Pool
