@@ -3,7 +3,7 @@
 """Functions to estimate the embedding delay.
 
 This module provides a set of functions that can be used to estimate the
-time delay required to create embed a scalar time series.
+time delay required to embed a scalar time series.
 
   * acorr -- computes the autocorrelation of a scalar time series.
   * mi -- computes the mutual information between two scalar time

@@ -2,7 +2,7 @@ References
 ==========
 
 - Cao, L. (1997). Practical method for determining the minimum embedding dimension of a scalar time series. [_Physica D_ __110__, 43](https://dx.doi.org/10.1016/S0167-2789(97)00118-8).
-- Ehlers, C.L., Havstad, J., Prichard, D. & Theiler, J. (1998). Low doses of ethanol reduce evidence for nonlinear structure in brain activity. [_J. Neurosci._  __18__, 7474](http://www.jneurosci.org/content/18/18/7474).
+- Ehlers, C.L., Havstad, J., Prichard, D. & Theiler, J. (1998). Low doses of ethanol reduce evidence for nonlinear structure in brain activity. [_J. Neurosci._  __18__, 7474](https://doi.org/10.1523/JNEUROSCI.18-18-07474.1998).
 - Fraser, A.M. & Swinney, H.L. (1986). Independent coordinates for strange attractors from mutual information. [_Phys. Rev. A_ __33__, 1134](https://dx.doi.org/10.1103/PhysRevA.33.1134).
 - Galka, A. (2000). _Topics in Nonlinear Time Series Analysis_, World Scientific, Singapore.
 - Grassberger, P. & Procaccia, I. (1983). Measuring the strangeness of strange attractors. [_Physica D_ __9__, 189](https://dx.doi.org/10.1016/0167-2789(83)90298-1).

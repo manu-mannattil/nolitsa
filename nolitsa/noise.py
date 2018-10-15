@@ -84,7 +84,7 @@ def nored(x, dim=1, tau=1, r=0, metric='chebyshev', repeat=1):
     default, a radius of zero is used, which means that no noise
     reduction is done.  Note that the radius also depends on the metric
     used for distance computation.  Best results are often obtained
-    using large embedding dimensions with a unit delay and the Chebyshev
+    using large embedding dimensions with unit delay and the Chebyshev
     metric.  (This function is a featureful equivalent of the TISEAN
     program "lazy".)
     """

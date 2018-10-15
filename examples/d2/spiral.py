@@ -3,7 +3,7 @@
 
 """Correlation sum/D2 for a spiral.
 
-A spiral, though a one-dimension curve, is a nonstationary object.
+A spiral, though a one-dimensional curve, is a nonstationary object.
 Thus, the estimated correlation dimension would heavily depend on the
 Theiler window used.  However, the values of C(r) at large r's would
 roughly be the same.

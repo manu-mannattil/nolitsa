@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Time delay estimation for time series from the Lorenz attractor
+"""Time delay estimation for time series from the Lorenz attractor.
 
 The first minimum of the delayed mutual information occurs at 5 and the
 autocorrelation time is 11.  A better choice is provided by the mutual

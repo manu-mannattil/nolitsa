@@ -4,9 +4,9 @@
 """Skew statistic fails for linear stochastic data.
 
 The skew statistic quantifies asymmetry under time reversal by measuring
-the skewness in the distribution of the increments of the time series.
+the skewness in the distribution of the increments of a time series.
 This makes sense as this distribution is flipped left-to-right (along
-with a sign-change) for all kinds of series under time reversal.  So if
+with a sign change) for all kinds of series under time reversal.  So if
 this distribution is asymmetric, the time series must exhibit asymmetry
 under time reversal.  But asymmetry in the distribution of increments
 isn't a very good measure of nonlinearity as we'll show here.

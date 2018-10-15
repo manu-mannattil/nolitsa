@@ -8,8 +8,8 @@ setup(
     version='0.1',
     description='A rudimentary Python module for nonlinear time series analysis',
     long_description="""\
-NoLiTSA is a rudimentary Python module that implements some standard
-algorithms used for nonlinear time series analysis.""",
+NoLiTSA is a Python module that implements some standard algorithms used
+for nonlinear time series analysis.""",
     keywords='chaos nonlinear time series analysis',
     classifiers=[
         'Development Status :: 3 - Alpha',

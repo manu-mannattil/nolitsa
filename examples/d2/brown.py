@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""D2 for brown noise.
+"""D2 for Brown noise.
 
 Expected: D2 = 2 / (alpha - 1) = 2.0
 
@@ -22,7 +22,7 @@ x = utils.rescale(data.falpha(alpha=2.0, length=(2 ** 14))[:10 * 1000])
 dim = np.arange(1, 10 + 1)
 tau = 500
 
-plt.title('Local $D_2$ vs $r$ for brown noise')
+plt.title('Local $D_2$ vs $r$ for Brown noise')
 plt.xlabel(r'Distance $r$')
 plt.ylabel(r'Local $D_2$')
 
