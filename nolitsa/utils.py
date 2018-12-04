@@ -185,6 +185,37 @@ def neighbors(y, metric='chebyshev', window=0, maxnum=None):
     return np.squeeze(indices), np.squeeze(dists)
 
 
+def k_neighbors(y, k=1, metric='chebyshev'):
+    if metric == 'cityblock':
+        p = 1
+    elif metric == 'euclidean':
+        p = 2
+    elif metric == 'chebyshev':
+        p = np.inf
+    else:
+        raise ValueError('Unknown metric.  Should be one of "cityblock", '
+                         '"euclidean", or "chebyshev".')
+
+    tree = KDTree(y)
+    n = len(y)
+
+    dists = np.empty((n, k))
+    indices = np.empty((n, k), dtype=int)
+
+    for i, x in enumerate(y):
+        dist, index = tree.query(x, k=k+1, p=p)
+        valid = dist > 0
+
+        if np.count_nonzero(valid):
+            dists[i] = dist[valid]
+            indices[i] = index[valid]
+        else:
+            raise Exception('Could not find k near neighbors with a '
+                            'nonzero distance.')
+
+    return np.squeeze(indices), np.squeeze(dists)
+
+
 def parallel_map(func, values, args=tuple(), kwargs=dict(),
                  processes=None):
     """Use Pool.apply_async() to get a parallel map().

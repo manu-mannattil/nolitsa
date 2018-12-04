@@ -18,6 +18,7 @@ time delay required to embed a scalar time series.
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
+from scipy.spatial import distance
 
 from . import utils
 
@@ -182,3 +183,56 @@ def adfd(x, dim=1, maxtau=100):
         disp[tau] = np.mean(utils.dist(y1, y2, metric='euclidean'))
 
     return disp
+
+
+def _ild(dim, x, qmax=4, maxtau=100, k=20, metric='euclidean'):
+    def dx(i, q):
+        x0_com = np.mean(y[index[i]], axis=0)
+        xq_com = np.mean(y[index[i+q]], axis=0)
+        return d(xq_com, y[i+q]) - d(x0_com, y[i])
+
+    ild = np.empty(maxtau)
+    min, max = np.min(x), np.max(x)
+    d = getattr(distance, metric)
+    yy = [utils.reconstruct(x, dim=dim, tau=tau) for tau in np.arange(1, maxtau+1)]
+
+    for idx, y in enumerate(yy):
+        index, dist = utils.k_neighbors(y, metric=metric, k=k)
+        ild[idx] = \
+            np.average([
+                np.sum(
+                    [dx(i, q-1) + dx(i, q)
+                     for q in np.arange(1, qmax+1)])
+                for i, _ in enumerate(y[:-qmax])]) / (2*(max - min))
+    return ild
+
+
+def ild(x, dim=[1], qmax=4, maxtau=100, k=20, metric='euclidean', parallel=True):
+    """Computes integral local deformation (Buzug & Pfister 1992).
+
+    Parameters
+    ----------
+    x : array
+        1-D real time series of length N.
+    dim : int, optional (default = 1)
+        Embedding dimensions.
+    maxtau : int, optional (default = 100)
+        Calculate the ILD only up to this delay.
+    k : int, optional (default = 20)
+        Number of neighbors in radius.
+
+    Returns
+    -------
+    disp : array
+        ILD for all time delays up to maxtau.
+    """
+    if parallel:
+        processes = None
+    else:
+        processes = 1
+
+    return utils.parallel_map(_ild, dim, args=(x,), kwargs={
+                              'qmax': qmax,
+                              'maxtau': maxtau,
+                              'k': k,
+                              'metric': metric}, processes=processes)
