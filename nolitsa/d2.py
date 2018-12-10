@@ -29,7 +29,7 @@ from scipy.spatial import distance
 from . import utils
 
 
-def c2(y, r=100, metric='chebyshev', window=10):
+def c2(dim, x, tau, r=100, metric='chebyshev', window=10):
     """Compute the correlation sum for the given distances.
 
     Computes the correlation sum of the given time series for the
@@ -68,20 +68,28 @@ def c2(y, r=100, metric='chebyshev', window=10):
     from an array of points in the phase space.  If you want to
     calculate it after embedding a time series, see d2_embed().
     """
-    # Estimate the extent of the reconstructed phase space.
+    y = utils.reconstruct(x, dim=dim, tau=tau)
+
     if isinstance(r, int):
+        _, dist = utils.neighbors(y, window=window)
+        nnds = utils.dist(y, dist)
+        r_low = np.average(nnds)
+
+        # Estimate the extent (r_max) of the reconstructed phase space.
         if metric == 'chebyshev':
-            extent = np.max(np.max(y, axis=0) - np.min(y, axis=0))
+            r_max = np.max(np.max(y, axis=0) - np.min(y, axis=0))
         elif metric == 'cityblock':
-            extent = np.sum(np.max(y, axis=0) - np.min(y, axis=0))
+            r_max = np.sum(np.max(y, axis=0) - np.min(y, axis=0))
         elif metric == 'euclidean':
-            extent = np.sqrt(np.sum((np.max(y, axis=0) -
-                                     np.min(y, axis=0)) ** 2))
+            r_max = np.sqrt(np.sum((np.max(y, axis=0) -
+                                    np.min(y, axis=0)) ** 2))
         else:
             raise ValueError('Unknown metric.  Should be one of "chebyshev", '
                              '"cityblock", or "euclidean".')
 
-        r = utils.gprange(extent / 1000, extent, r)
+        r_high = r_low * (r_max/r_low)**0.1
+
+        r = utils.gprange(r_low, r_high, r)
     else:
         r = np.asarray(r)
         r = np.sort(r[r > 0])
@@ -143,9 +151,7 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
     else:
         processes = 1
 
-    yy = [utils.reconstruct(x, dim=d, tau=tau) for d in dim]
-
-    return utils.parallel_map(c2, yy, kwargs={
+    return utils.parallel_map(c2, dim, args=(x, tau,), kwargs={
                               'r': r,
                               'metric': metric,
                               'window': window
