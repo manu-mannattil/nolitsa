@@ -82,6 +82,21 @@ def dist(x, y, metric='chebyshev'):
     return np.asarray([func(i, j) for i, j in zip(x, y)])
 
 
+def extent(y, metric='chebyshev'):
+    # Estimate the extent (r_max) of the reconstructed phase space.
+    if metric == 'chebyshev':
+        extent = np.max(np.max(y, axis=0) - np.min(y, axis=0))
+    elif metric == 'cityblock':
+        extent = np.sum(np.max(y, axis=0) - np.min(y, axis=0))
+    elif metric == 'euclidean':
+        extent = np.sqrt(np.sum((np.max(y, axis=0) -
+                                np.min(y, axis=0)) ** 2))
+    else:
+        raise ValueError('Unknown metric.  Should be one of "chebyshev", '
+                         '"cityblock", or "euclidean".')
+    return extent
+
+
 def gprange(start, end, num=100):
     """Return a geometric progression between start and end.
 
@@ -112,7 +127,7 @@ def gprange(start, end, num=100):
     return start * ratio ** np.arange(num)
 
 
-def neighbors(y, metric='chebyshev', window=0, maxnum=None):
+def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
     """Find nearest neighbors of all points in the given array.
 
     Finds the nearest neighbors of all points in the given array using
@@ -157,7 +172,7 @@ def neighbors(y, metric='chebyshev', window=0, maxnum=None):
     n = len(y)
 
     if not maxnum:
-        maxnum = (window + 1) + 1 + (window + 1)
+        maxnum = min(max((window + 1) + 1 + (window + 1), minnum*2), n-1)
     else:
         maxnum = max(1, maxnum)
 
@@ -168,7 +183,7 @@ def neighbors(y, metric='chebyshev', window=0, maxnum=None):
     indices = np.empty(n, dtype=int)
 
     for i, x in enumerate(y):
-        for k in range(2, maxnum + 2):
+        for k in range(minnum+1, maxnum + 2):
             dist, index = tree.query(x, k=k, p=p)
             valid = (np.abs(index - i) > window) & (dist > 0)
 
@@ -181,37 +196,6 @@ def neighbors(y, metric='chebyshev', window=0, maxnum=None):
                 raise Exception('Could not find any near neighbor with a '
                                 'nonzero distance.  Try increasing the '
                                 'value of maxnum.')
-
-    return np.squeeze(indices), np.squeeze(dists)
-
-
-def k_neighbors(y, k=1, metric='chebyshev'):
-    if metric == 'cityblock':
-        p = 1
-    elif metric == 'euclidean':
-        p = 2
-    elif metric == 'chebyshev':
-        p = np.inf
-    else:
-        raise ValueError('Unknown metric.  Should be one of "cityblock", '
-                         '"euclidean", or "chebyshev".')
-
-    tree = KDTree(y)
-    n = len(y)
-
-    dists = np.empty((n, k))
-    indices = np.empty((n, k), dtype=int)
-
-    for i, x in enumerate(y):
-        dist, index = tree.query(x, k=k+1, p=p)
-        valid = dist > 0
-
-        if np.count_nonzero(valid):
-            dists[i] = dist[valid]
-            indices[i] = index[valid]
-        else:
-            raise Exception('Could not find k near neighbors with a '
-                            'nonzero distance.')
 
     return np.squeeze(indices), np.squeeze(dists)
 

@@ -75,18 +75,7 @@ def c2(dim, x, tau, r=100, metric='chebyshev', window=10):
         nnds = utils.dist(y, dist)
         r_low = np.average(nnds)
 
-        # Estimate the extent (r_max) of the reconstructed phase space.
-        if metric == 'chebyshev':
-            r_max = np.max(np.max(y, axis=0) - np.min(y, axis=0))
-        elif metric == 'cityblock':
-            r_max = np.sum(np.max(y, axis=0) - np.min(y, axis=0))
-        elif metric == 'euclidean':
-            r_max = np.sqrt(np.sum((np.max(y, axis=0) -
-                                    np.min(y, axis=0)) ** 2))
-        else:
-            raise ValueError('Unknown metric.  Should be one of "chebyshev", '
-                             '"cityblock", or "euclidean".')
-
+        r_max = utils.extent(y, metric=metric)
         r_high = r_low * (r_max/r_low)**0.1
 
         r = utils.gprange(r_low, r_high, r)
