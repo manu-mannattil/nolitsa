@@ -187,9 +187,9 @@ def adfd(x, dim=1, maxtau=100):
 
 def _ild(dim, x, qmax=4, te=3, rp=0.04, nrefp=None, window=10,
          maxtau=100, metric='euclidean'):
-    def dx(i, q, y, index, dist, r):
-        x0_com = np.mean(y[index[i][dist[i] <= r]], axis=0)
-        xq_com = np.mean(y[index[i+te*q][dist[i+te*q] <= r]], axis=0)
+    def dx(i, q, y, index):
+        x0_com = np.mean(y[index[i]], axis=0)
+        xq_com = np.mean(y[index[i+te*q]], axis=0)
         return d(xq_com, y[i+te*q]) - d(x0_com, y[i])
 
     ild = np.empty(maxtau)
@@ -203,12 +203,11 @@ def _ild(dim, x, qmax=4, te=3, rp=0.04, nrefp=None, window=10,
             np.random.choice(
                 n-qmax*te-1, min(np.int(np.ceil(nrefp*n)), n-qmax*te-1),
                 replace=False)
-        index, dist = utils.neighbors(y, metric=metric, minnum=n-1,
-                                      window=window)
+        index, _ = utils.neighbors_r(y, r, window=window)
         ild[idx] = \
             np.average([
                 np.sum(
-                    [dx(i, q-1, y, index, dist, r) + dx(i, q, y, index, dist, r)
+                    [dx(i, q-1, y, index) + dx(i, q, y, index)
                      for q in np.arange(1, qmax+1)])
                 for i in ref])
     return ild

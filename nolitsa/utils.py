@@ -21,7 +21,8 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 
 from scipy import stats
-from scipy.spatial import cKDTree as KDTree
+from scipy.spatial import cKDTree
+from sklearn.neighbors import KDTree
 from scipy.spatial import distance
 
 
@@ -168,7 +169,7 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
         raise ValueError('Unknown metric.  Should be one of "cityblock", '
                          '"euclidean", or "chebyshev".')
 
-    tree = KDTree(y)
+    tree = cKDTree(y)
     n = len(y)
 
     if not maxnum:
@@ -197,6 +198,33 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
                                 'nonzero distance.  Try increasing the '
                                 'value of maxnum.')
 
+    return np.squeeze(indices), np.squeeze(dists)
+
+
+def neighbors_r(y, r=0.5, window=0):
+
+    tree = KDTree(y)
+    n = len(y)
+
+    dists = []
+    indices = []
+
+    for i, x in enumerate(y):
+        index, dist = tree.query_radius(np.reshape(x, (1, -1)),
+                                        r=r, return_distance=True)
+        # valid = (np.abs(index - i) > window) & (dist > 0)
+
+        # if np.count_nonzero(valid):
+        #     dists[i] = dist[valid]
+        #     indices[i] = index[valid]
+        #     continue
+        if index.size == 0:
+            index, dist = tree.query(x, k=1, p=p)
+
+        indices.append(index)
+        dists.append(dist)
+
+    # return np.squeeze(indices), np.squeeze(dists)
     return np.squeeze(indices), np.squeeze(dists)
 
 
