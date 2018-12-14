@@ -180,8 +180,8 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
     if maxnum >= n:
         raise ValueError('maxnum is bigger than array length.')
 
-    dists = np.empty(n)
-    indices = np.empty(n, dtype=int)
+    dists = []
+    indices = []
 
     for i, x in enumerate(y):
         for k in range(minnum+1, maxnum + 2):
@@ -189,8 +189,8 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
             valid = (np.abs(index - i) > window) & (dist > 0)
 
             if np.count_nonzero(valid):
-                dists[i] = dist[valid][0]
-                indices[i] = index[valid][0]
+                dists.append(dist[valid])
+                indices.append(index[valid])
                 break
 
             if k == (maxnum + 1):
@@ -204,14 +204,12 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
 def neighbors_r(y, r=0.5, window=0):
 
     tree = KDTree(y)
-    n = len(y)
 
-    dists = []
+    # dists = []
     indices = []
 
     for i, x in enumerate(y):
-        index, dist = tree.query_radius(np.reshape(x, (1, -1)),
-                                        r=r, return_distance=True)
+        index = tree.query_radius(np.reshape(x, (1, -1)), r=r)
         # valid = (np.abs(index - i) > window) & (dist > 0)
 
         # if np.count_nonzero(valid):
@@ -219,13 +217,13 @@ def neighbors_r(y, r=0.5, window=0):
         #     indices[i] = index[valid]
         #     continue
         if index.size == 0:
-            index, dist = tree.query(x, k=1, p=p)
+            index = tree.query(x, k=1, return_distances=False)
 
         indices.append(index)
-        dists.append(dist)
+        # dists.append(dist)
 
     # return np.squeeze(indices), np.squeeze(dists)
-    return np.squeeze(indices), np.squeeze(dists)
+    return np.squeeze(indices)
 
 
 def parallel_map(func, values, args=tuple(), kwargs=dict(),

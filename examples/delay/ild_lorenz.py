@@ -16,7 +16,7 @@ x = data.lorenz(length=10000, x0=None, sigma=10.0, beta=8.0/3.0, rho=28.0,
 dim = np.arange(2, 10, 2)
 maxtau = 30
 
-ilds = delay.ild(x, dim=dim, qmax=10, maxtau=maxtau)
+ilds = delay.ild(x, dim=dim, qmax=10, maxtau=maxtau, rp=0.1, nrefp=None, k=20)
 
 plt.title('ILD for Rossler oscillator')
 plt.xlabel('Time delay')
