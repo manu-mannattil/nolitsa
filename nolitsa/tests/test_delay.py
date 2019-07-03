@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, division, print_function
+
 import numpy as np
-from nolitsa import delay
 from numpy.testing import assert_allclose, run_module_suite
+
+from nolitsa import delay
 
 
 class TestAcorr(object):

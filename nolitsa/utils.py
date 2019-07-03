@@ -146,6 +146,9 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
         Minimum temporal separation (Theiler window) that should exist
         between near neighbors.  This is crucial while computing
         Lyapunov exponents and the correlation dimension.
+    minnum : int, optional (default = 1)
+        Minimum number of near neighbors that should be found for each
+        point.
     maxnum : int, optional (default = None (optimum))
         Maximum number of near neighbors that should be found for each
         point.  In rare cases, when there are no neighbors that are at a
@@ -180,6 +183,9 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
     if maxnum >= n:
         raise ValueError('maxnum is bigger than array length.')
 
+    if minnum > maxnum:
+        raise ValueError('minnum is bigger that maxnum.')
+
     dists = []
     indices = []
 
@@ -196,7 +202,8 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
             if k == (maxnum + 1):
                 raise Exception('Could not find any near neighbor with a '
                                 'nonzero distance.  Try increasing the '
-                                'value of maxnum.')
+                                'value of maxnum or decreasing the value of '
+                                'minnum.')
 
     return np.squeeze(indices), np.squeeze(dists)
 

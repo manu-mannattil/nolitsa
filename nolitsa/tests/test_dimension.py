@@ -2,10 +2,13 @@
 
 from __future__ import absolute_import, division, print_function
 
-import numpy as np
+from itertools import combinations
 
-from nolitsa import dimension
-from numpy.testing import assert_allclose, run_module_suite
+import numpy as np
+from numpy.testing import (assert_allclose, assert_equal, assert_warns,
+                           run_module_suite)
+
+from lib.nolitsa.nolitsa import dimension
 
 
 class TestAFN(object):
@@ -95,6 +98,46 @@ class TestFNN(object):
 
         f1 = dimension.fnn(x, dim=dim, tau=25)[0]
         np.allclose(f1, desired)
+
+
+class TestILD(object):
+
+    def test_constant(self):
+        # ILD of a constant time-series is a zero function.
+        x_ones = np.ones(500)
+        dim = np.arange(2, 6 + 1)
+        maxtau = 40
+        with assert_warns(Warning):
+            assert_equal(dimension.ild(x_ones, dim=dim, maxtau=maxtau),
+                         [np.zeros(maxtau)] * len(dim))
+
+    def test_line(self):
+        # The emb. dim. of a line is 1, so all ILD's should be approximately
+        # equal.
+        a, b = np.random.random(2)
+        t = np.arange(500)
+        x_line = a + b * t
+        dim = np.arange(2, 6 + 1)
+        maxtau = 40
+        assert_allclose(dimension.ild(x_line, dim=dim, maxtau=maxtau),
+                        [np.zeros(maxtau)] * len(dim), atol=1e-5, rtol=0)
+
+    def test_random(self):
+        # A random time series should have infinite emb. dim. and no optimal
+        # time dimension so the ILD's should be approx. constant and not converge
+        x_random = np.random.random(500)
+        dim = np.arange(2, 6 + 1)
+        maxtau = 40
+        ilds = dimension.ild(x_random, dim=dim, maxtau=maxtau)
+        for ild in ilds:
+            demeaned_ild = np.abs(ild - np.mean(ild))
+            assert_allclose(demeaned_ild, np.zeros(maxtau), atol=0.5, rtol=0)
+
+        # We will just check that not all ILDs are almost equal
+        if all([np.allclose(ild1, ild2, atol=1e-8, rtol=1e-8) for ild1, ild2 in
+                combinations(ilds, 2)]):
+            raise AssertionError('All ILDs for randomly generated time series '
+                                 'are equal.')
 
 
 if __name__ == '__main__':

@@ -13,7 +13,11 @@ embedding dimension required to embed a scalar time series.
 
 from __future__ import absolute_import, division, print_function
 
+from warnings import warn
+
 import numpy as np
+from scipy.spatial import distance
+
 from . import utils
 
 
@@ -190,3 +194,90 @@ def fnn(x, dim=[1], tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
                               'window': window,
                               'maxnum': maxnum
                               }, processes).T
+
+
+def _ild(dim, x, qmax=4, rp=0.04, nrefp=None, k=None, window=10,
+         maxtau=100, metric='euclidean'):
+    def dx(i, q, y, index):
+        x0_com = np.mean(y[index[i]], axis=0)
+        xq_com = np.mean(y[np.clip(index[i]+q, 0, y.shape[0]-1)], axis=0)
+        return d(xq_com, y[i+q]) - d(x0_com, y[i])
+
+    ild = np.empty(maxtau)
+    d = getattr(distance, metric)
+    yy = [utils.reconstruct(x, dim=dim, tau=tau) for tau in np.arange(1, maxtau+1)]
+
+    for idx, y in enumerate(yy):
+        r = rp * utils.extent(y, metric=metric)
+        n = y.shape[0]
+        ref = np.arange(n-qmax) if nrefp is None else \
+            np.random.choice(
+                n-qmax, min(np.int(np.ceil(nrefp*n)), n-qmax),
+                replace=False)
+        if k is None:
+            index = utils.neighbors_r(y, r)
+        else:
+            index, _ = utils.neighbors(y, metric=metric, minnum=k, window=window)
+        ild[idx] = \
+            np.average([
+                np.sum(
+                    [dx(i, q-1, y, index) + dx(i, q, y, index)
+                     for q in np.arange(1, qmax+1)])
+                for i in ref])
+    return ild
+
+
+def ild(x, dim=[1], qmax=4, nrefp=None, k=None, rp=1.0, maxtau=100,
+        window=10, metric='euclidean', parallel=True):
+    """Computes integral local deformation (Buzug & Pfister 1992).
+
+    Parameters
+    ----------
+    x : array
+        1-D real time series of length N.
+    dim : int, optional (default = 1)
+        Embedding dimensions.
+    qmax : int, optional (default = 4)
+        The number of steps each point is evolved.
+    nrefp : float, optional (default = None)
+        The number of randomly selected reference points in the percentage of
+        the attractor.
+    k : int, optional (default = 20)
+        Number of neighbors in radius.
+    rp : float, optional (default = 1.0)
+        The ratio of the attractor diameter to sample to pick neighbors from.
+    maxtau : int, optional (default = 100)
+        Calculate the ILD only up to this delay.
+    window : int, optional (default = 10)
+        The Theiler window
+
+    Returns
+    -------
+    disp : array
+        ILD for all time delays up to maxtau.
+    """
+    if parallel:
+        processes = None
+    else:
+        processes = 1
+
+    minv, maxv = np.min(x), np.max(x)
+
+    if minv == maxv:
+        warn('A constant time series provided.')
+        return [np.zeros(maxtau)] * len(dim)
+
+    if len(x) - (max(dim) - 1) * maxtau - qmax < 0:
+        raise ValueError('In some attractors the number of evolution steps is '
+                         'greater than the number of points - try increasing '
+                         'the minimum embedding dimension.')
+
+    return utils.parallel_map(_ild, dim, args=(x,), kwargs={
+                              'qmax': qmax,
+                              'nrefp': nrefp,
+                              'maxtau': maxtau,
+                              'window': window,
+                              'rp': rp,
+                              'k': k,
+                              'metric': metric}, processes=processes) \
+        / (2*(maxv - minv))
