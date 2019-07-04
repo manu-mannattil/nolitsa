@@ -29,7 +29,7 @@ from scipy.spatial import distance
 from . import utils
 
 
-def c2(dim, x, tau, r=100, metric='chebyshev', window=10):
+def c2(y, r=100, metric='chebyshev', window=10, int_method='default'):
     """Compute the correlation sum for the given distances.
 
     Computes the correlation sum of the given time series for the
@@ -52,6 +52,11 @@ def c2(dim, x, tau, r=100, metric='chebyshev', window=10):
     window : int, optional (default = 10)
         Minimum temporal separation (Theiler window) that should exist
         between pairs.
+    int_method : str, optional (default = 'default')
+        Identifier specifying the method which is used to find the interval of
+        distances where the autocorrelation sum should be evaluated (scaling
+        region). Should be one of ('default', 'galka'). By default, the
+        interval is [d(A)/1000, d(A)), where d(A) is diameter of the attractor.
 
     Returns
     -------
@@ -68,17 +73,20 @@ def c2(dim, x, tau, r=100, metric='chebyshev', window=10):
     from an array of points in the phase space.  If you want to
     calculate it after embedding a time series, see d2_embed().
     """
-    y = utils.reconstruct(x, dim=dim, tau=tau)
-
+    # Estimate the extent of the reconstructed phase space.
     if isinstance(r, int):
-        _, dist = utils.neighbors(y, window=window)
-        nnds = utils.dist(y, dist)
-        r_low = np.average(nnds)
+        if int_method is not 'galka':
+            extent = utils.extent(y, metric=metric)
+            r = utils.gprange(extent / 1000, extent, r)
+        else:
+            _, dist = utils.neighbors(y, window=window)
+            nnds = utils.dist(y, dist)
+            r_low = np.average(nnds)
 
-        r_max = utils.extent(y, metric=metric)
-        r_high = r_low * (r_max/r_low)**0.1
+            r_max = utils.extent(y, metric=metric)
+            r_high = r_low * (r_max/r_low)**0.1
 
-        r = utils.gprange(r_low, r_high, r)
+            r = utils.gprange(r_low, r_high, r)
     else:
         r = np.asarray(r)
         r = np.sort(r[r > 0])
@@ -98,7 +106,7 @@ def c2(dim, x, tau, r=100, metric='chebyshev', window=10):
 
 
 def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
-             parallel=True):
+             parallel=True, int_method='default'):
     """Compute the correlation sum using time-delayed vectors.
 
     Computes the correlation sum using time-delayed vectors constructed
@@ -128,6 +136,11 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
     parallel : bool, optional (default = True)
         Calculate the correlation sums for each embedding dimension in
         parallel.
+    int_method : str, optional (default = 'default')
+        Identifier specifying the method which is used to find the interval of
+        distances where the autocorrelation sum should be evaluated (scaling
+        region). Should be one of ('default', 'galka'). By default, the
+        interval is [d(A)/1000, d(A)), where d(A) is diameter of the attractor.
 
     Returns
     -------
@@ -140,10 +153,13 @@ def c2_embed(x, dim=[1], tau=1, r=100, metric='chebyshev', window=10,
     else:
         processes = 1
 
-    return utils.parallel_map(c2, dim, args=(x, tau,), kwargs={
+    yy = [utils.reconstruct(x, dim=d, tau=tau) for d in dim]
+
+    return utils.parallel_map(c2, yy, kwargs={
                               'r': r,
                               'metric': metric,
-                              'window': window
+                              'window': window,
+                              'int_method': int_method,
                               }, processes=processes)
 
 
