@@ -7,7 +7,8 @@ import numpy as np
 
 from time import sleep
 from nolitsa import utils
-from numpy.testing import assert_, assert_allclose, run_module_suite
+from numpy.testing import (assert_, assert_allclose, assert_equal,
+                           assert_raises, run_module_suite)
 
 
 def test_corrupt():
@@ -144,6 +145,20 @@ class TestNeighbors(object):
 
         # Should work now.
         utils.neighbors(x, maxnum=15)
+
+    def test_radius(self):
+        # Create 4 clusters in 2D of 3*3 points.
+        grid = np.array([(x + dx, y + dy) for x, y in
+                         itertools.product(np.arange(3), repeat=2)
+                         for dx, dy in itertools.product((0, 5), repeat=2)])
+        np.random.shuffle(grid)
+
+        # Within radius 2 in chebyshev metric...
+        index = utils.neighbors_r(grid, r=2, metric='chebyshev')
+
+        # ...there should be 3*3-1 neighbors to each point in the cluster, and
+        # together there are 3*3*4 points.
+        assert_equal(list(map(len, index)), [3*3-1] * (4 * 9))
 
 
 def _func_shm(t, ampl, omega=(0.1 * np.pi), phase=0):

@@ -208,28 +208,49 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
     return np.squeeze(indices), np.squeeze(dists)
 
 
-def neighbors_r(y, r=0.5, window=0):
+def neighbors_r(y, r=0.5, metric='chebyshev', window=0):
+    """Find indeces of the neighbors within a radius given. If no neighbor is
+    found, find the index of the nearest neighbor.
 
-    tree = KDTree(y)
+    Parameters
+    ----------
+    y : ndarray
+        N-dimensional array containing time-delayed vectors.
+    r : float, optional (default = 0.5)
+        Distance within which neighbor indeces are returned.
+    window : int, optional (default = 0)
+        Minimum temporal separation (Theiler window) that should exist
+        between near neighbors.  This is crucial while computing
+        Lyapunov exponents and the correlation dimension.
 
-    # dists = []
+    Returns
+    -------
+    index : array
+        Array containing indices of near neighbors.
+    """
+
+    metrics = ('cityblock', 'euclidean', 'chebyshev')
+
+    if metric not in metrics:
+        raise ValueError('Unknown metric.  Should be one of "cityblock", '
+                         '"euclidean", or "chebyshev".')
+    if len(y) < 2:
+        raise ValueError('The provided embedding includes only one element '
+                         '(which has no neighbors except itself).')
+
+    tree = KDTree(y, metric=metric)
+
     indices = []
 
     for i, x in enumerate(y):
-        index = tree.query_radius(np.reshape(x, (1, -1)), r=r)
-        # valid = (np.abs(index - i) > window) & (dist > 0)
-
-        # if np.count_nonzero(valid):
-        #     dists[i] = dist[valid]
-        #     indices[i] = index[valid]
-        #     continue
-        if index.size == 0:
-            index = tree.query(x, k=1, return_distances=False)
+        x = np.reshape(x, (1, -1))
+        index = tree.query_radius(x, r=r)[0]
+        if index.size == 1:
+            index = tree.query(x, k=2, return_distance=False)
+        index = index[index != i]
 
         indices.append(index)
-        # dists.append(dist)
 
-    # return np.squeeze(indices), np.squeeze(dists)
     return np.squeeze(indices)
 
 
