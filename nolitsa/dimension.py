@@ -196,60 +196,73 @@ def fnn(x, dim=[1], tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
                               }, processes).T
 
 
-def _ild(dim, x, qmax=4, rp=0.04, nrefp=None, k=None, window=10,
-         maxtau=100, metric='euclidean'):
+def _ild(dim, x, maxtau=100, qmax=4, nrefp=None, k=None, rp=0.04, window=10,
+         metric='euclidean'):
     def dx(i, q, y, index):
+        # Helper function which computes 'absolute growth of distance' -
+        # how much has the distance between point at index i and the centroid
+        # of its neighbors changed after q steps?
         x0_com = np.mean(y[index[i]], axis=0)
         xq_com = np.mean(y[np.clip(index[i]+q, 0, y.shape[0]-1)], axis=0)
         return d(xq_com, y[i+q]) - d(x0_com, y[i])
 
     ild = np.empty(maxtau)
     d = getattr(distance, metric)
-    yy = [utils.reconstruct(x, dim=dim, tau=tau) for tau in np.arange(1, maxtau+1)]
+    yy = [utils.reconstruct(x, dim=dim, tau=tau) for tau in
+          np.arange(1, maxtau+1)]
 
     for idx, y in enumerate(yy):
-        r = rp * utils.extent(y, metric=metric)
         n = y.shape[0]
-        ref = np.arange(n-qmax) if nrefp is None else \
+        refp = np.arange(n-qmax) if nrefp is None else \
             np.random.choice(
-                n-qmax, min(np.int(np.ceil(nrefp*n)), n-qmax),
-                replace=False)
+                n-qmax, min(np.int(np.ceil(nrefp*n)), n-qmax), replace=False)
         if k is None:
+            r = rp * utils.extent(y, metric=metric)
             index = utils.neighbors_r(y, r, metric=metric)
         else:
-            index, _ = utils.neighbors(y, metric=metric, minnum=k, window=window)
+            index, _ = utils.neighbors(y, metric=metric, minnum=k,
+                                       window=window)
+        # For time delay idx+1, ILD is the average of discrete integrals of
+        # local deformations around the reference points.
         ild[idx] = \
             np.average([
                 np.sum(
                     [dx(i, q-1, y, index) + dx(i, q, y, index)
                      for q in np.arange(1, qmax+1)])
-                for i in ref])
+                for i in refp])
     return ild
 
 
-def ild(x, dim=[1], qmax=4, nrefp=None, k=None, rp=1.0, maxtau=100,
+def ild(x, dim=[1], maxtau=100, qmax=4, nrefp=None, k=None, rp=1.0,
         window=10, metric='euclidean', parallel=True):
-    """Computes integral local deformation (Buzug & Pfister 1992).
+    """Computes Integral Local Deformation (ILD) (Buzug & Pfister 1992).
 
     Parameters
     ----------
     x : array
         1-D real time series of length N.
     dim : int, optional (default = 1)
-        Embedding dimensions.
+        List of embedding dimensions to find ILDs for.
+    maxtau : int, optional (default = 100)
+        Calculate the ILD only up to this delay.
     qmax : int, optional (default = 4)
         The number of steps each point is evolved.
     nrefp : float, optional (default = None)
         The number of randomly selected reference points in the percentage of
-        the attractor.
+        the number of points in the embedding. By default, all points in the
+        attractor are selected. The more points are selected, the more precise
+        the results, but the higher the computational cost.
     k : int, optional (default = 20)
         Number of neighbors in radius.
     rp : float, optional (default = 1.0)
         The ratio of the attractor diameter to sample to pick neighbors from.
-    maxtau : int, optional (default = 100)
-        Calculate the ILD only up to this delay.
     window : int, optional (default = 10)
-        The Theiler window
+        The Theiler window (minimal temporal separation between neighbors in
+        number of steps).
+    metric : string, optional (default = 'euclidean')
+        Metric to use for distance computation.  Must be one of
+        "cityblock" (aka the Manhattan metric), "chebyshev" (aka the
+        maximum norm metric), or "euclidean".
 
     Returns
     -------
@@ -277,8 +290,8 @@ def ild(x, dim=[1], qmax=4, nrefp=None, k=None, rp=1.0, maxtau=100,
                               'qmax': qmax,
                               'nrefp': nrefp,
                               'maxtau': maxtau,
-                              'window': window,
-                              'rp': rp,
                               'k': k,
+                              'rp': rp,
+                              'window': window,
                               'metric': metric}, processes=processes) \
         / (2*(maxv - minv))
