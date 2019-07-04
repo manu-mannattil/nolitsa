@@ -215,7 +215,7 @@ def _ild(dim, x, qmax=4, rp=0.04, nrefp=None, k=None, window=10,
                 n-qmax, min(np.int(np.ceil(nrefp*n)), n-qmax),
                 replace=False)
         if k is None:
-            index = utils.neighbors_r(y, r)
+            index = utils.neighbors_r(y, r, metric=metric)
         else:
             index, _ = utils.neighbors(y, metric=metric, minnum=k, window=window)
         ild[idx] = \
@@ -254,7 +254,8 @@ def ild(x, dim=[1], qmax=4, nrefp=None, k=None, rp=1.0, maxtau=100,
     Returns
     -------
     disp : array
-        ILD for all time delays up to maxtau.
+        Array where each element represents ILD (as a function of time delay)
+        for all time delays up to maxtau.
     """
     if parallel:
         processes = None

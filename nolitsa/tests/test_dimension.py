@@ -8,7 +8,7 @@ import numpy as np
 from numpy.testing import (assert_allclose, assert_equal, assert_warns,
                            run_module_suite)
 
-from lib.nolitsa.nolitsa import dimension
+from nolitsa import dimension
 
 
 class TestAFN(object):
