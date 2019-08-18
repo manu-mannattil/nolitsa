@@ -7,7 +7,9 @@ A module for common utility functions used elsewhere.
   * corrupt -- corrupts a time series with noise.
   * dist -- computes the distance between points from two arrays.
   * gprange -- generates a geometric progression between two points.
+  * metric2p -- convert metric name to Minkowski p-norm.
   * neighbors -- finds the nearest neighbors of all points in an array.
+  * neighbors_r -- finds all neighbors within a given radius.
   * parallel_map -- a parallel version of map().
   * reconstruct -- constructs time-delayed vectors from a scalar time
     series.
@@ -21,8 +23,7 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 
 from scipy import stats
-from scipy.spatial import cKDTree
-from sklearn.neighbors import KDTree
+from scipy.spatial import cKDTree as KDTree
 from scipy.spatial import distance
 
 
@@ -65,8 +66,8 @@ def dist(x, y, metric='chebyshev'):
     Computes the distance between all sequential pairs of points from
     two arrays using scipy.spatial.distance.
 
-    Paramters
-    ---------
+    Parameters
+    ----------
     x : ndarray
         Input array.
     y : ndarray
@@ -84,7 +85,23 @@ def dist(x, y, metric='chebyshev'):
 
 
 def extent(y, metric='chebyshev'):
-    # Estimate the extent (r_max) of the reconstructed phase space.
+    """Estimate the extent of the reconstructed phase space.
+
+    Estimates the extent, i.e., the diameter of the reconstructed attractor
+    from the time-delayed vectors.
+
+    Parameters
+    ----------
+    y : ndarray
+        N-dimensional array containing time-delayed vectors.
+    metric : string, optional (default = 'chebyshev')
+        Metric to use while computing distances.
+
+    Returns
+    -------
+    extent : float
+        Extent of the attractor.
+    """
     if metric == 'chebyshev':
         extent = np.max(np.max(y, axis=0) - np.min(y, axis=0))
     elif metric == 'cityblock':
@@ -95,6 +112,7 @@ def extent(y, metric='chebyshev'):
     else:
         raise ValueError('Unknown metric.  Should be one of "chebyshev", '
                          '"cityblock", or "euclidean".')
+
     return extent
 
 
@@ -162,21 +180,12 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
     dist : array
         Array containing near neighbor distances.
     """
-    if metric == 'cityblock':
-        p = 1
-    elif metric == 'euclidean':
-        p = 2
-    elif metric == 'chebyshev':
-        p = np.inf
-    else:
-        raise ValueError('Unknown metric.  Should be one of "cityblock", '
-                         '"euclidean", or "chebyshev".')
-
-    tree = cKDTree(y)
+    tree = KDTree(y)
     n = len(y)
+    p = metric2p(metric)
 
     if not maxnum:
-        maxnum = min(max((window + 1) + 1 + (window + 1), minnum*2), n-1)
+        maxnum = min(max((window + 1) + 1 + (window + 1), 2 * minnum), n - 1)
     else:
         maxnum = max(1, maxnum)
 
@@ -186,11 +195,11 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
     if minnum > maxnum:
         raise ValueError('minnum is bigger that maxnum.')
 
-    dists = []
-    indices = []
+    dists = list()
+    indices = list()
 
     for i, x in enumerate(y):
-        for k in range(minnum+1, maxnum + 2):
+        for k in range(minnum + 1, maxnum + 2):
             dist, index = tree.query(x, k=k, p=p)
             valid = (np.abs(index - i) > window) & (dist > 0)
 
@@ -209,15 +218,18 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
 
 
 def neighbors_r(y, r=0.5, metric='chebyshev', window=0):
-    """Find indeces of the neighbors within a radius given. If no neighbor is
-    found, find the index of the nearest neighbor.
+    """Find indices of the neighbors within a given radius.
+
+    Find indices of all neighbors to the points in the array within
+    a given radius.  If no neighbor is found, find the index of the
+    nearest neighbor.
 
     Parameters
     ----------
     y : ndarray
         N-dimensional array containing time-delayed vectors.
     r : float, optional (default = 0.5)
-        Distance within which neighbor indeces are returned.
+        The radius of points to return.
     window : int, optional (default = 0)
         Minimum temporal separation (Theiler window) that should exist
         between near neighbors.  This is crucial while computing
@@ -228,30 +240,23 @@ def neighbors_r(y, r=0.5, metric='chebyshev', window=0):
     index : array
         Array containing indices of near neighbors.
     """
-
-    metrics = ('cityblock', 'euclidean', 'chebyshev')
-
-    if metric not in metrics:
-        raise ValueError('Unknown metric.  Should be one of "cityblock", '
-                         '"euclidean", or "chebyshev".')
     if len(y) < 2:
         raise ValueError('The provided embedding includes only one element '
                          '(which has no neighbors except itself).')
 
-    tree = KDTree(y, metric=metric)
-
-    indices = []
+    tree = KDTree(y)
+    indices = list()
+    p = metric2p(metric)
 
     for i, x in enumerate(y):
-        x = np.reshape(x, (1, -1))
-        index = tree.query_radius(x, r=r)[0]
-        if index.size == 1:
-            index = tree.query(x, k=2, return_distance=False)
-        index = index[index != i]
+        index = tree.query_ball_point(x, r=r, p=p)
+        if len(index) == 1:
+            index = tree.query(x, k=2, p=p)[1]
 
+        index.remove(i)
         indices.append(index)
 
-    return np.squeeze(indices)
+    return indices
 
 
 def parallel_map(func, values, args=tuple(), kwargs=dict(),
