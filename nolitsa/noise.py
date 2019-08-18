@@ -88,15 +88,7 @@ def nored(x, dim=1, tau=1, r=0, metric='chebyshev', repeat=1):
     metric.  (This function is a featureful equivalent of the TISEAN
     program "lazy".)
     """
-    if metric == 'cityblock':
-        p = 1
-    elif metric == 'euclidean':
-        p = 2
-    elif metric == 'chebyshev':
-        p = np.inf
-    else:
-        raise ValueError('Unknown metric.  Should be one of "cityblock", '
-                         '"euclidean", or "chebyshev".')
+    p = utils.metric2p(metric)
 
     # Choose the middle coordinate appropriately.
     if dim % 2 == 0:

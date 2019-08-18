@@ -146,6 +146,19 @@ def gprange(start, end, num=100):
     return start * ratio ** np.arange(num)
 
 
+def metric2p(metric):
+    """Return p in Minkowski p-norm for the given metric."""
+    if metric == 'cityblock':
+        return 1
+    elif metric == 'euclidean':
+        return 2
+    elif metric == 'chebyshev':
+        return np.inf
+    else:
+        raise ValueError('Unknown metric.  Should be one of "cityblock", '
+                         '"euclidean", or "chebyshev".')
+
+
 def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
     """Find nearest neighbors of all points in the given array.
 
