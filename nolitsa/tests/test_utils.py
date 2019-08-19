@@ -146,19 +146,52 @@ class TestNeighbors(object):
         # Should work now.
         utils.neighbors(x, maxnum=15)
 
-    def test_radius(self):
-        # Create 4 clusters in 2D of 3*3 points.
+class TestNeighborsR(object):
+    # Test utils.neighbors_r()
+
+    def test_line(self):
+        # 5-D line.
+        n, d = 100, 5
+        y = np.random.random(d) + np.arange(n)[:, np.newaxis]
+
+        # Bump the radius slightly so that near neighbors are adjacent points.
+        metric_r = {
+            'euclidean': np.sqrt(d) + 1e-10,
+            'chebyshev': 1.0 + 1e-10,
+            'cityblock': d + 1e-10
+        }
+
+        desired = np.array([np.arange(n - 2), np.arange(2, n)]).T
+        desired = [[1]] + desired.tolist() + [[n - 2]]
+
+        for metric, r in metric_r.items():
+            index = utils.neighbors_r(y, r=r, metric=metric)
+            assert_equal(index, desired)
+
+        # Now repeat with small r after doing a cumulative sum of y so
+        # that the nearest neighbor is the previous point.
+        y = np.cumsum(y, axis=0)
+        index = utils.neighbors_r(y, r=1e-5)
+
+        desired = np.arange(n - 2).reshape((n - 2, 1))
+        desired = [[1]] + desired.tolist() + [[n - 2]]
+        assert_equal(index, desired)
+
+
+    def test_cluster(self):
+        # Create 4 clusters in 2D of 3*3 points and check if the function
+        # returns the right number of neighbors.
         grid = np.array([(x + dx, y + dy) for x, y in
-                         itertools.product(np.arange(3), repeat=2)
-                         for dx, dy in itertools.product((0, 5), repeat=2)])
+                            itertools.product(np.arange(3), repeat=2)
+                            for dx, dy in itertools.product((0, 5), repeat=2)])
         np.random.shuffle(grid)
 
-        # Within radius 2 in chebyshev metric...
+        # Within radius 2 in Chebyshev metric...
         index = utils.neighbors_r(grid, r=2, metric='chebyshev')
 
-        # ...there should be 3*3-1 neighbors to each point in the cluster, and
+        # ... there should be 3*3-1 neighbors to each point in the cluster, and
         # together there are 3*3*4 points.
-        assert_equal(list(map(len, index)), [3*3-1] * (4 * 9))
+        assert_equal(list(map(len, index)), [3 * 3 - 1] * (4 * 9))
 
 
 def _func_shm(t, ampl, omega=(0.1 * np.pi), phase=0):
