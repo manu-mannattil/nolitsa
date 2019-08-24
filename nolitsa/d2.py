@@ -75,10 +75,7 @@ def c2(y, r=100, metric='chebyshev', window=10, int_method='default'):
     """
     # Estimate the extent of the reconstructed phase space.
     if isinstance(r, int):
-        if int_method is not 'galka':
-            extent = utils.extent(y, metric=metric)
-            r = utils.gprange(extent / 1000, extent, r)
-        else:
+        if int_method == 'galka':
             _, dist = utils.neighbors(y, window=window)
             nnds = utils.dist(y, dist)
             r_low = np.average(nnds)
@@ -87,6 +84,11 @@ def c2(y, r=100, metric='chebyshev', window=10, int_method='default'):
             r_high = r_low * (r_max/r_low)**0.1
 
             r = utils.gprange(r_low, r_high, r)
+        else:
+            extent = utils.extent(y, metric=metric)
+            r_low, r_high  = extent / 1000, extent
+
+        r = utils.gprange(r_low, r_high, r)
     else:
         r = np.asarray(r)
         r = np.sort(r[r > 0])

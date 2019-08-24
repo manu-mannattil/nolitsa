@@ -20,7 +20,7 @@ x = data.lorenz(length=10000, x0=None, sigma=10.0, beta=8.0/3.0, rho=28.0,
 dim = np.arange(2, 7, 1)
 maxtau = 60
 
-ilds = dimension.ild(x, dim=dim, qmax=10, maxtau=maxtau, rp=0.04, nrefp=0.02,
+ilds = dimension.ild(x, dim=dim, qmax=10, maxtau=maxtau, rp=0.04, frefp=0.02,
                      k=None)
 
 plt.title('ILD for Lorenz attractor')

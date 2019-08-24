@@ -217,8 +217,8 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
             valid = (np.abs(index - i) > window) & (dist > 0)
 
             if np.count_nonzero(valid):
-                dists.append(dist[valid])
-                indices.append(index[valid])
+                dists.append(dist[valid].tolist())
+                indices.append(index[valid].tolist())
                 break
 
             if k == (maxnum + 1):
@@ -230,7 +230,7 @@ def neighbors(y, metric='chebyshev', window=0, minnum=1, maxnum=None):
     return np.squeeze(indices), np.squeeze(dists)
 
 
-def neighbors_r(y, r=0.5, metric='chebyshev', window=0):
+def neighbors_r(y, r=0.5, metric='chebyshev'):
     """Find indices of the neighbors within a given radius.
 
     Find indices of all neighbors to the points in the array within
@@ -243,10 +243,6 @@ def neighbors_r(y, r=0.5, metric='chebyshev', window=0):
         N-dimensional array containing time-delayed vectors.
     r : float, optional (default = 0.5)
         The radius of points to return.
-    window : int, optional (default = 0)
-        Minimum temporal separation (Theiler window) that should exist
-        between near neighbors.  This is crucial while computing
-        Lyapunov exponents and the correlation dimension.
 
     Returns
     -------
@@ -264,7 +260,10 @@ def neighbors_r(y, r=0.5, metric='chebyshev', window=0):
     for i, x in enumerate(y):
         index = tree.query_ball_point(x, r=r, p=p)
         if len(index) == 1:
-            index = tree.query(x, k=2, p=p)[1]
+            # The behavior of tree.query_ball_point() and tree.query()
+            # are somewhat inconsistent -- the former returns a list,
+            # whereas the latter returns an ndarray.
+            index = tree.query(x, k=2, p=p)[1].tolist()
 
         index.remove(i)
         indices.append(index)
@@ -300,8 +299,8 @@ def parallel_map(func, values, args=tuple(), kwargs=dict(),
     results : array
         Output after applying func on each element in values.
     """
-    # True single core processing, in order to allow the func to be executed in
-    # a Pool in a calling script.
+    # True single core processing, in order to allow the function to be
+    # executed in a calling script.
     if processes == 1:
         return np.asarray([func(value, *args, **kwargs) for value in values])
 

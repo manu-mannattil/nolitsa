@@ -182,8 +182,8 @@ class TestNeighborsR(object):
         # Create 4 clusters in 2D of 3*3 points and check if the function
         # returns the right number of neighbors.
         grid = np.array([(x + dx, y + dy) for x, y in
-                            itertools.product(np.arange(3), repeat=2)
-                            for dx, dy in itertools.product((0, 5), repeat=2)])
+                         itertools.product(np.arange(3), repeat=2)
+                         for dx, dy in itertools.product((0, 5), repeat=2)])
         np.random.shuffle(grid)
 
         # Within radius 2 in Chebyshev metric...

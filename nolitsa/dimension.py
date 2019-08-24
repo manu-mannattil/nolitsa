@@ -13,11 +13,10 @@ embedding dimension required to embed a scalar time series.
 
 from __future__ import absolute_import, division, print_function
 
-from warnings import warn
-
 import numpy as np
-from scipy.spatial import distance
 
+from scipy.spatial import distance
+from warnings import warn
 from . import utils
 
 
@@ -196,7 +195,7 @@ def fnn(x, dim=[1], tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
                               }, processes).T
 
 
-def _ild(dim, x, maxtau=100, qmax=4, nrefp=None, k=None, rp=0.04, window=10,
+def _ild(dim, x, maxtau=100, qmax=4, frefp=None, k=None, rp=0.04, window=10,
          metric='euclidean'):
     def dx(i, q, y, index):
         # Helper function which computes 'absolute growth of distance' -
@@ -213,15 +212,19 @@ def _ild(dim, x, maxtau=100, qmax=4, nrefp=None, k=None, rp=0.04, window=10,
 
     for idx, y in enumerate(yy):
         n = y.shape[0]
-        refp = np.arange(n-qmax) if nrefp is None else \
-            np.random.choice(
-                n-qmax, min(np.int(np.ceil(nrefp*n)), n-qmax), replace=False)
-        if k is None:
+        if frefp:
+            refp = np.random.choice(n - qmax, replace=False,
+                                    size=min(np.int(np.ceil(frefp * n)), n - qmax))
+        else:
+            # Use all available points.
+            refp = np.arange(n - qmax)
+
+        if k:
+            index = utils.neighbors(y, metric=metric, minnum=k, window=window)[0]
+        else:
             r = rp * utils.extent(y, metric=metric)
             index = utils.neighbors_r(y, r, metric=metric)
-        else:
-            index, _ = utils.neighbors(y, metric=metric, minnum=k,
-                                       window=window)
+
         # For time delay idx+1, ILD is the average of discrete integrals of
         # local deformations around the reference points.
         ild[idx] = \
@@ -230,12 +233,16 @@ def _ild(dim, x, maxtau=100, qmax=4, nrefp=None, k=None, rp=0.04, window=10,
                     [dx(i, q-1, y, index) + dx(i, q, y, index)
                      for q in np.arange(1, qmax+1)])
                 for i in refp])
+
     return ild
 
 
-def ild(x, dim=[1], maxtau=100, qmax=4, nrefp=None, k=None, rp=1.0,
+def ild(x, dim=[1], maxtau=100, qmax=4, frefp=None, k=None, rp=1.0,
         window=10, metric='euclidean', parallel=True):
-    """Computes Integral Local Deformation (ILD) (Buzug & Pfister 1992).
+    """Compute the Integral Local Deformation (ILD) (Buzug & Pfister 1992).
+
+    Computes the Integral Local Deformation (ILD) introduced by Buzug
+    & Pfister (1992) to find the optimal delay and embedding dimension.
 
     Parameters
     ----------
@@ -247,18 +254,18 @@ def ild(x, dim=[1], maxtau=100, qmax=4, nrefp=None, k=None, rp=1.0,
         Calculate the ILD only up to this delay.
     qmax : int, optional (default = 4)
         The number of steps each point is evolved.
-    nrefp : float, optional (default = None)
-        The number of randomly selected reference points in the percentage of
-        the number of points in the embedding. By default, all points in the
-        attractor are selected. The more points are selected, the more precise
-        the results, but the higher the computational cost.
+    frefp : float, optional (default = None)
+        The fraction of randomly selected reference points for a given
+        embedding.  By default, all points in the reconstructed attractor
+        are selected (see Notes).
     k : int, optional (default = 20)
         Number of neighbors in radius.
     rp : float, optional (default = 1.0)
-        The ratio of the attractor diameter to sample to pick neighbors from.
+        The ratio of the attractor diameter to sample to pick neighbors
+        from.
     window : int, optional (default = 10)
-        The Theiler window (minimal temporal separation between neighbors in
-        number of steps).
+        The Theiler window (minimum temporal separation between
+        neighbors in number of steps).
     metric : string, optional (default = 'euclidean')
         Metric to use for distance computation.  Must be one of
         "cityblock" (aka the Manhattan metric), "chebyshev" (aka the
@@ -267,8 +274,14 @@ def ild(x, dim=[1], maxtau=100, qmax=4, nrefp=None, k=None, rp=1.0,
     Returns
     -------
     disp : array
-        Array where each element represents ILD (as a function of time delay)
-        for all time delays up to maxtau.
+        Array where each element represents the ILD (as a function of time
+        delay) for all time delays up to maxtau.
+
+    Notes
+    -----
+    Although the quality of the results improve when more points (i.e.,
+    a larger fref) are selected, it comes at a higher computational
+    cost.
     """
     if parallel:
         processes = None
@@ -288,7 +301,7 @@ def ild(x, dim=[1], maxtau=100, qmax=4, nrefp=None, k=None, rp=1.0,
 
     return utils.parallel_map(_ild, dim, args=(x,), kwargs={
                               'qmax': qmax,
-                              'nrefp': nrefp,
+                              'frefp': frefp,
                               'maxtau': maxtau,
                               'k': k,
                               'rp': rp,

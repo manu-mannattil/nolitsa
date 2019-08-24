@@ -16,7 +16,7 @@ x = data.roessler(a=0.20, b=0.40, c=5.7, sample=sample, length=10000,
 dim = np.arange(2, 7, 1)
 maxtau = 60
 
-ilds = dimension.ild(x, dim=dim, qmax=4, maxtau=maxtau, rp=0.04, nrefp=0.2)
+ilds = dimension.ild(x, dim=dim, qmax=4, maxtau=maxtau, rp=0.04, frefp=0.2)
 
 plt.title('ILD for Rossler oscillator')
 plt.xlabel('Time delay')
