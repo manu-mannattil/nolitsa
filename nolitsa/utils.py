@@ -18,11 +18,18 @@ A module for common utility functions used elsewhere.
 
 from __future__ import absolute_import, division, print_function
 
-import numpy as np
+import os
+#os.environ['OMP_NUM_THREADS'] = '20'
 
+import numpy as np
+import time
 from scipy import stats
-from scipy.spatial import cKDTree as KDTree
+#from scipy.spatial import cKDTree as KDTree
+from pykdtree.kdtree import KDTree
 from scipy.spatial import distance
+import knn_util
+
+#from cython_utils import cython_neighbors
 
 
 def corrupt(x, y, snr=100):
@@ -113,6 +120,144 @@ def gprange(start, end, num=100):
 
 
 def neighbors(y, metric='chebyshev', window=0, maxnum=None):
+    #return neighbors_old(y=y, metric=metric, window=window, maxnum=maxnum)
+    return neighbors_new(y=y, metric=metric, window=window, maxnum=maxnum)
+    #return neighbors_cuda(y=y, metric=metric, window=window, maxnum=maxnum)
+
+
+
+def neighbors_new(y, metric='chebyshev', window=0, maxnum=None):
+
+
+    if metric == 'cityblock':
+        p = 1
+    elif metric == 'euclidean':
+        p = 2
+    elif metric == 'chebyshev':
+        p = np.inf
+    else:
+        raise ValueError('Unknown metric.  Should be one of "cityblock", '
+                         '"euclidean", or "chebyshev".')
+
+    m_dim = y.shape[1]
+    # print(m_dim, 'A')
+    tree = KDTree(y)
+    n = len(y)
+
+    if not maxnum:
+        maxnum = (window + 1) + 1 + (window + 1)
+    else:
+        maxnum = max(1, maxnum)
+
+    if maxnum >= n:
+        raise ValueError('maxnum is bigger than array length.')
+
+    #   cythonize the rest of the loop, given kdtree outputs stored in an array
+
+    k_list = list(range(2, maxnum + 2))
+    # print('k_list', k_list)
+
+    #print(m_dim, 'B')
+    dists_all, indices_all = tree.query(y, k=maxnum + 2)  #, p=p)
+    #k_list)
+    #print(m_dim, 'C')
+    # print('dists_all.shape', dists_all.shape)  # (159876, 23)
+    # print('indices_all.shape', indices_all.shape)  # (159876, 23)
+
+    # return smallest nonzero distance neighbor, or give a warning if none found for any
+
+    dists = np.zeros(n)
+    indices = np.zeros(n, dtype=int)
+
+    dists_all[dists_all==0] = np.inf
+    argmin_dists = np.argmin(dists_all, axis=1)
+    indices = indices_all[np.arange(indices_all.shape[0]), argmin_dists]
+    dists = dists_all[np.arange(indices_all.shape[0]), argmin_dists]
+
+    # print(indices)
+    # print(indices.shape)
+    # print(dists.shape)
+
+    if np.amax(dists) == np.inf:
+        print('ERROR: Could not find any near neighbor with a nonzero distance. Try increasing the value of maxnum.')
+    print('            ', m_dim, 'D')
+    return np.squeeze(indices), np.squeeze(dists)
+
+
+def neighbors_cuda(y, metric='chebyshev', window=0, maxnum=None):
+
+
+    if metric == 'cityblock':
+        p = 1
+    elif metric == 'euclidean':
+        p = 2
+    elif metric == 'chebyshev':
+        p = np.inf
+    else:
+        raise ValueError('Unknown metric.  Should be one of "cityblock", '
+                         '"euclidean", or "chebyshev".')
+
+    m_dim = y.shape[1]
+    # print(m_dim, 'A')
+    n = len(y)
+
+    if not maxnum:
+        maxnum = (window + 1) + 1 + (window + 1)
+    else:
+        maxnum = max(1, maxnum)
+
+    if maxnum >= n:
+        raise ValueError('maxnum is bigger than array length.')
+
+    #   cythonize the rest of the loop, given kdtree outputs stored in an array
+
+    k_list = list(range(2, maxnum + 2))
+    # print('k_list', k_list)
+
+    #print(m_dim, 'B')
+
+    y_gpu = y.astype(np.float32)  #np.ascontiguousarray(y.transpose())
+    print('y_gpu.shape', y_gpu.shape)
+    print('y_gpu.dtype', y_gpu.dtype)
+
+    #print('y_gpu.T', y_gpu.T)
+
+    #dists_all, indices_all = tree.query(y, k=maxnum + 2)  #, p=p)
+    dists_all, indices_all = knn_util.KNN(y_gpu.copy(), y_gpu.copy(), maxnum+2)
+    print(dists_all)
+    print(indices_all)
+    #k_list)
+    #print(m_dim, 'C')
+    # print('dists_all.shape', dists_all.shape)  # (159876, 23)
+    # print('indices_all.shape', indices_all.shape)  # (159876, 23)
+
+    # return smallest nonzero distance neighbor, or give a warning if none found for any
+    # TODO !!! I am very confused. Why query k > 1 above if we are always taking the closest one?????
+    # because they may not be nonzero? we don't know which will give a nonzero???
+
+    dists = np.zeros(n)
+    indices = np.zeros(n, dtype=int)
+
+    print(dists_all.shape, indices_all.shape)  # (10, 5) (10, 5)
+    dists_all[dists_all==0] = np.inf
+
+    #dists_all[dists_all==np.nan] = np.inf
+
+    argmin_dists = np.argmin(dists_all, axis=1)
+    indices = indices_all[np.arange(indices_all.shape[0]), argmin_dists]
+    dists = dists_all[np.arange(indices_all.shape[0]), argmin_dists]
+
+    # print(indices)
+    # print(indices.shape)
+    # print(dists.shape)
+
+    if np.amax(dists) == np.inf:
+        print('ERROR: Could not find any near neighbor with a nonzero distance. Try increasing the value of maxnum.')
+    print('            ', m_dim, 'D')
+    return np.squeeze(indices), np.squeeze(dists)
+
+
+def neighbors_old(y, metric='chebyshev', window=0, maxnum=None):
     """Find nearest neighbors of all points in the given array.
 
     Finds the nearest neighbors of all points in the given array using
@@ -143,6 +288,16 @@ def neighbors(y, metric='chebyshev', window=0, maxnum=None):
     dist : array
         Array containing near neighbor distances.
     """
+
+    t_all_0 = time.time()
+
+    t_query = 0
+    t_everything_else = 0
+
+    #return cython_neighbors(y.astype(np.float64), metric, window, maxnum)
+
+    t0 = time.time()
+
     if metric == 'cityblock':
         p = 1
     elif metric == 'euclidean':
@@ -152,6 +307,14 @@ def neighbors(y, metric='chebyshev', window=0, maxnum=None):
     else:
         raise ValueError('Unknown metric.  Should be one of "cityblock", '
                          '"euclidean", or "chebyshev".')
+
+    print()
+    print('y.shape')
+    print(y.shape)
+    print()
+
+    # y.shape
+    # (159876, 2)
 
     tree = KDTree(y)
     n = len(y)
@@ -164,23 +327,58 @@ def neighbors(y, metric='chebyshev', window=0, maxnum=None):
     if maxnum >= n:
         raise ValueError('maxnum is bigger than array length.')
 
-    dists = np.empty(n)
-    indices = np.empty(n, dtype=int)
+    dists = np.zeros(n)
+    indices = np.zeros(n, dtype=int)
 
-    for i, x in enumerate(y):
-        for k in range(2, maxnum + 2):
-            dist, index = tree.query(x, k=k, p=p)
+    t_init = time.time() - t0
+
+    t_loop_0 = time.time()
+
+    # ************ OLD ************
+
+    #for i, x in enumerate(y):
+    for i in range(y.shape[0]):
+        x = y[i, :]
+        #print(i, x)
+
+        for k in range(2, maxnum + 2):  # [22]:  # range(2, maxnum + 2):
+            t0 = time.time()
+            dist, index = tree.query(x, k=k, p=p)  #  x[np.newaxis, :]  #p=p)  # THIS DOESNT WORK (still only 1 cpu): #, workers=-1)
+            t_query += time.time() - t0
+
+            #print(i, k, x.shape, dist, index)
+
+            t0 = time.time()
             valid = (np.abs(index - i) > window) & (dist > 0)
+            #print(dist[0][1])
+            #print()
 
             if np.count_nonzero(valid):
+
                 dists[i] = dist[valid][0]
                 indices[i] = index[valid][0]
+                t_everything_else += time.time() - t0
+
                 break
 
             if k == (maxnum + 1):
-                raise Exception('Could not find any near neighbor with a '
-                                'nonzero distance.  Try increasing the '
-                                'value of maxnum.')
+                print('ERROR: Could not find any near neighbor with a nonzero distance. Try increasing the value of maxnum.')
+                # raise Exception('Could not find any near neighbor with a '
+                #                 'nonzero distance.  Try increasing the '
+                #                 'value of maxnum.')
+                return indices, dists
+
+            t_everything_else += time.time() - t0
+
+    t_loop_all = time.time() - t_loop_0
+    t_all = time.time() - t_all_0
+
+    print()
+    print('    perc init:', 100 * t_init / t_all)
+    print('    perc loop:', 100 * t_loop_all / t_all)
+    print('    perc query:', 100 * t_query / t_all)
+    print('    perc other:', 100 * t_everything_else / t_all)
+    print()
 
     return np.squeeze(indices), np.squeeze(dists)
 
