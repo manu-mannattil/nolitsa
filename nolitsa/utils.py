@@ -24,6 +24,8 @@ from scipy import stats
 from scipy.spatial import cKDTree as KDTree
 from scipy.spatial import distance
 
+from numba import jit
+
 
 def corrupt(x, y, snr=100):
     """Corrupt time series with noise.
@@ -80,6 +82,11 @@ def dist(x, y, metric='chebyshev'):
     """
     func = getattr(distance, metric)
     return np.asarray([func(i, j) for i, j in zip(x, y)])
+
+
+@jit("float64[:](float64[:, :], float64[:, :])", nopython=True)
+def fast_euclidean_dist(x, y):
+    return np.sqrt(np.array(list(map(np.sum, (x-y)**2))))
 
 
 def gprange(start, end, num=100):
