@@ -77,29 +77,6 @@ def mle(y, maxt=500, window=10, metric='euclidean', maxnum=None):
     return d
 
 
-def fast_euclidean_mle(y, maxt=500, window=10, maxnum=None):
-    index, dist = utils.neighbors(y, metric='euclidean', window=window,
-                                  maxnum=maxnum)
-    m = len(y)
-    maxt = min(m - window - 1, maxt)
-
-    d = np.empty(maxt)
-    d[0] = np.mean(np.log(dist))
-
-    for t in range(1, maxt):
-        t1 = np.arange(t, m)
-        t2 = index[:-t] + t
-
-        # Sometimes the nearest point would be farther than (m - maxt)
-        # in time.  Such trajectories needs to be omitted.
-        valid = t2 < m
-        t1, t2 = t1[valid], t2[valid]
-
-        d[t] = np.mean(np.log(utils.fast_euclidean_dist(y[t1], y[t2])))
-
-    return d
-
-
 def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
               metric='euclidean', maxnum=None, parallel=True):
     """Estimate the maximum Lyapunov exponent from a scalar time series.
@@ -157,21 +134,5 @@ def mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
                               'maxt': maxt,
                               'window': window,
                               'metric': metric,
-                              'maxnum': maxnum
-                              }, processes=processes)
-
-
-def fast_euclidean_mle_embed(x, dim=[1], tau=1, window=10, maxt=500,
-                             maxnum=None, parallel=True):
-    if parallel:
-        processes = None
-    else:
-        processes = 1
-
-    yy = [utils.reconstruct(x, dim=d, tau=tau) for d in dim]
-
-    return utils.parallel_map(fast_euclidean_mle, yy, kwargs={
-                              'maxt': maxt,
-                              'window': window,
                               'maxnum': maxnum
                               }, processes=processes)

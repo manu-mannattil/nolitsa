@@ -22,8 +22,6 @@ import numpy as np
 
 from scipy import stats
 from scipy.spatial import cKDTree as KDTree
-from scipy.spatial import distance
-
 from numba import jit
 
 
@@ -80,13 +78,32 @@ def dist(x, y, metric='chebyshev'):
     d : ndarray
         Array containing distances.
     """
-    func = getattr(distance, metric)
-    return np.asarray([func(i, j) for i, j in zip(x, y)])
+    if metric == 'cityblock':
+        func = cityblock_dist
+    elif metric == 'euclidean':
+        func = euclidean_dist
+    elif metric == 'chebyshev':
+        func = chebyshev_dist
+    else:
+        raise ValueError('Unknown metric.  Should be one of "cityblock", '
+                         '"euclidean", or "chebyshev".')
+
+    return func(x, y)
 
 
 @jit("float64[:](float64[:, :], float64[:, :])", nopython=True)
-def fast_euclidean_dist(x, y):
-    return np.sqrt(np.array(list(map(np.sum, (x-y)**2))))
+def cityblock_dist(x, y):
+    return np.array(list(map(np.sum, np.abs(x - y))))
+
+
+@jit("float64[:](float64[:, :], float64[:, :])", nopython=True)
+def euclidean_dist(x, y):
+    return np.sqrt(np.array(list(map(np.sum, (x - y) ** 2))))
+
+
+@jit("float64[:](float64[:, :], float64[:, :])", nopython=True)
+def chebyshev_dist(x, y):
+    return np.array(list(map(np.max, np.abs(x - y))))
 
 
 def gprange(start, end, num=100):
