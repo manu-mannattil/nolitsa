@@ -61,7 +61,7 @@ Versions of NoLiTSA were used in the following publications:
 -   M. Mannattil, A. Pandey, M. K. Verma, and S. Chakraborty, “On the
     applicability of low-dimensional models for convective flow
     reversals at extreme Prandtl numbers,” [Eur. Phys. J. B **90**, 259
-    (2017)](https://dx.doi.org/10.1140/epjb/e2017-80391-1)
+    (2017)](https://dx.doi.org/10.1140/epjb/e2017-80391-1).
 
 Acknowledgments
 ---------------

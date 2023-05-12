@@ -7,7 +7,7 @@ References
 - Galka, A. (2000). _Topics in Nonlinear Time Series Analysis_, World Scientific, Singapore.
 - Grassberger, P. & Procaccia, I. (1983). Measuring the strangeness of strange attractors. [_Physica D_ __9__, 189](https://dx.doi.org/10.1016/0167-2789(83)90298-1).
 - Hegger, R., Kantz, H. & Schreiber, T. (1999). Practical implementation of nonlinear time series methods: The TISEAN package. [_Chaos_ __9__, 413](https://doi.org/10.1063%2F1.166424).
-- Isliker, H. & Kurths, J. (1993). A test for stationarity. [_Int. J. Bifurc. Chaos_ __03__, 1573](https://doi.org/10.1142%2fs0218127493001227).
+- Isliker, H. & Kurths, J. (1993). A test for stationarity. [_Int. J. Bifurc. Chaos_ __3__, 1573](https://doi.org/10.1142%2fs0218127493001227).
 - Kantz, H., & Schreiber, T. (2004). _Nonlinear Time Series Analysis_, 2nd edition, Cambridge University Press, Cambridge.
 - Kennel, M.B., Brown, R. & Abarbanel, H.D.I. (1992). Determining embedding dimension for phase-space reconstruction using a geometrical construction. [_Phys. Rev. A_ __45__, 3403](https://dx.doi.org/10.1103/PhysRevA.45.3403).
 - Press, W.H., Teukolsky, S.A., Vetterling, W.T., Flannery, B.P. (2007). _Numerical Recipes_, 3rd edition, Cambridge University Press, Cambridge.

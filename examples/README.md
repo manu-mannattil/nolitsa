@@ -72,7 +72,7 @@ Practical Demonstrations
         -   [AR(1) process can mimic a deterministic process](d2/ar1.py)
         -   [Brown noise can have a saturating
             <em>D</em><sub>2</sub>](d2/brown.py)
-    -   Computing <em>D</em><sub>2</sub> of geometrical object
+    -   Computing <em>D</em><sub>2</sub> of a geometrical object
         -   [Nonstationary spiral](d2/spiral.py)
         -   [Closed noisy curve](d2/curve.py)
 -   Maximum Lyapunov exponent (MLE)
