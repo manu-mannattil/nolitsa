@@ -78,20 +78,22 @@ class TestNeighbors(object):
         # We want to make sure that the right exceptions are raised if a
         # neighbor with a nonzero distance is not found satisfying the
         # window/maxnum conditions.
-        x = np.repeat(np.arange(10) ** 2, 2 * 15 + 1)[:, np.newaxis]
+        repeat = 10
+        window = 15
+        x = np.repeat(np.arange(10) ** 2, repeat)[:, np.newaxis]
 
-        # It should fail when window < 15.
-        for window in range(15):
+        # It should fail when maxnum is small.
+        for maxnum in range(1, repeat + window):
             try:
-                utils.neighbors(x, window=window)
+                utils.neighbors(x, window=window, maxnum=maxnum)
             except:
                 assert True
             else:
                 assert False
 
         # Now it should run without any problem.
-        window = 15
-        utils.neighbors(x, window=window)
+        maxnum = repeat + 2*window
+        utils.neighbors(x, window=window, maxnum=maxnum)
 
     def test_grid(self):
         # A very simple test to find near neighbors in a 3x3x3 grid.

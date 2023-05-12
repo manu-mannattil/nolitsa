@@ -39,8 +39,7 @@ or, with newer versions of pip:
 
     pip install git+https://github.com/manu-mannattil/nolitsa.git
 
-NoLiTSA requires NumPy and SciPy, and (theoretically) works with both
-Python 2 and 3.
+NoLiTSA requires NumPy, SciPy, and Numba.
 
 ### Tests
 

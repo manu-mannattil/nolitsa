@@ -182,7 +182,7 @@ def d2(r, c, hwin=3):
     for i in range(N):
         p, q = x[i:i + 2 * hwin + 1], y[i:i + 2 * hwin + 1]
         A = np.vstack([p, np.ones(2 * hwin + 1)]).T
-        d[i] = np.linalg.lstsq(A, q)[0][0]
+        d[i] = np.linalg.lstsq(A, q, rcond=None)[0][0]
 
     return d
 

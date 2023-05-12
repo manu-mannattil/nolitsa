@@ -401,4 +401,10 @@ def statcheck(x, bins=100):
     observed = np.histogram(y, bins)[0]
     expected = len(y) * p_full
 
+    # Since 2021 or so SciPy fails to do a chisquare test if the sum of
+    # the observed frequencies don't agree with the sum of expected
+    # frequencies.  So we cheat a bit and make the sums the same.
+    # https://github.com/scipy/scipy/issues/14298
+    expected = expected/np.sum(expected)*np.sum(observed)
+
     return stats.chisquare(observed, expected)
