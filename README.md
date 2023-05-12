@@ -5,9 +5,7 @@ NoLiTSA (<b>No</b>n<b>Li</b>near <b>T</b>ime <b>S</b>eries
 <b>A</b>nalysis) is a Python module implementing several standard
 algorithms used in nonlinear time series analysis.
 
-[![Build Status](https://travis-ci.org/manu-mannattil/nolitsa.svg?branch=master)](https://travis-ci.org/manu-mannattil/nolitsa)
-[![Coverage Status](https://coveralls.io/repos/github/manu-mannattil/nolitsa/badge.svg)](https://coveralls.io/github/manu-mannattil/nolitsa)
-
+[![CI](https://github.com/manu-mannattil/nolitsa/actions/workflows/ci.yml/badge.svg)](https://github.com/manu-mannattil/nolitsa/actions/workflows/ci.yml)
 
 Features
 --------
@@ -30,12 +28,7 @@ Features
 Installation
 ------------
 
-NoLiTSA can be installed using pip by running
-
-    git clone https://github.com/manu-mannattil/nolitsa.git
-    pip install ./nolitsa
-
-or, with newer versions of pip:
+NoLiTSA can be installed via
 
     pip install git+https://github.com/manu-mannattil/nolitsa.git
 
@@ -43,9 +36,7 @@ NoLiTSA requires NumPy, SciPy, and Numba.
 
 ### Tests
 
-NoLiTSA’s unit tests can be executed by running `nosetests`, or by using
-
-    python setup.py test
+NoLiTSA’s unit tests can be executed by running `pytest`.
 
 Publications
 ------------

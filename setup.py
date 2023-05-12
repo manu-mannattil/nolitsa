@@ -24,8 +24,8 @@ for nonlinear time series analysis.""",
     license='BSD',
     packages=['nolitsa'],
     install_requires=['numpy>=1.11.0', 'scipy>=0.17.0'],
-    test_suite='nose.collector',
-    tests_require=['nose>=1.3.1'],
+    test_suite='pytest',
+    tests_require=['pytest>=7.0.0'],
     include_package_data=True,
     zip_safe=False
 )
