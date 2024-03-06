@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 
 from nolitsa import noise
-from numpy.testing import assert_allclose, run_module_suite
+from numpy.testing import assert_allclose
 
 
 class TestNoRed(object):
@@ -76,7 +76,3 @@ class TestNoRed(object):
                         z[-c:] = x[-c:]
 
                     assert_allclose(y, z)
-
-
-if __name__ == '__main__':
-    run_module_suite()

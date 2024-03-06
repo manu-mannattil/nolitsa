@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 
 from nolitsa import d2, utils
-from numpy.testing import assert_allclose, run_module_suite
+from numpy.testing import assert_allclose
 
 
 def test_c2():
@@ -74,7 +74,3 @@ def test_ttmle():
 
     desired = np.pi * (c[1:] / (c[1:] - c[0]))
     assert_allclose(desired, d2.ttmle(r, c, zero=False)[1])
-
-
-if __name__ == '__main__':
-    run_module_suite()

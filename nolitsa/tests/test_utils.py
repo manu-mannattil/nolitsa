@@ -7,7 +7,7 @@ import numpy as np
 
 from time import sleep
 from nolitsa import utils
-from numpy.testing import assert_, assert_allclose, run_module_suite
+from numpy.testing import assert_, assert_allclose
 
 
 def test_corrupt():
@@ -209,7 +209,3 @@ class TestStatcheck(object):
     def test_non_stationary(self):
         x = np.arange(1000)
         assert_(utils.statcheck(x)[1] < 1E-30)
-
-
-if __name__ == '__main__':
-    run_module_suite()

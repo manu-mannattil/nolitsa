@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 
 from nolitsa import surrogates, noise, utils
-from numpy.testing import assert_allclose, run_module_suite
+from numpy.testing import assert_allclose
 
 
 def test_ft():
@@ -56,7 +56,3 @@ def test_mismatch():
     x[desired[0] - 1:desired[1] + neigh] = 10.0
 
     assert_allclose(desired, surrogates.mismatch(x, neigh=neigh)[0])
-
-
-if __name__ == '__main__':
-    run_module_suite()

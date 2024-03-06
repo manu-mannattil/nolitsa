@@ -3,7 +3,7 @@
 from __future__ import absolute_import, division, print_function
 import numpy as np
 from nolitsa import delay
-from numpy.testing import assert_allclose, run_module_suite
+from numpy.testing import assert_allclose
 
 
 class TestAcorr(object):
@@ -67,7 +67,3 @@ def test_adfd():
     dim, maxtau = 7, 25
     desired = np.sqrt(sqsum(dim - 1)) * b * np.arange(maxtau)
     assert_allclose(delay.adfd(x, dim=dim, maxtau=maxtau), desired)
-
-
-if __name__ == '__main__':
-    run_module_suite()

@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 
 from nolitsa import dimension
-from numpy.testing import assert_allclose, run_module_suite
+from numpy.testing import assert_allclose
 
 
 class TestAFN(object):
@@ -95,7 +95,3 @@ class TestFNN(object):
 
         f1 = dimension.fnn(x, dim=dim, tau=25)[0]
         np.allclose(f1, desired)
-
-
-if __name__ == '__main__':
-    run_module_suite()
