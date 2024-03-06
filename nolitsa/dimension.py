@@ -86,12 +86,14 @@ def afn(x, dim=[1], tau=1, metric='chebyshev', window=10, maxnum=None,
     else:
         processes = 1
 
-    return utils.parallel_map(_afn, dim, (x,), {
-                              'tau': tau,
-                              'metric': metric,
-                              'window': window,
-                              'maxnum': maxnum
-                              }, processes).T
+    r = utils.parallel_map(_afn, dim, (x,), {
+                           'tau': tau,
+                           'metric': metric,
+                           'window': window,
+                           'maxnum': maxnum
+                           }, processes)
+
+    return np.asarray(r).T
 
 
 def _fnn(d, x, tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
@@ -182,11 +184,13 @@ def fnn(x, dim=[1], tau=1, R=10.0, A=2.0, metric='euclidean', window=10,
     else:
         processes = 1
 
-    return utils.parallel_map(_fnn, dim, (x,), {
-                              'tau': tau,
-                              'R': R,
-                              'A': A,
-                              'metric': metric,
-                              'window': window,
-                              'maxnum': maxnum
-                              }, processes).T
+    r = utils.parallel_map(_fnn, dim, (x,), {
+                           'tau': tau,
+                           'R': R,
+                           'A': A,
+                           'metric': metric,
+                           'window': window,
+                           'maxnum': maxnum
+                           }, processes)
+
+    return np.asarray(r).T

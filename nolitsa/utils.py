@@ -251,7 +251,7 @@ def parallel_map(func, values, args=tuple(), kwargs=dict(),
     pool.close()
     pool.join()
 
-    return np.asarray([result.get() for result in results])
+    return [result.get() for result in results]
 
 
 def reconstruct(x, dim=1, tau=1):
