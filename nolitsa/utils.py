@@ -93,17 +93,46 @@ def dist(x, y, metric='chebyshev'):
 
 @jit("float64[:](float64[:, :], float64[:, :])", nopython=True)
 def cityblock_dist(x, y):
-    return np.array(list(map(np.sum, np.abs(x - y))))
+    n = x.shape[0]
+    d = x.shape[1]
+    out = np.empty(n, dtype=np.float64)
+    for i in range(n):
+        s = 0.0
+        for j in range(d):
+            diff = x[i, j] - y[i, j]
+            s += diff if diff >= 0.0 else -diff
+        out[i] = s
+    return out
 
 
 @jit("float64[:](float64[:, :], float64[:, :])", nopython=True)
 def euclidean_dist(x, y):
-    return np.sqrt(np.array(list(map(np.sum, (x - y) ** 2))))
+    n = x.shape[0]
+    d = x.shape[1]
+    out = np.empty(n, dtype=np.float64)
+    for i in range(n):
+        s = 0.0
+        for j in range(d):
+            diff = x[i, j] - y[i, j]
+            s += diff * diff
+        out[i] = np.sqrt(s)
+    return out
 
 
 @jit("float64[:](float64[:, :], float64[:, :])", nopython=True)
 def chebyshev_dist(x, y):
-    return np.array(list(map(np.max, np.abs(x - y))))
+    n = x.shape[0]
+    d = x.shape[1]
+    out = np.empty(n, dtype=np.float64)
+    for i in range(n):
+        m = 0.0
+        for j in range(d):
+            diff = x[i, j] - y[i, j]
+            a = diff if diff >= 0.0 else -diff
+            if a > m:
+                m = a
+        out[i] = m
+    return out
 
 
 def gprange(start, end, num=100):
